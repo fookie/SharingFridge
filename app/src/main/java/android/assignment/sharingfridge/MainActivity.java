@@ -10,5 +10,7 @@ public class MainActivity extends AppCompatActivity {
         //hehe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // Comment by LIn
+        // 233
     }
 }
