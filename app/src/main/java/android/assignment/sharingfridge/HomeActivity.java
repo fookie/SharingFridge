@@ -3,6 +3,9 @@ package android.assignment.sharingfridge;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,16 +16,21 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import me.majiajie.pagerbottomtabstrip.Controller;
 import me.majiajie.pagerbottomtabstrip.PagerBottomTabLayout;
 import me.majiajie.pagerbottomtabstrip.TabItemBuilder;
 import me.majiajie.pagerbottomtabstrip.TabLayoutMode;
+import me.majiajie.pagerbottomtabstrip.listener.OnTabItemSelectListener;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     int[] tabColors = {0xFF00796B,0xFFF57C00,0xFF607D8B,0xFF5B4947,0xFFF57C00};
     Controller tabController;
+    List<Fragment> myFragments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +48,9 @@ public class HomeActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        initFragments();
         initNavBar();
+
     }
 
     @Override
@@ -81,13 +91,13 @@ public class HomeActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_home) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_account) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_about) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_logout) {
 
         } else if (id == R.id.nav_share) {
 
@@ -98,6 +108,47 @@ public class HomeActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void initFragments()
+    {
+        myFragments = new ArrayList<>();
+
+        myFragments.add(initSingleFragment("Home"));
+        myFragments.add(initSingleFragment("Member"));
+        myFragments.add(initSingleFragment("Map"));
+        myFragments.add(initSingleFragment("Settings"));
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        // transaction.setCustomAnimations(R.anim.push_up_in,R.anim.push_up_out);
+        transaction.add(R.id.content_home, myFragments.get(0));
+        transaction.commit();
+    }
+
+    OnTabItemSelectListener tabListener = new OnTabItemSelectListener() {
+        @Override
+        public void onSelected(int index, Object tag)
+        {
+            Log.i("asd","onSelected:"+index+"   TAG: "+tag.toString());
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            //transaction.setCustomAnimations(R.anim.push_up_in,R.anim.push_up_out);
+            transaction.replace(R.id.content_home, myFragments.get(index));
+            transaction.commit();
+        }
+
+        @Override
+        public void onRepeatClick(int index, Object tag) {
+            Log.i("asd","onRepeatClick:"+index+"   TAG: "+tag.toString());
+        }
+    };
+
+    private Fragment initSingleFragment(String id){
+        TestFragment fragment = new TestFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("id", id);
+        fragment.setArguments(bundle);
+
+        return fragment;
     }
 
     private void initNavBar(){
@@ -121,5 +172,9 @@ public class HomeActivity extends AppCompatActivity
 //                .setMode(TabLayoutMode.CHANGE_BACKGROUND_COLOR)
 //                .setMode(TabLayoutMode.HIDE_TEXT| TabLayoutMode.CHANGE_BACKGROUND_COLOR)
                 .build();
+
+        tabController.addTabItemClickListener(tabListener);
     }
+
+
 }
