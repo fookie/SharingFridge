@@ -31,6 +31,7 @@ public class HomeActivity extends AppCompatActivity
     int[] tabColors = {0xFF00796B,0xFFF57C00,0xFF607D8B,0xFF5B4947,0xFFF57C00};
     Controller tabController;
     List<Fragment> myFragments;
+    //test
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
