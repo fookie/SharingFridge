@@ -1,5 +1,6 @@
 package android.assignment.sharingfridge;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,12 +28,16 @@ import me.majiajie.pagerbottomtabstrip.TabLayoutMode;
 import me.majiajie.pagerbottomtabstrip.listener.OnTabItemSelectListener;
 
 public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
-    //shishi push
+        implements NavigationView.OnNavigationItemSelectedListener,
+        FridgeFragment.OnFragmentInteractionListener,
+        MemberFragment.OnFragmentInteractionListener,
+        MapFragment.OnFragmentInteractionListener,
+        SettingsFragment.OnFragmentInteractionListener{
+
     int[] tabColors = {0xFF00796B,0xFFF57C00,0xFF607D8B,0xFF5B4947,0xFFF57C00};
     Controller tabController;
     List<Fragment> myFragments;
-    //test
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,11 +120,20 @@ public class HomeActivity extends AppCompatActivity
     private void initFragments()
     {
         myFragments = new ArrayList<>();
+        FridgeFragment friFrag = FridgeFragment.newInstance("Home", "para2");
+        MemberFragment memFrag = MemberFragment.newInstance("Member", "para2");
+        MapFragment mapFrag = MapFragment.newInstance("Map", "para2");
+        SettingsFragment setFrag = SettingsFragment.newInstance("Settings", "para2");
 
-        myFragments.add(initSingleFragment("Home"));
-        myFragments.add(initSingleFragment("Member"));
-        myFragments.add(initSingleFragment("Map"));
-        myFragments.add(initSingleFragment("Settings"));
+        myFragments.add(friFrag);
+        myFragments.add(memFrag);
+        myFragments.add(mapFrag);
+        myFragments.add(setFrag);
+
+//        myFragments.add(initSingleFragment("Home"));
+//        myFragments.add(initSingleFragment("Member"));
+//        myFragments.add(initSingleFragment("Map"));
+//        myFragments.add(initSingleFragment("Settings"));
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         // transaction.setCustomAnimations(R.anim.push_up_in,R.anim.push_up_out);
@@ -130,7 +145,7 @@ public class HomeActivity extends AppCompatActivity
         @Override
         public void onSelected(int index, Object tag)
         {
-            Log.i("asd","onSelected:"+index+"   TAG: "+tag.toString());
+            Log.i("tab","onSelected:"+index+"   TAG: "+tag.toString());
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             //transaction.setCustomAnimations(R.anim.push_up_in,R.anim.push_up_out);
             transaction.replace(R.id.fragment_container_home, myFragments.get(index));
@@ -139,18 +154,19 @@ public class HomeActivity extends AppCompatActivity
 
         @Override
         public void onRepeatClick(int index, Object tag) {
-            Log.i("asd","onRepeatClick:"+index+"   TAG: "+tag.toString());
+            Log.i("tab","onRepeatClick:"+index+"   TAG: "+tag.toString());
         }
     };
 
-    private Fragment initSingleFragment(String id){
-        TestFragment fragment = new TestFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("id", id);
-        fragment.setArguments(bundle);
-
-        return fragment;
-    }
+    //A way of setting arguments for fragments
+//    private Fragment initSingleFragment(String id){
+//        TestFragment fragment = new TestFragment();
+//        Bundle bundle = new Bundle();
+//        bundle.putString("id", id);
+//        fragment.setArguments(bundle);
+//
+//        return fragment;
+//    }
 
     private void initNavBar(){
         PagerBottomTabLayout pagerBottomTabLayout = (PagerBottomTabLayout) findViewById(R.id.tab);
@@ -178,4 +194,8 @@ public class HomeActivity extends AppCompatActivity
     }
 
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
 }
