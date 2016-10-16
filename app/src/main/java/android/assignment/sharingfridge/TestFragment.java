@@ -69,18 +69,18 @@ public class TestFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-//        String id = getArguments().getString("id");
-//        View view = inflater.inflate(R.layout.fragment_test, container, false);
-//        testView = (TextView) view.findViewById(R.id.testView);
-//        testView.setText("Pages: \n\n" + id);
-//        return view;
         String id = getArguments().getString("id");
-        TextView textView = new TextView(testContext);
-        textView.setTextSize(30);
-        textView.setGravity(Gravity.CENTER);
-        textView.setText("Page\n\n" + id);
-        textView.setBackgroundColor(0xFFececec);
-        return textView;
+        View view = inflater.inflate(R.layout.fragment_test, container, false);
+        testView = (TextView) view.findViewById(R.id.testView);
+        testView.setText("Pages: \n\n" + id);
+        return view;
+//        String id = getArguments().getString("id");
+//        TextView textView = new TextView(testContext);
+//        textView.setTextSize(30);
+//        textView.setGravity(Gravity.CENTER);
+//        textView.setText("Page\n\n" + id);
+//        textView.setBackgroundColor(0xFFececec);
+//        return textView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

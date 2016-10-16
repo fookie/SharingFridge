@@ -122,7 +122,7 @@ public class HomeActivity extends AppCompatActivity
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         // transaction.setCustomAnimations(R.anim.push_up_in,R.anim.push_up_out);
-        transaction.add(R.id.content_home, myFragments.get(0));
+        transaction.add(R.id.fragment_container_home, myFragments.get(0));
         transaction.commit();
     }
 
@@ -133,7 +133,7 @@ public class HomeActivity extends AppCompatActivity
             Log.i("asd","onSelected:"+index+"   TAG: "+tag.toString());
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             //transaction.setCustomAnimations(R.anim.push_up_in,R.anim.push_up_out);
-            transaction.replace(R.id.content_home, myFragments.get(index));
+            transaction.replace(R.id.fragment_container_home, myFragments.get(index));
             transaction.commit();
         }
 
@@ -160,7 +160,7 @@ public class HomeActivity extends AppCompatActivity
                 .setDefaultIcon(R.drawable.ic_home)
                 .setText("Home")
                 .setSelectedColor(tabColors[0])
-                .setTag("A")
+                .setTag("Home")
                 .build();
 
         //构建导航栏,得到Controller进行后续控制

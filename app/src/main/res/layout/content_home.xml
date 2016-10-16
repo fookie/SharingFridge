@@ -16,4 +16,13 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"/>
 
+    <RelativeLayout
+        android:id="@+id/fragment_container_home"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/tab">
+
+    </RelativeLayout>
+
 </RelativeLayout>
