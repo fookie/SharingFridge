@@ -37,9 +37,13 @@ public class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
     public void onBindViewHolder(FridgeViewHolder holder, int position) {
         holder.nameView.setText(fridgeItemsList.get(position).getName());
         holder.dateView.setText(fridgeItemsList.get(position).getDate());
-//        holder.photoView.setImageResource(R.drawable.shine);
         // here need to work with glide or picasso to deal with image loading maybe.
-        Glide.with(homeContext).load(serverPicsPath + fridgeItemsList.get(position).getPhotoURL()).placeholder(R.drawable.shine).error(R.mipmap.ic_launcher).into(holder.photoView);
+        Glide.with(homeContext).load(serverPicsPath + fridgeItemsList.get(position).getPhotoURL())
+                .centerCrop()
+                .placeholder(R.drawable.shine)
+                .error(R.mipmap.ic_launcher)
+                .dontAnimate()
+                .into(holder.photoView);
     }
 
     @Override
