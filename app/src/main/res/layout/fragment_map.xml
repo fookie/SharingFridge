@@ -2,19 +2,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="android.assignment.sharingfridge.TestFragment">
+    tools:context="android.assignment.sharingfridge.MapFragment">
 
     <!-- TODO: Update blank fragment layout -->
-
     <TextView
-        android:text="Page:"
+        android:text="It's Map now"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:id="@+id/testView"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Caption"
         android:layout_centerHorizontal="false"
         android:textAlignment="center" />
+
+    <Button
+        android:text="TEST?"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
+
 </RelativeLayout>
