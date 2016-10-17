@@ -38,7 +38,6 @@ public class HomeActivity extends AppCompatActivity
     Controller tabController;
     List<Fragment> myFragments;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,6 +123,8 @@ public class HomeActivity extends AppCompatActivity
         MemberFragment memFrag = MemberFragment.newInstance("Member", "para2");
         MapFragment mapFrag = MapFragment.newInstance("Map", "para2");
         SettingsFragment setFrag = SettingsFragment.newInstance("Settings", "para2");
+
+
 
         myFragments.add(friFrag);
         myFragments.add(memFrag);

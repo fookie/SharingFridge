@@ -130,10 +130,9 @@ public class FridgeFragment extends Fragment {
     public List<FridgeItem> initTestList(){
         List<FridgeItem> list = new ArrayList<FridgeItem>();
         FridgeItem fi = new FridgeItem("Test Name", "10 days left", "fake");
-        FridgeItem fi2 = new FridgeItem("Test Name", "3 days left", "fake");
+        FridgeItem fi2 = new FridgeItem("Test Name", "3 days left", "SampleJPG.jpg");
         list.add(fi);
         list.add(fi2);
-        list.add(fi);
         list.add(fi2);
         list.add(fi);
         list.add(fi2);
