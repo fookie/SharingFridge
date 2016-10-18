@@ -1,5 +1,6 @@
 package android.assignment.sharingfridge;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -16,6 +17,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 
 import java.lang.reflect.Member;
 import java.util.ArrayList;
@@ -37,8 +43,7 @@ public class HomeActivity extends AppCompatActivity
     int[] tabColors = {0xFF00796B,0xFFF57C00,0xFF607D8B,0xFF5B4947,0xFFF57C00};
     Controller tabController;
     List<Fragment> myFragments;
-
-
+    DrawerLayout drawer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,16 +51,38 @@ public class HomeActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        (new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Glide.get(getApplicationContext()).clearDiskCache();
+            }
+        })).start();
+
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+        TextView usernameView = (TextView) headerView.findViewById(R.id.username_view);
+        usernameView.setText("EveLIn3");
+        LinearLayout headerLayout = (LinearLayout) headerView.findViewById(R.id.header_layout);
+        headerLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(HomeActivity.this, "Header Clicked", Toast.LENGTH_SHORT).show();
+                //drawer.closeDrawer(GravityCompat.START);
+                Intent loginIntent = new Intent(HomeActivity.this, LoginActivity.class);
+                startActivity(loginIntent);
+            }
+        });
+
         navigationView.setNavigationItemSelectedListener(this);
 
         initFragments();
+        // initialize the bottom navigation bar
         initNavBar();
 
     }
@@ -125,6 +152,8 @@ public class HomeActivity extends AppCompatActivity
         MapFragment mapFrag = MapFragment.newInstance("Map", "para2");
         SettingsFragment setFrag = SettingsFragment.newInstance("Settings", "para2");
 
+
+
         myFragments.add(friFrag);
         myFragments.add(memFrag);
         myFragments.add(mapFrag);
@@ -171,7 +200,7 @@ public class HomeActivity extends AppCompatActivity
     private void initNavBar(){
         PagerBottomTabLayout pagerBottomTabLayout = (PagerBottomTabLayout) findViewById(R.id.tab);
 
-        //用TabItemBuilder构建一个导航按钮
+        //Build a tab giving some initial custom settings
         TabItemBuilder tabItemBuilder = new TabItemBuilder(this).create()
                 .setDefaultIcon(R.drawable.ic_home)
                 .setText("Home")
@@ -179,7 +208,7 @@ public class HomeActivity extends AppCompatActivity
                 .setTag("Home")
                 .build();
 
-        //构建导航栏,得到Controller进行后续控制
+        //finish the navigation bar by adding more tabs
         tabController = pagerBottomTabLayout.builder()
                 .addTabItem(tabItemBuilder)
                 .addTabItem(R.drawable.ic_member, "Members",tabColors[1])
