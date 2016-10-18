@@ -57,6 +57,7 @@ public class SendRequestTask extends AsyncTask<String, Void, String> {
             jo.put("username", "laowang");
             jo.put("password", "233");
             String tosend = jo.toString();
+            Log.d("JSON",tosend);
 //            byte[] outputBytes = tosend.getBytes("UTF-8");
 //            OutputStream os = conn.getOutputStream();
 //            os.write(outputBytes);
@@ -100,7 +101,19 @@ public class SendRequestTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
-        JSONObject confirm = null;
-        Log.d("send post", result);
+        String permission="Nothing received";
+
+        try {
+            JSONObject confirm = new JSONObject(result);
+            permission = confirm.get("permission").toString();
+            if( permission.equals("granted")){
+               Log.d("LOGIN","SUCCESS");
+            }
+        }
+        catch (JSONException je){
+            je.printStackTrace();
+            Log.d("LOGIN","FAILED");
+        }
+        //Log.d("send post", permission);
     }
 }

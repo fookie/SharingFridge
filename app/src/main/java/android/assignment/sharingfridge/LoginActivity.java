@@ -19,6 +19,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,6 +30,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,13 +65,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
+    private SendRequestTask mAuthTask = null;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,7 +176,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
+        String username = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
@@ -178,15 +190,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
-        }
+//        if (TextUtils.isEmpty(email)) {
+//            mEmailView.setError(getString(R.string.error_field_required));
+//            focusView = mEmailView;
+//            cancel = true;
+//        } else if (!isEmailValid(email)) {
+//            mEmailView.setError(getString(R.string.error_invalid_email));
+//            focusView = mEmailView;
+//            cancel = true;
+//        }
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
@@ -196,19 +208,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            mAuthTask = new SendRequestTask(username, password);
+            mAuthTask.execute("");
         }
     }
 
-    private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
-    }
+//    private boolean isEmailValid(String email) {
+//        //TODO: Replace this with your own logic
+//        return email.contains("@");
+//    }
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() > 2;
     }
 
     /**
@@ -357,5 +369,102 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
         }
     }
+
+    public class SendRequestTask extends AsyncTask<String, Void, String> {
+        private String urlString = "http://178.62.93.103/SharingFridge/login.php";
+        private String username, password;
+
+        public SendRequestTask(String um, String pw) {
+            username = um;
+            password = pw;
+        }
+
+        protected String doInBackground(String... params) {
+            String response = performPostCall();
+            return response;
+        }
+
+        public String performPostCall() {
+            Log.d("send post", "performPostCall");
+            String response = "";
+            try {
+                URL url = new URL(urlString);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setReadTimeout(10000);
+                conn.setConnectTimeout(15000);/* milliseconds */
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+                //conn.setRequestProperty("Content-Type", "application/json");
+                //make json object
+                JSONObject jo = new JSONObject();
+                jo.put("username", username);
+                jo.put("password", password);
+                String tosend = jo.toString();
+                Log.d("JSON", tosend);
+//            byte[] outputBytes = tosend.getBytes("UTF-8");
+//            OutputStream os = conn.getOutputStream();
+//            os.write(outputBytes);
+
+                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
+                outputStreamWriter.write("login=" + tosend);
+                outputStreamWriter.flush();
+                outputStreamWriter.close();
+
+                int responseCode = conn.getResponseCode();
+
+                InputStream inputStream = conn.getInputStream();
+
+                // Convert the InputStream into a string
+                int length = 500;
+                String contentAsString = convertInputStreamToString(inputStream, length);
+                return contentAsString;
+//            if (responseCode == HttpsURLConnection.HTTP_OK) {
+//                String line;
+//                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+//                while ((line = br.readLine()) != null) {
+//                    response += line;
+//                }
+//            } else {
+//                response = "";
+//            }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return response;
+        }
+
+        public String convertInputStreamToString(InputStream stream, int length) throws IOException {
+            Reader reader = null;
+            reader = new InputStreamReader(stream, "UTF-8");
+            char[] buffer = new char[length];
+            reader.read(buffer);
+            return new String(buffer);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            mAuthTask = null;
+            showProgress(false);
+            String permission = "Nothing received";
+            try {
+                JSONObject confirm = new JSONObject(result);
+                permission = confirm.get("permission").toString();
+                if (permission.equals("granted")) {
+                    Log.d("LOGIN", "SUCCESS");
+                    finish();
+                }
+            } catch (JSONException je) {
+                je.printStackTrace();
+                mPasswordView.setError(getString(R.string.error_incorrect_password));
+                mPasswordView.requestFocus();
+                Log.d("LOGIN", "FAILED");
+            }
+            //Log.d("send post", permission);
+        }
+    }
+
+
 }
 
