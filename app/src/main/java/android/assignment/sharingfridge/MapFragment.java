@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 
 /**
@@ -54,6 +55,8 @@ public class MapFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -63,8 +66,18 @@ public class MapFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View v=inflater.inflate(R.layout.fragment_map, container, false);
+        Button mb=(Button) v.findViewById(R.id.map_button);
+        mb.setOnClickListener(new View.OnClickListener() {
+            SendRequestTask srt=new SendRequestTask("laowang","233");
+            @Override
+            public void onClick(View v) {
+                srt.execute("");
+            }
+        });
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_map, container, false);
+        return v;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
