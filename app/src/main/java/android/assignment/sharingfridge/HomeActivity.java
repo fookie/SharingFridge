@@ -149,7 +149,8 @@ public class HomeActivity extends AppCompatActivity
         myFragments = new ArrayList<>();
         FridgeFragment friFrag = FridgeFragment.newInstance("Home", "para2");
         MemberFragment memFrag = MemberFragment.newInstance("Member", "para2");
-        MapFragment mapFrag = MapFragment.newInstance("Map", "para2");
+        //MapFragment mapFrag = MapFragment.newInstance("Map", "para2");
+        MapViewFragment mapFrag=new MapViewFragment();
         SettingsFragment setFrag = SettingsFragment.newInstance("Settings", "para2");
 
 
