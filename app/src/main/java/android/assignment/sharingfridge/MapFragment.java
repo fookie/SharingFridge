@@ -69,7 +69,7 @@ public class MapFragment extends Fragment {
         View v=inflater.inflate(R.layout.fragment_map, container, false);
 //        Button mb=(Button) v.findViewById(R.id.map_button);
 //        mb.setOnClickListener(new View.OnClickListener() {
-//            SendRequestTask srt=new SendRequestTask("laowang","233");
+//             srt=new SendRequestTask("laowang","233");
 //            @Override
 //            public void onClick(View v) {
 //                srt.execute("");
