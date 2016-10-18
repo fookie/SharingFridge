@@ -3,47 +3,43 @@ package android.assignment.sharingfridge;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
-import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.List;
 
 import me.majiajie.pagerbottomtabstrip.Controller;
 import me.majiajie.pagerbottomtabstrip.PagerBottomTabLayout;
 import me.majiajie.pagerbottomtabstrip.TabItemBuilder;
-import me.majiajie.pagerbottomtabstrip.TabLayoutMode;
 import me.majiajie.pagerbottomtabstrip.listener.OnTabItemSelectListener;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         FridgeFragment.OnFragmentInteractionListener,
         MemberFragment.OnFragmentInteractionListener,
-        MapFragment.OnFragmentInteractionListener,
-        SettingsFragment.OnFragmentInteractionListener{
+        SettingsFragment.OnFragmentInteractionListener {
 
-    int[] tabColors = {0xFF00796B,0xFFF57C00,0xFF607D8B,0xFF5B4947,0xFFF57C00};
+    int[] tabColors = {0xFF00796B, 0xFFF57C00, 0xFF607D8B, 0xFF5B4947, 0xFFF57C00};
     Controller tabController;
     List<Fragment> myFragments;
     DrawerLayout drawer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -144,15 +140,13 @@ public class HomeActivity extends AppCompatActivity
         return true;
     }
 
-    private void initFragments()
-    {
+    private void initFragments() {
         myFragments = new ArrayList<>();
         FridgeFragment friFrag = FridgeFragment.newInstance("Home", "para2");
         MemberFragment memFrag = MemberFragment.newInstance("Member", "para2");
         //MapFragment mapFrag = MapFragment.newInstance("Map", "para2");
-        MapViewFragment mapFrag=new MapViewFragment();
+        MapViewFragment mapFrag = new MapViewFragment();
         SettingsFragment setFrag = SettingsFragment.newInstance("Settings", "para2");
-
 
 
         myFragments.add(friFrag);
@@ -173,9 +167,8 @@ public class HomeActivity extends AppCompatActivity
 
     OnTabItemSelectListener tabListener = new OnTabItemSelectListener() {
         @Override
-        public void onSelected(int index, Object tag)
-        {
-            Log.i("tab","onSelected:"+index+"   TAG: "+tag.toString());
+        public void onSelected(int index, Object tag) {
+            Log.i("tab", "onSelected:" + index + "   TAG: " + tag.toString());
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             //transaction.setCustomAnimations(R.anim.push_up_in,R.anim.push_up_out);
             transaction.replace(R.id.fragment_container_home, myFragments.get(index));
@@ -184,7 +177,7 @@ public class HomeActivity extends AppCompatActivity
 
         @Override
         public void onRepeatClick(int index, Object tag) {
-            Log.i("tab","onRepeatClick:"+index+"   TAG: "+tag.toString());
+            Log.i("tab", "onRepeatClick:" + index + "   TAG: " + tag.toString());
         }
     };
 
@@ -198,7 +191,7 @@ public class HomeActivity extends AppCompatActivity
 //        return fragment;
 //    }
 
-    private void initNavBar(){
+    private void initNavBar() {
         PagerBottomTabLayout pagerBottomTabLayout = (PagerBottomTabLayout) findViewById(R.id.tab);
 
         //Build a tab giving some initial custom settings
@@ -212,9 +205,9 @@ public class HomeActivity extends AppCompatActivity
         //finish the navigation bar by adding more tabs
         tabController = pagerBottomTabLayout.builder()
                 .addTabItem(tabItemBuilder)
-                .addTabItem(R.drawable.ic_member, "Members",tabColors[1])
-                .addTabItem(R.drawable.ic_map, "Map",tabColors[2])
-                .addTabItem(R.drawable.ic_settings, "Settings",tabColors[3])
+                .addTabItem(R.drawable.ic_member, "Members", tabColors[1])
+                .addTabItem(R.drawable.ic_map, "Map", tabColors[2])
+                .addTabItem(R.drawable.ic_settings, "Settings", tabColors[3])
 //                .setMode(TabLayoutMode.HIDE_TEXT)
 //                .setMode(TabLayoutMode.CHANGE_BACKGROUND_COLOR)
 //                .setMode(TabLayoutMode.HIDE_TEXT| TabLayoutMode.CHANGE_BACKGROUND_COLOR)
