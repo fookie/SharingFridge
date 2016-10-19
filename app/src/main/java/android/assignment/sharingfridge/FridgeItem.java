@@ -1,7 +1,5 @@
 package android.assignment.sharingfridge;
 
-import android.graphics.Bitmap;
-
 /**
  * Created by EveLIn3 on 2016/10/16.
  */
