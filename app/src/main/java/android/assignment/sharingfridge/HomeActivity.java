@@ -39,6 +39,7 @@ public class HomeActivity extends AppCompatActivity
     Controller tabController;
     List<Fragment> myFragments;
     DrawerLayout drawer;
+    TextView usernameView,groupnameView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,16 +63,21 @@ public class HomeActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
-        TextView usernameView = (TextView) headerView.findViewById(R.id.username_view);
-        usernameView.setText("EveLIn3");
+        usernameView = (TextView) headerView.findViewById(R.id.username_view);
+        groupnameView=(TextView) headerView.findViewById(R.id.groupname_view);
         LinearLayout headerLayout = (LinearLayout) headerView.findViewById(R.id.header_layout);
         headerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(HomeActivity.this, "Header Clicked", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(HomeActivity.this, "Header Clicked", Toast.LENGTH_SHORT).show();
                 //drawer.closeDrawer(GravityCompat.START);
-                Intent loginIntent = new Intent(HomeActivity.this, LoginActivity.class);
-                startActivity(loginIntent);
+                if(!UserStatus.haslogin) {
+                    Intent loginIntent = new Intent(HomeActivity.this, LoginActivity.class);
+                    startActivity(loginIntent);
+                }
+                else{
+                    Toast.makeText(HomeActivity.this,"You are "+UserStatus.username, Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -221,5 +227,11 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    protected void onResume(){
+        usernameView.setText(UserStatus.username);
+        groupnameView.setText(UserStatus.grouoname);
+        super.onResume();
     }
 }

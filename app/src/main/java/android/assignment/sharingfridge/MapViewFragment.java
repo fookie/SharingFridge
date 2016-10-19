@@ -28,10 +28,8 @@ public class MapViewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_map_view, container, false);
-
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
-
         mMapView.onResume(); // needed to get the map to display immediately
 
         try {
@@ -44,26 +42,36 @@ public class MapViewFragment extends Fragment {
             @Override
             public void onMapReady(GoogleMap mMap) {
                 googleMap = mMap;
-
+                //add nearby markets
+                addMarker(new LatLng(53.318994, -6.213717), "Tesco", "supermarket", false);
+                addMarker(new LatLng(53.335628, -6.243302), "Tesco Metro", "supermarket", false);
+                addMarker(new LatLng(53.325329, -6.254133), "Lidl", "discount supermarket", false);
+                addMarker(new LatLng(53.307358, -6.215584), "Molloys Centra", "Store in UCD", false);
                 // For showing a move to my location button
-
                 if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     Log.d("MAP", "NO PERMISSION");
                 } else {
                     googleMap.setMyLocationEnabled(true);
                 }
-
-                // For dropping a marker at a point on the Map
-                LatLng middleblue = new LatLng(39.885972, 116.480348);
-                googleMap.addMarker(new MarkerOptions().position(middleblue).title("MiddleBlue").snippet("BJUT dormitory"));
-
-                // For zooming automatically to the location of the marker
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(middleblue).zoom(12).build();
-                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             }
         });
 
         return rootView;
+    }
+
+    /**
+     *
+     * @param ll    LatLng position
+     * @param title the titile of mark
+     * @param detail detail shown on the mark
+     * @param switchcamera if switch camera to this Mark
+     */
+    private void addMarker(LatLng ll, String title, String detail, boolean switchcamera) {
+        googleMap.addMarker(new MarkerOptions().position(ll).title(title).snippet(detail));
+        if (switchcamera) {
+            CameraPosition cameraPosition = new CameraPosition.Builder().target(ll).zoom(12).build();
+            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        }
     }
 
     @Override
