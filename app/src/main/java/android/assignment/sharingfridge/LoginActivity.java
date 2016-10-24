@@ -352,19 +352,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 int length = 500;
                 String contentAsString = convertInputStreamToString(inputStream, length);
                 return contentAsString;
-//            if (responseCode == HttpsURLConnection.HTTP_OK) {
-//                String line;
-//                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-//                while ((line = br.readLine()) != null) {
-//                    response += line;
-//                }
-//            } else {
-//                response = "";
-//            }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
             return response;
         }
 
@@ -385,6 +375,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 JSONObject confirm = new JSONObject(result);
                 permission = confirm.get("permission").toString();
                 if (permission.equals("granted")) {
+                    UserStatus.haslogin=true;
+                    UserStatus.username=username;
                     Log.d("LOGIN", "SUCCESS");
                     finish();
                 }
@@ -394,7 +386,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 mPasswordView.requestFocus();
                 Log.d("LOGIN", "FAILED");
             }
-            //Log.d("send post", permission);
         }
     }
 
