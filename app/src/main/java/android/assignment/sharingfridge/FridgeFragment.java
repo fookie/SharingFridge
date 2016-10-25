@@ -75,7 +75,7 @@ public class FridgeFragment extends Fragment {
                              Bundle savedInstanceState) {
         fridgeItemList = initTestList();
         gridLayoutManager = new GridLayoutManager(getContext(), 2);
-        fridgeViewAdapter = new FridgeViewAdapter(getContext(), fridgeItemList);
+        fridgeViewAdapter = new FridgeViewAdapter(getContext(), fridgeItemList, ((SharingFridgeApplication) getContext().getApplicationContext()).getServerAddr());
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_fridge, container, false);
 
@@ -127,7 +127,7 @@ public class FridgeFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    public List<FridgeItem> initTestList(){
+    public List<FridgeItem> initTestList() {
         List<FridgeItem> list = new ArrayList<FridgeItem>();
         FridgeItem fi = new FridgeItem("Test Name", "10 days left", "1.gif");
         FridgeItem fi2 = new FridgeItem("Test Name", "3 days left", "SampleJPG.jpg");
@@ -147,6 +147,6 @@ public class FridgeFragment extends Fragment {
         list.add(fi7);
         list.add(fi8);
         list.add(fi9);
-        return  list;
+        return list;
     }
 }

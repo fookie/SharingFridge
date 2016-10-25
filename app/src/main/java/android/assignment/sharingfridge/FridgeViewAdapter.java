@@ -17,13 +17,14 @@ import java.util.List;
 
 public class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
 
-    private String serverPicsPath = "http://178.62.93.103/SharingFridge/";
+    private String serverPicsPath = "";
     private List<FridgeItem> fridgeItemsList;
     private Context homeContext;
 
-    public FridgeViewAdapter(Context context, List<FridgeItem> fil) {
+    public FridgeViewAdapter(Context context, List<FridgeItem> fil, String serverPath) {
         homeContext = context;
         fridgeItemsList = fil;
+        serverPicsPath = serverPath + serverPicsPath;
     }
 
     @Override
@@ -37,7 +38,7 @@ public class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
     public void onBindViewHolder(FridgeViewHolder holder, int position) {
         holder.nameView.setText(fridgeItemsList.get(position).getName());
         holder.dateView.setText(fridgeItemsList.get(position).getDate());
-        // here need to work with glide or picasso to deal with image loading maybe.
+        //TODO change the place holder and error
         Glide.with(homeContext).load(serverPicsPath + fridgeItemsList.get(position).getPhotoURL())
                 .centerCrop()
                 .placeholder(R.drawable.shine)
