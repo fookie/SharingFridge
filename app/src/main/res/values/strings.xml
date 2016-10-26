@@ -24,4 +24,6 @@
         completions."
     </string>
     <string name="action_add">Add</string>
+    <string name="member">member</string>
+    <string name="refresh">refresh</string>
 </resources>

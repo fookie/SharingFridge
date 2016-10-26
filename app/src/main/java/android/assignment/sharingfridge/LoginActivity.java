@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -303,7 +304,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class SendRequestTask extends AsyncTask<String, Void, String> {
+    private class SendRequestTask extends AsyncTask<String, Void, String> {
         private String urlString = "http://178.62.93.103/SharingFridge/login.php";
         private String username, password;
 
@@ -370,13 +371,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected void onPostExecute(String result) {
             mAuthTask = null;
             showProgress(false);
-            String permission = "Nothing received";
+            String permission;
             try {
                 JSONObject confirm = new JSONObject(result);
                 permission = confirm.get("permission").toString();
                 if (permission.equals("granted")) {
                     UserStatus.haslogin=true;
                     UserStatus.username=username;
+                    String groupname=confirm.get("groupname").toString();
+                    UserStatus.inGroup=!groupname.equals("none");
+                    UserStatus.grouoname=groupname;
                     Log.d("LOGIN", "SUCCESS");
                     finish();
                 }
