@@ -33,6 +33,7 @@ public class MemberViewAdapter extends RecyclerView.Adapter<MemberViewHolder> {
 
     @Override
     public void onBindViewHolder(MemberViewHolder holder, int position) {
+        if (position == getItemCount() - 1) holder.divider.setVisibility(View.GONE);
         holder.name.setText(memberItemList.get(position).getName());
         holder.activity.setText(memberItemList.get(position).getAct());
         //TODO change the placeholder and error later

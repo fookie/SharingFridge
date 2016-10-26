@@ -14,6 +14,7 @@ public class MemberViewHolder extends RecyclerView.ViewHolder {
     ImageView avatar;
     TextView name;
     TextView activity;
+    TextView divider;
 
     public MemberViewHolder(View itemView) {
         super(itemView);
@@ -26,5 +27,6 @@ public class MemberViewHolder extends RecyclerView.ViewHolder {
         avatar = (ImageView) itemView.findViewById(R.id.memberAvatar);
         name = (TextView) itemView.findViewById(R.id.memberName);
         activity = (TextView) itemView.findViewById(R.id.memberAct);
+        divider= (TextView) itemView.findViewById(R.id.memberItemDivider);
     }
 }
