@@ -1,6 +1,7 @@
 package android.assignment.sharingfridge;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -123,12 +124,16 @@ public class MemberFragment extends Fragment {
 
     public List<MemberItem> initMemberList() {
         List<MemberItem> memberItems = new LinkedList<>();
-        memberItems.add(new MemberItem("Makun", "Prefers curry to curried shit", "makun.jpg"));
-        memberItems.add(new MemberItem("Makun", "Prefers curry to curried shit", "makun.jpg"));
-        memberItems.add(new MemberItem("Makun", "Prefers curry to curried shit", "makun.jpg"));
-        memberItems.add(new MemberItem("Makun", "Prefers curry to curried shit", "makun.jpg"));
-        memberItems.add(new MemberItem("Makun", "Prefers curry to curried shit", "makun.jpg"));
-        memberItems.add(new MemberItem("Makun", "Prefers curry to curried shit", "makun.jpg"));
+        memberItems.add(new MemberItem("Makun1", "Prefers curry to curried shit", "makun.jpg"));
+        memberItems.add(new MemberItem("Makun2", "Prefers curry to curried shit", "makun.jpg"));
+        memberItems.add(new MemberItem("Makun3", "Prefers curry to curried shit", "makun.jpg"));
+        memberItems.add(new MemberItem("Makun4", "Prefers curry to curried shit", "makun.jpg"));
+        memberItems.add(new MemberItem("Makun5", "Prefers curry to curried shit", "makun.jpg"));
+        memberItems.add(new MemberItem("Makun6", "Prefers curry to curried shit", "makun.jpg"));
+        memberItems.add(new MemberItem("Makun7", "Prefers curry to curried shit", "makun.jpg"));
+        memberItems.add(new MemberItem("Makun8", "Prefers curry to curried shit", "makun.jpg"));
+        memberItems.add(new MemberItem("Makun9", "Prefers curry to curried shit", "makun.jpg"));
+        memberItems.add(new MemberItem("Makun0", "Prefers curry to curried shit", "makun.jpg"));
         return memberItems;
     }
 
