@@ -1,15 +1,11 @@
 <resources>
-    <string name="app_name">SharingFridge</string>
-    <string name="title_activity_home">SharingFridge</string>
-
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="title_activity_login">Sign in</string>
-
+    <string name="title_activity_home">Sharing Fridge</string>
     <!-- Strings related to login -->
     <string name="prompt_username">Username</string>
     <string name="prompt_password">Password</string>
@@ -26,4 +22,6 @@
     <string name="member_name">Member name</string>
     <string name="member_avatar">Member Avatar</string>
     <string name="member_activity">Member Activity</string>
+    <string name="member">member</string>
+    <string name="refresh">refresh</string>
 </resources>

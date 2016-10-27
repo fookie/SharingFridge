@@ -1,17 +1,32 @@
 package android.assignment.sharingfridge;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -28,16 +43,19 @@ public class FridgeFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    private static final int JSON_MAX_SIZE = 50000;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
+    private SendRequestTask mAuthTask = null;
     private List<FridgeItem> fridgeItemList;
     private GridLayoutManager gridLayoutManager;
     private FridgeViewAdapter fridgeViewAdapter;
-
+    private SQLiteDatabase mainDB;
     private OnFragmentInteractionListener mListener;
+    private boolean isDataLoaded= false;
+
 
     public FridgeFragment() {
         // Required empty public constructor
@@ -68,12 +86,13 @@ public class FridgeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        fridgeItemList = initTestList();
+        fridgeItemList = refreshFridgeList();
         gridLayoutManager = new GridLayoutManager(getContext(), 2);
         fridgeViewAdapter = new FridgeViewAdapter(getContext(), fridgeItemList, ((SharingFridgeApplication) getContext().getApplicationContext()).getServerAddr());
         // Inflate the layout for this fragment
@@ -104,12 +123,24 @@ public class FridgeFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+        mainDB = SQLiteDatabase.openOrCreateDatabase(getContext().getFilesDir().getAbsolutePath().replace("files", "databases") + "fridge.db", null);
+        mainDB.execSQL("CREATE TABLE IF NOT EXISTS items(item char(255),category char(64),amount int,addtime char(255),expiretime char(255),imageurl char(255),owner char(255),groupname char(255))");
+        Log.d("database","create table");
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        if (mainDB != null) {
+            mainDB.close();
+        }
+        mAuthTask=null;
+    }
+
+    public void onResume(){
+        super.onResume();
+        refreshFridgeList();
     }
 
     /**
@@ -127,26 +158,121 @@ public class FridgeFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    public List<FridgeItem> initTestList() {
-        List<FridgeItem> list = new ArrayList<FridgeItem>();
-        FridgeItem fi = new FridgeItem("Test Name", "10 days left", "1.gif");
-        FridgeItem fi2 = new FridgeItem("Test Name", "3 days left", "SampleJPG.jpg");
-        FridgeItem fi3 = new FridgeItem("Test Name", "1 days left", "1.png");
-        FridgeItem fi4 = new FridgeItem("Test Name", "2 days left", "2.jpg");
-        FridgeItem fi5 = new FridgeItem("Test Name", "2 days left", "3.jpg");
-        FridgeItem fi6 = new FridgeItem("Test Name", "2 days left", "4.jpg");
-        FridgeItem fi7 = new FridgeItem("Test Name", "2 days left", "5.jpg");
-        FridgeItem fi8 = new FridgeItem("Test Name", "2 days left", "6.jpg");
-        FridgeItem fi9 = new FridgeItem("Test Name", "2 days left", "7.jpg");
-        list.add(fi);
-        list.add(fi2);
-        list.add(fi3);
-        list.add(fi4);
-        list.add(fi5);
-        list.add(fi6);
-        list.add(fi7);
-        list.add(fi8);
-        list.add(fi9);
+    public List<FridgeItem> refreshFridgeList() {
+        if(!isDataLoaded){
+            Log.d("database","database updating..");
+            updateFromServer();
+        }else{
+            Log.d("database","did not update,using local database");
+        }
+
+        List<FridgeItem> list = new ArrayList<>();
+        Cursor cursor = mainDB.rawQuery("SELECT * from items where groupname = '"+UserStatus.grouoname+"'",null);
+        while(cursor.moveToNext()){
+
+            FridgeItem tempfi=new FridgeItem(cursor.getString(cursor.getColumnIndex("item")),cursor.getString(cursor.getColumnIndex("expiretime")),cursor.getString(cursor.getColumnIndex("imageurl")));
+            list.add(tempfi);
+        }
+        cursor.close();
+        if(fridgeViewAdapter!=null) {
+            fridgeViewAdapter.notifyDataSetChanged();
+        }
         return list;
+    }
+
+    private void updateFromServer(){
+        if(!UserStatus.grouoname.equals("local")) {
+            mAuthTask = new SendRequestTask(UserStatus.grouoname);
+            mAuthTask.execute("");
+        }else{
+            isDataLoaded=false;
+        }
+    }
+
+    private class SendRequestTask extends AsyncTask<String, Void, String> {
+        private String urlString = "http://178.62.93.103/SharingFridge/refresh.php";
+        private String groupname;
+        private SQLiteDatabase taskDB;
+
+        SendRequestTask(String gn) {
+            groupname = gn;
+            taskDB = SQLiteDatabase.openOrCreateDatabase(getContext().getFilesDir().getAbsolutePath().replace("files", "databases") + "fridge.db", null);
+            taskDB.execSQL("CREATE TABLE IF NOT EXISTS items(item char(255),category char(64),amount int,addtime char(255),expiretime char(255),imageurl char(255),owner char(255),groupname char(255))");
+        }
+
+        protected String doInBackground(String... params) {
+            return performPostCall();
+        }
+
+        String performPostCall() {
+            Log.d("database","start posting...");
+            String response = "";
+            try {
+                URL url = new URL(urlString);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setReadTimeout(10000);
+                conn.setConnectTimeout(15000);/* milliseconds */
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+                //conn.setRequestProperty("Content-Type", "application/json");
+                //make json object
+                JSONObject jo = new JSONObject();
+                jo.put("groupname", groupname);
+                String tosend = jo.toString();
+                Log.d("JSON", tosend);
+                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
+                outputStreamWriter.write("refresh=" + tosend);
+                outputStreamWriter.flush();
+                outputStreamWriter.close();
+
+                //int responseCode = conn.getResponseCode();
+
+                InputStream inputStream = conn.getInputStream();
+
+                // Convert the InputStream into a string
+                int length = JSON_MAX_SIZE;
+                String contentAsString = convertInputStreamToString(inputStream, length);
+                return contentAsString;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return response;
+        }
+
+        public String convertInputStreamToString(InputStream stream, int length) throws IOException {
+            Reader reader = null;
+            reader = new InputStreamReader(stream, "UTF-8");
+            char[] buffer = new char[length];
+            reader.read(buffer);
+            return new String(buffer);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            mAuthTask = null;
+            try {
+                JSONArray jr = new JSONArray(result);
+                taskDB.execSQL("delete from items where groupname != 'local'");
+                for (int i = 0; i < jr.length(); i++) {
+                    JSONObject jo = jr.getJSONObject(i);
+                    try {//remove all the data except local group data
+                        taskDB.execSQL("INSERT INTO items ('item' ,'category' ,'amount' ,'addtime' ,'expiretime' ,'imageurl' ,'owner' ,'groupname' )VALUES ('" + jo.getString("item") + "', '" + jo.getString("category") + "', '" + jo.getString("amount") + "', '" + jo.getString("addtime") + "', '" + jo.getString("expiretime") + "', '" + jo.getString("imageurl") + "', '" + jo.getString("owner") + "', '" + jo.getString("groupname") + "')");
+                        //Log.d("database","inserting: "+jo.getString("item"));
+                    } catch (SQLException e) {
+                        Log.d("database","error:"+e.toString());
+                    }
+                }
+                Log.d("database","finish download from server!");
+                isDataLoaded=true;
+                refreshFridgeList();
+            } catch (Exception je) {
+                //je.printStackTrace();
+                Log.d("database", "Excption when refreshing :" + je);
+                isDataLoaded=false;
+            }
+            taskDB.close();
+//
+        }
     }
 }
