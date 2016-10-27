@@ -40,7 +40,7 @@ public class MemberViewAdapter extends RecyclerView.Adapter<MemberViewHolder> {
         Glide.with(homeContext).load(picPath + memberItemList.get(position).getAvatarUrl())
                 .centerCrop()
                 .placeholder(R.drawable.shine)
-                .error(R.mipmap.ic_launcher)
+                .error(R.drawable.image_corrupt)
                 .dontAnimate()
                 .into(holder.avatar);
     }

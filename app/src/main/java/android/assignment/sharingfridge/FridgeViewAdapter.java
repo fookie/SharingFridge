@@ -1,6 +1,8 @@
 package android.assignment.sharingfridge;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
 
 import java.util.List;
 
@@ -42,7 +45,7 @@ public class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
         Glide.with(homeContext).load(serverPicsPath + fridgeItemsList.get(position).getPhotoURL())
                 .centerCrop()
                 .placeholder(R.drawable.shine)
-                .error(R.mipmap.ic_launcher)
+                .error(R.drawable.image_corrupt)
                 .dontAnimate()
                 .into(holder.photoView);
     }
