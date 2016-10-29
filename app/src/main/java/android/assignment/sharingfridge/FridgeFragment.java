@@ -25,7 +25,11 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -169,8 +173,20 @@ public class FridgeFragment extends Fragment {
         List<FridgeItem> list = new ArrayList<>();
         Cursor cursor = mainDB.rawQuery("SELECT * from items where groupname = '"+UserStatus.grouoname+"'",null);
         while(cursor.moveToNext()){
+            String expday="Unkonwn";
+            Calendar cal= Calendar.getInstance();
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                Date nd=cal.getTime();
+                Date ed=df.parse(cursor.getString(cursor.getColumnIndex("expiretime")));
+                long days = (ed.getTime() - nd.getTime())/(1000*60*60*24);
+                expday=days+1+((days+1<=1)?" day left":" days left");//+1 ensure expire today shows 0 days
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            FridgeItem tempfi=new FridgeItem(cursor.getString(cursor.getColumnIndex("item")),expday,cursor.getString(cursor.getColumnIndex("imageurl")));
 
-            FridgeItem tempfi=new FridgeItem(cursor.getString(cursor.getColumnIndex("item")),cursor.getString(cursor.getColumnIndex("expiretime")),cursor.getString(cursor.getColumnIndex("imageurl")));
+
             list.add(tempfi);
         }
         cursor.close();
