@@ -124,7 +124,7 @@ public class MemberFragment extends Fragment {
 
     public List<MemberItem> initMemberList() {
         List<MemberItem> memberItems = new LinkedList<>();
-        memberItems.add(new MemberItem("Makun1", "Prefers curry to curried shit", "makun.jpg"));
+        memberItems.add(new MemberItem("Makun1", "Prefers curry to curried shit", "maku.jpg"));
         memberItems.add(new MemberItem("Makun2", "Prefers curry to curried shit", "makun.jpg"));
         memberItems.add(new MemberItem("Makun3", "Prefers curry to curried shit", "makun.jpg"));
         memberItems.add(new MemberItem("Makun4", "Prefers curry to curried shit", "makun.jpg"));

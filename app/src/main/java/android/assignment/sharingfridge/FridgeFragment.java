@@ -58,7 +58,7 @@ public class FridgeFragment extends Fragment {
     private FridgeViewAdapter fridgeViewAdapter;
     private SQLiteDatabase mainDB;
     private OnFragmentInteractionListener mListener;
-    private boolean isDataLoaded= false;
+    private boolean isDataLoaded = false;
 
 
     public FridgeFragment() {
@@ -129,7 +129,7 @@ public class FridgeFragment extends Fragment {
         }
         mainDB = SQLiteDatabase.openOrCreateDatabase(getContext().getFilesDir().getAbsolutePath().replace("files", "databases") + "fridge.db", null);
         mainDB.execSQL("CREATE TABLE IF NOT EXISTS items(item char(255),category char(64),amount int,addtime char(255),expiretime char(255),imageurl char(255),owner char(255),groupname char(255))");
-        Log.d("database","create table");
+        Log.d("database", "create table");
     }
 
     @Override
@@ -139,10 +139,10 @@ public class FridgeFragment extends Fragment {
         if (mainDB != null) {
             mainDB.close();
         }
-        mAuthTask=null;
+        mAuthTask = null;
     }
 
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         refreshFridgeList();
     }
@@ -163,45 +163,45 @@ public class FridgeFragment extends Fragment {
     }
 
     public List<FridgeItem> refreshFridgeList() {
-        if(!isDataLoaded){
-            Log.d("database","database updating..");
+        if (!isDataLoaded) {
+            Log.d("database", "database updating..");
             updateFromServer();
-        }else{
-            Log.d("database","did not update,using local database");
+        } else {
+            Log.d("database", "did not update,using local database");
         }
 
         List<FridgeItem> list = new ArrayList<>();
-        Cursor cursor = mainDB.rawQuery("SELECT * from items where groupname = '"+UserStatus.grouoname+"'",null);
-        while(cursor.moveToNext()){
-            String expday="Unkonwn";
-            Calendar cal= Calendar.getInstance();
+        Cursor cursor = mainDB.rawQuery("SELECT * from items where groupname = '" + UserStatus.grouoname + "'", null);
+        while (cursor.moveToNext()) {
+            String expday = "Unkonwn";
+            Calendar cal = Calendar.getInstance();
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
             try {
-                Date nd=cal.getTime();
-                Date ed=df.parse(cursor.getString(cursor.getColumnIndex("expiretime")));
-                long days = (ed.getTime() - nd.getTime())/(1000*60*60*24);
-                expday=days+1+((days+1<=1)?" day left":" days left");//+1 ensure expire today shows 0 days
+                Date nd = cal.getTime();
+                Date ed = df.parse(cursor.getString(cursor.getColumnIndex("expiretime")));
+                long days = (ed.getTime() - nd.getTime()) / (1000 * 60 * 60 * 24);
+                expday = days + 1 + ((days + 1 <= 1) ? " day left" : " days left");//+1 ensure expire today shows 0 days
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            FridgeItem tempfi=new FridgeItem(cursor.getString(cursor.getColumnIndex("item")),expday,cursor.getString(cursor.getColumnIndex("imageurl")));
+            FridgeItem tempfi = new FridgeItem(cursor.getString(cursor.getColumnIndex("item")), expday, cursor.getString(cursor.getColumnIndex("imageurl")));
 
 
             list.add(tempfi);
         }
         cursor.close();
-        if(fridgeViewAdapter!=null) {
+        if (fridgeViewAdapter != null) {
             fridgeViewAdapter.notifyDataSetChanged();
         }
         return list;
     }
 
-    private void updateFromServer(){
-        if(!UserStatus.grouoname.equals("local")) {
+    private void updateFromServer() {
+        if (!UserStatus.grouoname.equals("local")) {
             mAuthTask = new SendRequestTask(UserStatus.grouoname);
             mAuthTask.execute("");
-        }else{
-            isDataLoaded=false;
+        } else {
+            isDataLoaded = false;
         }
     }
 
@@ -221,7 +221,7 @@ public class FridgeFragment extends Fragment {
         }
 
         String performPostCall() {
-            Log.d("database","start posting...");
+            Log.d("database", "start posting...");
             String response = "";
             try {
                 URL url = new URL(urlString);
@@ -276,16 +276,16 @@ public class FridgeFragment extends Fragment {
                         taskDB.execSQL("INSERT INTO items ('item' ,'category' ,'amount' ,'addtime' ,'expiretime' ,'imageurl' ,'owner' ,'groupname' )VALUES ('" + jo.getString("item") + "', '" + jo.getString("category") + "', '" + jo.getString("amount") + "', '" + jo.getString("addtime") + "', '" + jo.getString("expiretime") + "', '" + jo.getString("imageurl") + "', '" + jo.getString("owner") + "', '" + jo.getString("groupname") + "')");
                         //Log.d("database","inserting: "+jo.getString("item"));
                     } catch (SQLException e) {
-                        Log.d("database","error:"+e.toString());
+                        Log.d("database", "error:" + e.toString());
                     }
                 }
-                Log.d("database","finish download from server!");
-                isDataLoaded=true;
+                Log.d("database", "finish download from server!");
+                isDataLoaded = true;
                 refreshFridgeList();
             } catch (Exception je) {
                 //je.printStackTrace();
                 Log.d("database", "Excption when refreshing :" + je);
-                isDataLoaded=false;
+                isDataLoaded = false;
             }
             taskDB.close();
 //
