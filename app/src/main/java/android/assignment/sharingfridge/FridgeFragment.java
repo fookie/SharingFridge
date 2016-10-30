@@ -171,7 +171,7 @@ public class FridgeFragment extends Fragment {
         }
 
         List<FridgeItem> list = new ArrayList<>();
-        Cursor cursor = mainDB.rawQuery("SELECT * from items where groupname = '" + UserStatus.grouoname + "'", null);
+        Cursor cursor = mainDB.rawQuery("SELECT * from items where groupname = '" + UserStatus.groupName + "'", null);
         while (cursor.moveToNext()) {
             String expday = "Unkonwn";
             Calendar cal = Calendar.getInstance();
@@ -197,8 +197,8 @@ public class FridgeFragment extends Fragment {
     }
 
     private void updateFromServer() {
-        if (!UserStatus.grouoname.equals("local")) {
-            mAuthTask = new SendRequestTask(UserStatus.grouoname);
+        if (!UserStatus.groupName.equals("local")) {
+            mAuthTask = new SendRequestTask(UserStatus.groupName);
             mAuthTask.execute("");
         } else {
             isDataLoaded = false;

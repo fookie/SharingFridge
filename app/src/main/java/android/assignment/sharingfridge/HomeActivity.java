@@ -71,7 +71,7 @@ public class HomeActivity extends AppCompatActivity
             public void onClick(View v) {
                 //Toast.makeText(HomeActivity.this, "Header Clicked", Toast.LENGTH_SHORT).show();
                 //drawer.closeDrawer(GravityCompat.START);
-                if(!UserStatus.haslogin) {
+                if(!UserStatus.hasLogin) {
                     Intent loginIntent = new Intent(HomeActivity.this, LoginActivity.class);
                     startActivity(loginIntent);
                 }
@@ -232,7 +232,7 @@ public class HomeActivity extends AppCompatActivity
 
     protected void onResume(){
         usernameView.setText(UserStatus.username);
-        groupnameView.setText(UserStatus.grouoname);
+        groupnameView.setText(UserStatus.groupName);
         super.onResume();
     }
 }

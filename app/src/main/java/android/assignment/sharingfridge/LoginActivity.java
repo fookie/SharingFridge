@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.pm.PackageManager;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -376,11 +375,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 JSONObject confirm = new JSONObject(result);
                 permission = confirm.get("permission").toString();
                 if (permission.equals("granted")) {
-                    UserStatus.haslogin=true;
+                    UserStatus.hasLogin =true;
                     UserStatus.username=username;
                     String groupname=confirm.get("groupname").toString();
                     UserStatus.inGroup=!groupname.equals("none");
-                    UserStatus.grouoname=groupname;
+                    UserStatus.groupName =groupname;
                     Log.d("LOGIN", "SUCCESS");
                     finish();
                 }
