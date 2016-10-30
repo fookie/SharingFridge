@@ -10,4 +10,11 @@ public final class UserStatus {
     public static boolean inGroup=false;
     public static String groupName ="local";
 
+    public static void resetStatus(){
+        username = "Click here to login";
+        inGroup = false;
+        groupName = "local";
+        hasLogin = false;
+    }
+
 }

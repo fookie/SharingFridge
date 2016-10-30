@@ -23,6 +23,8 @@ public class AddActivity extends AppCompatActivity {
     public EditText dateEditText;
     private ImageView itemDisplay;
     private Button cameraButton;
+    private Button addButton;
+
     int currentYear, currentMonth, currentDay;
     private Calendar calender = Calendar.getInstance();
 
@@ -35,6 +37,7 @@ public class AddActivity extends AppCompatActivity {
         dateEditText = (EditText) findViewById(R.id.dateEditText);
         itemDisplay = (ImageView)  findViewById(R.id.addItemImageView);
         cameraButton = (Button) findViewById(R.id.cameraButton);
+        addButton = (Button) findViewById(R.id.addButton);
 
         dateEditText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,6 +66,15 @@ public class AddActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, CAMERA_CODE);
+            }
+        });
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // database inserting...
+                // possible UI fresh...
+                finish();
             }
         });
 

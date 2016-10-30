@@ -375,11 +375,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 JSONObject confirm = new JSONObject(result);
                 permission = confirm.get("permission").toString();
                 if (permission.equals("granted")) {
-                    UserStatus.hasLogin =true;
-                    UserStatus.username=username;
-                    String groupname=confirm.get("groupname").toString();
-                    UserStatus.inGroup=!groupname.equals("none");
-                    UserStatus.groupName =groupname;
+                    UserStatus.hasLogin = true;
+                    UserStatus.username = username;
+                    String groupName = confirm.get("groupname").toString();
+                    UserStatus.inGroup = !groupName.equals("none");
+                    UserStatus.groupName = groupName;
                     Log.d("LOGIN", "SUCCESS");
                     finish();
                 }

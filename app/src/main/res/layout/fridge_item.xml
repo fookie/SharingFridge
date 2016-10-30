@@ -31,7 +31,8 @@
                 android:text="The Name"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:id="@+id/nameView" />
+                android:id="@+id/nameView"
+                android:maxLines="1"/>
 
             <TextView
                 android:text="The Date"
@@ -39,6 +40,7 @@
                 android:layout_height="match_parent"
                 android:id="@+id/dateView"
                 android:layout_weight="1"
+                android:maxLines="1"
                 android:textAlignment="textEnd" />
         </LinearLayout>
     </RelativeLayout>

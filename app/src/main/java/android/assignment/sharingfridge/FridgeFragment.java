@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -53,26 +54,19 @@ public class FridgeFragment extends Fragment {
     private String mParam2;
 
     private SendRequestTask mAuthTask = null;
+    private RecyclerView fridgeView;
     private List<FridgeItem> fridgeItemList;
     private GridLayoutManager gridLayoutManager;
     private FridgeViewAdapter fridgeViewAdapter;
     private SQLiteDatabase mainDB;
     private OnFragmentInteractionListener mListener;
+    private OnLoginRefreshListener loginRefreshListener;
     private boolean isDataLoaded = false;
-
 
     public FridgeFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FridgeFragment.
-     */
     // TODO: Rename and change types and number of parameters
     public static FridgeFragment newInstance(String param1, String param2) {
         FridgeFragment fragment = new FridgeFragment();
@@ -96,25 +90,22 @@ public class FridgeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        fridgeItemList = refreshFridgeList();
-        gridLayoutManager = new GridLayoutManager(getContext(), 2);
-        fridgeViewAdapter = new FridgeViewAdapter(getContext(), fridgeItemList, ((SharingFridgeApplication) getContext().getApplicationContext()).getServerAddr());
+//        fridgeItemList = refreshFridgeList();
+//        Log.i("fktest","Create?");
+//        gridLayoutManager = new GridLayoutManager(getContext(), 2);
+//        fridgeViewAdapter = new FridgeViewAdapter(getContext(), fridgeItemList, ((SharingFridgeApplication) getContext().getApplicationContext()).getServerAddr());
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_fridge, container, false);
 
-        RecyclerView fridgeView = (RecyclerView) v.findViewById(R.id.fridgeView);
+        fridgeView = (RecyclerView) v.findViewById(R.id.fridgeView);
+        gridLayoutManager = new GridLayoutManager(getContext(), 2);
         fridgeView.setHasFixedSize(true);
         fridgeView.setLayoutManager(gridLayoutManager);
-        fridgeView.setAdapter(fridgeViewAdapter);
-
+//        fridgeView.setAdapter(fridgeViewAdapter);
+        mainDB = SQLiteDatabase.openOrCreateDatabase(getContext().getFilesDir().getAbsolutePath().replace("files", "databases") + "fridge.db", null);
+        mainDB.execSQL("CREATE TABLE IF NOT EXISTS items(item char(255),category char(64),amount int,addtime char(255),expiretime char(255),imageurl char(255),owner char(255),groupname char(255))");
+        Log.d("database", "create table if not exist");
         return v;
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override
@@ -122,14 +113,14 @@ public class FridgeFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
+            loginRefreshListener = (OnLoginRefreshListener) context;
+
             //Here might need a listener for UI update(referring to TimelineFragment)
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
-        mainDB = SQLiteDatabase.openOrCreateDatabase(getContext().getFilesDir().getAbsolutePath().replace("files", "databases") + "fridge.db", null);
-        mainDB.execSQL("CREATE TABLE IF NOT EXISTS items(item char(255),category char(64),amount int,addtime char(255),expiretime char(255),imageurl char(255),owner char(255),groupname char(255))");
-        Log.d("database", "create table");
+
     }
 
     @Override
@@ -144,7 +135,9 @@ public class FridgeFragment extends Fragment {
 
     public void onResume() {
         super.onResume();
-        refreshFridgeList();
+        fridgeItemList = refreshFridgeList();
+        fridgeViewAdapter = new FridgeViewAdapter(getContext(), fridgeItemList, ((SharingFridgeApplication) getContext().getApplicationContext()).getServerAddr());
+        fridgeView.setAdapter(fridgeViewAdapter);
     }
 
     /**
@@ -162,20 +155,24 @@ public class FridgeFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
+    public interface OnLoginRefreshListener {
+        void onLoginRefresh();
+    }
+
     public List<FridgeItem> refreshFridgeList() {
         if (!isDataLoaded) {
             Log.d("database", "database updating..");
             updateFromServer();
         } else {
-            Log.d("database", "did not update,using local database");
+            Log.d("database", "not updated, using local database instead");
         }
 
-        List<FridgeItem> list = new ArrayList<>();
+        List<FridgeItem> itemsList = new ArrayList<>();
         Cursor cursor = mainDB.rawQuery("SELECT * from items where groupname = '" + UserStatus.groupName + "'", null);
         while (cursor.moveToNext()) {
             String expday = "Unkonwn";
             Calendar cal = Calendar.getInstance();
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
             try {
                 Date nd = cal.getTime();
                 Date ed = df.parse(cursor.getString(cursor.getColumnIndex("expiretime")));
@@ -185,15 +182,19 @@ public class FridgeFragment extends Fragment {
                 e.printStackTrace();
             }
             FridgeItem tempfi = new FridgeItem(cursor.getString(cursor.getColumnIndex("item")), expday, cursor.getString(cursor.getColumnIndex("imageurl")));
-
-
-            list.add(tempfi);
+            itemsList.add(tempfi);
+            Log.i("usertest",cursor.getString(cursor.getColumnIndex("item"))+ "???");
         }
         cursor.close();
-        if (fridgeViewAdapter != null) {
-            fridgeViewAdapter.notifyDataSetChanged();
-        }
-        return list;
+
+        return itemsList;
+    }
+
+    public void updateUI(){
+        fridgeItemList = refreshFridgeList();
+        fridgeViewAdapter = new FridgeViewAdapter(getContext(), fridgeItemList, ((SharingFridgeApplication) getContext().getApplicationContext()).getServerAddr());
+        fridgeView.setAdapter(fridgeViewAdapter);
+        fridgeViewAdapter.notifyDataSetChanged();
     }
 
     private void updateFromServer() {
@@ -257,8 +258,7 @@ public class FridgeFragment extends Fragment {
         }
 
         public String convertInputStreamToString(InputStream stream, int length) throws IOException {
-            Reader reader = null;
-            reader = new InputStreamReader(stream, "UTF-8");
+            Reader reader = new InputStreamReader(stream, "UTF-8");
             char[] buffer = new char[length];
             reader.read(buffer);
             return new String(buffer);
@@ -281,10 +281,9 @@ public class FridgeFragment extends Fragment {
                 }
                 Log.d("database", "finish download from server!");
                 isDataLoaded = true;
-                refreshFridgeList();
             } catch (Exception je) {
                 //je.printStackTrace();
-                Log.d("database", "Excption when refreshing :" + je);
+                Log.d("database", "Problem when refreshing :" + je);
                 isDataLoaded = false;
             }
             taskDB.close();

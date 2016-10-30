@@ -32,6 +32,7 @@ import me.majiajie.pagerbottomtabstrip.listener.OnTabItemSelectListener;
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         FridgeFragment.OnFragmentInteractionListener,
+        FridgeFragment.OnLoginRefreshListener,
         MemberFragment.OnFragmentInteractionListener,
         SettingsFragment.OnFragmentInteractionListener {
 
@@ -40,6 +41,11 @@ public class HomeActivity extends AppCompatActivity
     List<Fragment> myFragments;
     DrawerLayout drawer;
     TextView usernameView,groupnameView;
+
+    FridgeFragment friFrag;
+    MemberFragment memFrag;
+    MapViewFragment mapFrag;
+    SettingsFragment setFrag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +80,7 @@ public class HomeActivity extends AppCompatActivity
                 if(!UserStatus.hasLogin) {
                     Intent loginIntent = new Intent(HomeActivity.this, LoginActivity.class);
                     startActivity(loginIntent);
+                    drawer.closeDrawer(GravityCompat.START);
                 }
                 else{
                     Toast.makeText(HomeActivity.this,"You are "+UserStatus.username, Toast.LENGTH_SHORT).show();
@@ -136,7 +143,9 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_about) {
 
         } else if (id == R.id.nav_logout) {
-
+            UserStatus.resetStatus();
+            refreshUserStatus();
+            friFrag.updateUI();
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
@@ -150,22 +159,17 @@ public class HomeActivity extends AppCompatActivity
 
     private void initFragments() {
         myFragments = new ArrayList<>();
-        FridgeFragment friFrag = FridgeFragment.newInstance("Home", "para2");
-        MemberFragment memFrag = MemberFragment.newInstance("Member", "para2");
-        //MapFragment mapFrag = MapFragment.newInstance("Map", "para2");
-        MapViewFragment mapFrag = new MapViewFragment();
-        SettingsFragment setFrag = SettingsFragment.newInstance("Settings", "para2");
 
+        friFrag = new FridgeFragment();
+        memFrag = new MemberFragment();
+        //mapFrag = MapFragment.newInstance("Map", "para2");
+        mapFrag = new MapViewFragment();
+        setFrag = new SettingsFragment();
 
         myFragments.add(friFrag);
         myFragments.add(memFrag);
         myFragments.add(mapFrag);
         myFragments.add(setFrag);
-
-//        myFragments.add(initSingleFragment("Home"));
-//        myFragments.add(initSingleFragment("Member"));
-//        myFragments.add(initSingleFragment("Map"));
-//        myFragments.add(initSingleFragment("Settings"));
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         // transaction.setCustomAnimations(R.anim.push_up_in,R.anim.push_up_out);
@@ -230,9 +234,20 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
+    @Override
+    public void onLoginRefresh() {
+//        friFrag.refreshFridgeList();
+    }
+
     protected void onResume(){
+        super.onResume();
+        refreshUserStatus();
+//        friFrag.updateUI();
+    }
+
+    public void refreshUserStatus(){
         usernameView.setText(UserStatus.username);
         groupnameView.setText(UserStatus.groupName);
-        super.onResume();
     }
+
 }
