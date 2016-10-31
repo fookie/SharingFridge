@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -33,6 +35,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import static android.widget.Toast.LENGTH_SHORT;
 
 
 /**
@@ -105,6 +109,15 @@ public class FridgeFragment extends Fragment {
         mainDB = SQLiteDatabase.openOrCreateDatabase(getContext().getFilesDir().getAbsolutePath().replace("files", "databases") + "fridge.db", null);
         mainDB.execSQL("CREATE TABLE IF NOT EXISTS items(item char(255),category char(64),amount int,addtime char(255),expiretime char(255),imageurl char(255),owner char(255),groupname char(255))");
         Log.d("database", "create table if not exist");
+        FloatingActionButton fab = (FloatingActionButton) v.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(v.getContext(), "refreshing...", LENGTH_SHORT).show();
+                isDataLoaded = false;
+                updateUI();
+            }
+        });
         return v;
     }
 
@@ -185,14 +198,14 @@ public class FridgeFragment extends Fragment {
             }
             FridgeItem tempfi = new FridgeItem(cursor.getString(cursor.getColumnIndex("item")), expday, cursor.getString(cursor.getColumnIndex("imageurl")));
             itemsList.add(tempfi);
-            Log.i("usertest",cursor.getString(cursor.getColumnIndex("item"))+ "???");
+            Log.i("usertest", cursor.getString(cursor.getColumnIndex("item")) + "???");
         }
         cursor.close();
 
         return itemsList;
     }
 
-    public void updateUI(){
+    public void updateUI() {
         fridgeItemList = refreshFridgeList();
         fridgeViewAdapter = new FridgeViewAdapter(getContext(), fridgeItemList, ((SharingFridgeApplication) getContext().getApplicationContext()).getServerAddr());
         fridgeView.setAdapter(fridgeViewAdapter);
@@ -290,7 +303,6 @@ public class FridgeFragment extends Fragment {
                 isDataLoaded = false;
             }
             taskDB.close();
-//
         }
     }
 }

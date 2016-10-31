@@ -1,6 +1,8 @@
 package android.assignment.sharingfridge;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,6 +15,9 @@ import android.view.ViewGroup;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import lecho.lib.hellocharts.model.SliceValue;
+import lecho.lib.hellocharts.util.ChartUtils;
 
 
 /**
@@ -32,6 +37,7 @@ public class MemberFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private SQLiteDatabase mainDB;
 
     private OnFragmentInteractionListener mListener;
 
@@ -69,6 +75,8 @@ public class MemberFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        mainDB = SQLiteDatabase.openOrCreateDatabase(getContext().getFilesDir().getAbsolutePath().replace("files", "databases") + "fridge.db", null);
+        mainDB.execSQL("CREATE TABLE IF NOT EXISTS items(item char(255),category char(64),amount int,addtime char(255),expiretime char(255),imageurl char(255),owner char(255),groupname char(255))");
         List<MemberItem> memberItemList = initMemberList();
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 1);
         MemberViewAdapter memberViewAdapter = new MemberViewAdapter(getContext(), memberItemList, ((SharingFridgeApplication) getContext().getApplicationContext()).getServerAddr());
@@ -105,6 +113,9 @@ public class MemberFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        if (mainDB != null) {
+            mainDB.close();
+        }
     }
 
     /**
@@ -124,16 +135,19 @@ public class MemberFragment extends Fragment {
 
     public List<MemberItem> initMemberList() {
         List<MemberItem> memberItems = new LinkedList<>();
-        memberItems.add(new MemberItem("Makun1", "Prefers curry to curried shit", "maku.jpg"));
-        memberItems.add(new MemberItem("Makun2", "Prefers curry to curried shit", "makun.jpg"));
-        memberItems.add(new MemberItem("Makun3", "Prefers curry to curried shit", "makun.jpg"));
-        memberItems.add(new MemberItem("Makun4", "Prefers curry to curried shit", "makun.jpg"));
-        memberItems.add(new MemberItem("Makun5", "Prefers curry to curried shit", "makun.jpg"));
-        memberItems.add(new MemberItem("Makun6", "Prefers curry to curried shit", "makun.jpg"));
-        memberItems.add(new MemberItem("Makun7", "Prefers curry to curried shit", "makun.jpg"));
-        memberItems.add(new MemberItem("Makun8", "Prefers curry to curried shit", "makun.jpg"));
-        memberItems.add(new MemberItem("Makun9", "Prefers curry to curried shit", "makun.jpg"));
-        memberItems.add(new MemberItem("Makun0", "Prefers curry to curried shit", "makun.jpg"));
+        if (UserStatus.hasLogin = false) {
+            memberItems.add(new MemberItem("Please login", "login to see you groupmember", "maku.jpg"));
+            return memberItems;
+        }
+        String sql = "select owner,count(*),sum(amount) as o from items where groupname='" + UserStatus.groupName + "' group by owner";
+        Cursor c = mainDB.rawQuery(sql, null);
+        while (c.moveToNext()) {
+            String owner = c.getString(0);
+            int count = c.getInt(1);
+            int amount = c.getInt(2);
+            memberItems.add(new MemberItem(owner, count + " items, total amount:" + amount, owner + ".png"));
+        }
+
         return memberItems;
     }
 

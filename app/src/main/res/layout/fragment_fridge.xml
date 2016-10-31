@@ -16,7 +16,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="@dimen/fab_margin"
-        />
+        app:backgroundTint="@android:color/holo_green_light" />
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"

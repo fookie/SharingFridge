@@ -52,7 +52,7 @@ public class AddActivity extends AppCompatActivity {
                             @Override
                             public void onDateSet(DatePicker view, int year, int month, int day) {
                                 calender.set(year, month, day);
-                                String selectedDate = new SimpleDateFormat("MM/dd/yyyy").format(calender.getTime());
+                                String selectedDate = new SimpleDateFormat("dd-MM-yyyy").format(calender.getTime());
                                 dateEditText.setText(selectedDate);
                             }
                         }, currentYear, currentMonth, currentDay);
@@ -83,7 +83,7 @@ public class AddActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_CODE && resultCode == RESULT_OK) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
-            itemDisplay.setMinimumHeight(100);
+           // itemDisplay.setMinimumHeight(100);
             itemDisplay.setImageBitmap(photo);
         }
     }
