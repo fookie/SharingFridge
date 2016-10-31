@@ -138,6 +138,8 @@ public class FridgeFragment extends Fragment {
         fridgeItemList = refreshFridgeList();
         fridgeViewAdapter = new FridgeViewAdapter(getContext(), fridgeItemList, ((SharingFridgeApplication) getContext().getApplicationContext()).getServerAddr());
         fridgeView.setAdapter(fridgeViewAdapter);
+        fridgeViewAdapter.notifyDataSetChanged();
+        Log.i("resume", "Normal!!!!!!!!!!!!");
     }
 
     /**
@@ -195,6 +197,7 @@ public class FridgeFragment extends Fragment {
         fridgeViewAdapter = new FridgeViewAdapter(getContext(), fridgeItemList, ((SharingFridgeApplication) getContext().getApplicationContext()).getServerAddr());
         fridgeView.setAdapter(fridgeViewAdapter);
         fridgeViewAdapter.notifyDataSetChanged();
+        Log.i("resume", "?????????");
     }
 
     private void updateFromServer() {
