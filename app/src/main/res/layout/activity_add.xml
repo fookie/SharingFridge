@@ -85,6 +85,12 @@
         android:id="@+id/cameraButton" />
 
     <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="add to calendar"
+        android:id="@+id/calendarButton"/>
+
+    <Button
         android:id="@+id/addButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
