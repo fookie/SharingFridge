@@ -40,7 +40,7 @@ public class HomeActivity extends AppCompatActivity
     Controller tabController;
     List<Fragment> myFragments;
     DrawerLayout drawer;
-    TextView usernameView,groupnameView;
+    TextView usernameView, groupnameView;
 
     FridgeFragment friFrag;
     MemberFragment memFrag;
@@ -70,20 +70,19 @@ public class HomeActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
         usernameView = (TextView) headerView.findViewById(R.id.username_view);
-        groupnameView=(TextView) headerView.findViewById(R.id.groupname_view);
+        groupnameView = (TextView) headerView.findViewById(R.id.groupname_view);
         LinearLayout headerLayout = (LinearLayout) headerView.findViewById(R.id.header_layout);
         headerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Toast.makeText(HomeActivity.this, "Header Clicked", Toast.LENGTH_SHORT).show();
                 //drawer.closeDrawer(GravityCompat.START);
-                if(!UserStatus.hasLogin) {
+                if (!UserStatus.hasLogin) {
                     Intent loginIntent = new Intent(HomeActivity.this, LoginActivity.class);
                     startActivity(loginIntent);
                     drawer.closeDrawer(GravityCompat.START);
-                }
-                else{
-                    Toast.makeText(HomeActivity.this,"You are "+UserStatus.username, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(HomeActivity.this, "You are " + UserStatus.username, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -138,7 +137,7 @@ public class HomeActivity extends AppCompatActivity
 
         if (id == R.id.nav_home) {
             // Handle the camera action
-        } else if (id == R.id.nav_account) {
+        } else if (id == R.id.nav_join_group) {
 
         } else if (id == R.id.nav_about) {
 
@@ -146,10 +145,6 @@ public class HomeActivity extends AppCompatActivity
             UserStatus.resetStatus();
             refreshUserStatus();
             friFrag.updateUI();
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -239,13 +234,13 @@ public class HomeActivity extends AppCompatActivity
 //        friFrag.refreshFridgeList();
     }
 
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
         refreshUserStatus();
 //        friFrag.updateUI();
     }
 
-    public void refreshUserStatus(){
+    public void refreshUserStatus() {
         usernameView.setText(UserStatus.username);
         groupnameView.setText(UserStatus.groupName);
     }
