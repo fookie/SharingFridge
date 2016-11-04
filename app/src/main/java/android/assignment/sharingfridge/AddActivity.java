@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.CalendarContract;
@@ -15,6 +17,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -143,7 +146,23 @@ public class AddActivity extends AppCompatActivity {
         if (requestCode == CAMERA_CODE && resultCode == RESULT_OK) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
             // itemDisplay.setMinimumHeight(100);
-            itemDisplay.setImageBitmap(photo);
+
+            WindowManager wm = this.getWindowManager();
+            int width = wm.getDefaultDisplay().getWidth();
+            int height = width;
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = false;
+            int bitmapWidth = photo.getWidth();
+            int bitmapHeight = photo.getHeight();
+            Matrix matrix = new Matrix();
+            float scaleWidth = (float) (width/bitmapWidth)/2;
+            float scaleHeight = (float) (height/bitmapHeight)/2;
+
+            matrix.postScale(scaleWidth, scaleHeight);
+            Bitmap newBitmap = Bitmap.createBitmap(photo, 0, 0, bitmapWidth, bitmapHeight, matrix, true);
+            photo.recycle();
+
+            itemDisplay.setImageBitmap(newBitmap);
         }
     }
 
