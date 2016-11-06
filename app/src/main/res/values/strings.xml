@@ -25,4 +25,5 @@
     <string name="member">member</string>
     <string name="refresh">refresh</string>
     <string name="join_group">join a group</string>
+    <string name="auto_login">auto login</string>
 </resources>

@@ -3,6 +3,8 @@ package android.assignment.sharingfridge;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -42,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-
+    private CheckBox auto_login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +78,7 @@ public class LoginActivity extends AppCompatActivity {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+        auto_login=(CheckBox) findViewById(R.id.autologin);
     }
 
     /**
@@ -248,6 +252,18 @@ public class LoginActivity extends AppCompatActivity {
                     UserStatus.inGroup = !groupName.equals("none");
                     UserStatus.groupName = groupName;
                     Log.d("LOGIN", "SUCCESS");
+                    SharedPreferences preferences = getSharedPreferences("user-status", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    if(auto_login.isChecked()) {
+                        editor.putString("username",username);
+                        editor.putString("groupName",groupName);
+                        editor.commit();
+                    }
+                    else{
+                        editor.putString("username","_null");//clear the shared preference
+                        editor.putString("groupName","_null");
+                        editor.commit();
+                    }
                     finish();
                 }
             } catch (JSONException je) {

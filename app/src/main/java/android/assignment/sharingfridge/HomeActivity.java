@@ -1,6 +1,8 @@
 package android.assignment.sharingfridge;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -93,6 +95,16 @@ public class HomeActivity extends AppCompatActivity
         // initialize the bottom navigation bar
         initNavBar();
 
+        SharedPreferences preferences = getSharedPreferences("user-status", Context.MODE_PRIVATE);
+        String uname=preferences.getString("username", null);
+        String ugroup=preferences.getString("groupName", null);
+        Log.d("auto-login",uname+" "+ugroup);
+        if(uname!=null&&ugroup!=null&&!uname.equals("_null")&&!ugroup.equals("_null")){
+            UserStatus.username=uname;
+            UserStatus.groupName=ugroup;
+            UserStatus.hasLogin=true;
+        }
+
     }
 
     @Override
@@ -144,6 +156,11 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_logout) {
             UserStatus.resetStatus();
             refreshUserStatus();
+            SharedPreferences preferences = getSharedPreferences("user-status", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("username","_null");//clear the shared preference
+            editor.putString("groupName","_null");
+            editor.commit();
             friFrag.updateUI();
         }
 

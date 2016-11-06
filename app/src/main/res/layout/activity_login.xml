@@ -62,6 +62,12 @@
 
             </android.support.design.widget.TextInputLayout>
 
+            <CheckBox
+                android:text="@string/auto_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/autologin" />
+
             <Button
                 android:id="@+id/sign_in_button"
                 style="?android:textAppearanceSmall"
