@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +44,7 @@ public class HomeActivity extends AppCompatActivity
     List<Fragment> myFragments;
     DrawerLayout drawer;
     TextView usernameView, groupnameView;
+    ImageView avatarView;
 
     FridgeFragment friFrag;
     MemberFragment memFrag;
@@ -73,6 +75,7 @@ public class HomeActivity extends AppCompatActivity
         View headerView = navigationView.getHeaderView(0);
         usernameView = (TextView) headerView.findViewById(R.id.username_view);
         groupnameView = (TextView) headerView.findViewById(R.id.groupname_view);
+        avatarView = (ImageView) headerView.findViewById(R.id.gravatarView);
         LinearLayout headerLayout = (LinearLayout) headerView.findViewById(R.id.header_layout);
         headerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,8 +86,11 @@ public class HomeActivity extends AppCompatActivity
                     Intent loginIntent = new Intent(HomeActivity.this, LoginActivity.class);
                     startActivity(loginIntent);
                     drawer.closeDrawer(GravityCompat.START);
+
+                    // Load the Avatar for the user just logged in
+
                 } else {
-                    Toast.makeText(HomeActivity.this, "You are " + UserStatus.username, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(HomeActivity.this, "You have logged in as " + UserStatus.username, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -260,6 +266,9 @@ public class HomeActivity extends AppCompatActivity
     public void refreshUserStatus() {
         usernameView.setText(UserStatus.username);
         groupnameView.setText(UserStatus.groupName);
+        if (UserStatus.username!="Click here to login"){
+            // set avatar!
+        }
     }
 
 }
