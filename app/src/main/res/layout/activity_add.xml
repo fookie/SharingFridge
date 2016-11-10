@@ -84,6 +84,13 @@
         android:layout_height="wrap_content"
         android:id="@+id/cameraButton" />
 
+    <CheckBox
+        android:text="Add to Calendar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:id="@+id/checkBox" />
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

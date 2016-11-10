@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -19,6 +20,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -30,7 +33,6 @@ import java.util.TimeZone;
 
 import static android.assignment.sharingfridge.R.id.nameEditText;
 
-
 public class AddActivity extends AppCompatActivity {
 
     private final int CAMERA_CODE = 330;
@@ -40,7 +42,8 @@ public class AddActivity extends AppCompatActivity {
     public EditText dateEditText;
     private ImageView itemDisplay;
     private Button cameraButton;
-    private Button calendarButton;
+    //private Button calendarButton;
+    private CheckBox checkBox;
     private Button addButton;
 
     int currentYear, currentMonth, currentDay;
@@ -58,6 +61,11 @@ public class AddActivity extends AppCompatActivity {
     public int canDay;
     public String name;
     public String amount;
+    public String selectedDate;
+    public String currentDate;
+    public boolean checkCondition;
+
+    private SQLiteDatabase mainDB;
 
     private static final int REQUEST_CODE = 0;
     static final String[] PERMISSION = new String[]{
@@ -82,10 +90,12 @@ public class AddActivity extends AppCompatActivity {
         dateEditText = (EditText) findViewById(R.id.dateEditText);
         itemDisplay = (ImageView) findViewById(R.id.addItemImageView);
         cameraButton = (Button) findViewById(R.id.cameraButton);
-        calendarButton = (Button) findViewById(R.id.calendarButton);
+        //calendarButton = (Button) findViewById(R.id.calendarButton);
         addButton = (Button) findViewById(R.id.addButton);
+        checkBox = (CheckBox) findViewById(R.id.checkBox);
 
-
+        mainDB = SQLiteDatabase.openOrCreateDatabase(this.getFilesDir().getAbsolutePath().replace("files", "databases") + "fridge.db", null);
+        mainDB.execSQL("CREATE TABLE IF NOT EXISTS items(item char(255),category char(64),amount int,addtime char(255),expiretime char(255),imageurl char(255),owner char(255),groupname char(255))");
 
         dateEditText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,7 +113,7 @@ public class AddActivity extends AppCompatActivity {
                                 canYear = year;
                                 canMonth = month;
                                 canDay = day;
-                                String selectedDate = new SimpleDateFormat("dd-MM-yyyy").format(calender.getTime());
+                                selectedDate = new SimpleDateFormat("dd-MM-yyyy").format(calender.getTime());
                                 dateEditText.setText(selectedDate);
                             }
                         }, currentYear, currentMonth, currentDay);
@@ -121,22 +131,47 @@ public class AddActivity extends AppCompatActivity {
         });
 
 
-
-        calendarButton.setOnClickListener(new View.OnClickListener() {
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                amount = amountEditText.getText().toString();
-                name = nameEditText.getText().toString();
-                addCan(canDay, canMonth, canYear, name, amount);
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                   checkCondition = true;
+                }
+                else{
+                    checkCondition = false;
+                }
             }
         });
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(checkCondition) {
+                    nameEditText.setError(null);
+                    amountEditText.setError(null);
+                    amount = amountEditText.getText().toString();
+                    name = nameEditText.getText().toString();
+                    if(name.isEmpty())
+                        nameEditText.setError("Need a Name");
+                    else if(amount.isEmpty())
+                        amountEditText.setError("Need an Amount");
+                    else if(canYear<currentYear){
+                        dateEditText.setError("Wrong Date");
+                    }
+                        else if(canMonth<currentMonth){
+                            dateEditText.setError("Wrong Date");
+                        }
+                        else if(canDay<currentDay){
+                            dateEditText.setError("Wrong Date");
+                        }
+                    else
+                        addCan(canDay, canMonth, canYear, name, amount);
+                }
+                currentDate = new SimpleDateFormat("dd-MM-yyyy").format(new java.util.Date());
                 // database inserting...
                 // possible UI fresh...
-                finish();
+                mainDB.execSQL("INSERT INTO items ('item' ,'category' ,'amount' ,'addtime' ,'expiretime' ,'imageurl' ,'owner' ,'groupname' )VALUES ('"+name+"', 'friut', '" +amount+ "', '" +currentDate+ "', '" + selectedDate + "','local', 'local')");
+                //finish();
             }
         });
 
