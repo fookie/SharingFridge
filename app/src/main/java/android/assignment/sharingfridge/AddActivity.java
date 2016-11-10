@@ -3,6 +3,7 @@ package android.assignment.sharingfridge;
 import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -11,11 +12,15 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.CalendarContract;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -24,8 +29,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import net.gotev.uploadservice.MultipartUploadRequest;
+import net.gotev.uploadservice.UploadNotificationConfig;
+
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.TimeZone;
 
 import static android.assignment.sharingfridge.R.id.nameEditText;
@@ -42,6 +53,8 @@ public class AddActivity extends AppCompatActivity {
     private Button cameraButton;
     private Button calendarButton;
     private Button addButton;
+
+    private String imageRelativePath, imageAbsolutePath;
 
     int currentYear, currentMonth, currentDay;
     private Calendar calender = Calendar.getInstance();
@@ -115,8 +128,9 @@ public class AddActivity extends AppCompatActivity {
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent, CAMERA_CODE);
+//                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+//                startActivityForResult(cameraIntent, CAMERA_CODE);
+                takeFullSizePicture();
             }
         });
 
@@ -136,6 +150,7 @@ public class AddActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // database inserting...
                 // possible UI fresh...
+                uploadInBackgroundService(getApplicationContext());
                 finish();
             }
         });
@@ -163,6 +178,61 @@ public class AddActivity extends AppCompatActivity {
             photo.recycle();
 
             itemDisplay.setImageBitmap(newBitmap);
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd:HHmmss").format(new Date());
+        String imageFileName = UserStatus.username + "_" + timeStamp ;
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        imageRelativePath = "file:" + image.getAbsolutePath();
+        imageAbsolutePath = image.getAbsolutePath();
+        return image;
+    }
+
+    private void takeFullSizePicture() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.example.android.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, CAMERA_CODE);
+            }
+        }
+    }
+
+    /*Author: geotv
+    * reference from: https://github.com/gotev/android-upload-service
+    * */
+    public void uploadInBackgroundService(final Context context) {
+        try {
+            String uploadId =
+                    new MultipartUploadRequest(context, "http://178.62.93.103/SharingFridge/image")
+                            .addFileToUpload(imageAbsolutePath, "sample")
+                            .setNotificationConfig(new UploadNotificationConfig())
+                            .setMaxRetries(2)
+                            .startUpload();
+        } catch (Exception exc) {
+            Log.e("AndroidUploadService", exc.getMessage(), exc);
         }
     }
 

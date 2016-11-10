@@ -36,4 +36,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.google.android.gms:play-services-maps:9.6.1'
     compile files('libs/hellocharts-library-1.5.8.jar')
+    compile 'net.gotev:uploadservice:3.0.3'
 }
