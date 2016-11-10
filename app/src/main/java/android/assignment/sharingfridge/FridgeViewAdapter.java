@@ -44,7 +44,7 @@ public class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
         //TODO change the place holder and error
         Glide.with(homeContext).load(serverPicsPath + fridgeItemsList.get(position).getPhotoURL())
                 .centerCrop()
-                .placeholder(R.drawable.shine)
+                .placeholder(R.drawable.image_loading)
                 .error(R.drawable.image_corrupt)
                 .dontAnimate()
                 .into(holder.photoView);

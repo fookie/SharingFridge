@@ -147,7 +147,7 @@ public class MemberFragment extends Fragment {
             int amount = c.getInt(2);
             memberItems.add(new MemberItem(owner, count + " items, total amount:" + amount, owner + ".png"));
         }
-
+        memberItems.add(new MemberItem("Makun", "0", "xiaoliu.png"));
         return memberItems;
     }
 

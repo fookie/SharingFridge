@@ -1,10 +1,18 @@
 package android.assignment.sharingfridge;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.NinePatch;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.Icon;
+import android.graphics.drawable.NinePatchDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -39,7 +47,7 @@ public class MemberViewAdapter extends RecyclerView.Adapter<MemberViewHolder> {
         //TODO change the placeholder and error later
         Glide.with(homeContext).load(picPath + memberItemList.get(position).getAvatarUrl())
                 .centerCrop()
-                .placeholder(R.drawable.shine)
+                .placeholder(R.drawable.image_loading)
                 .error(R.drawable.image_corrupt)
                 .dontAnimate()
                 .into(holder.avatar);

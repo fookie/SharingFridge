@@ -11,9 +11,9 @@
         android:layout_height="@dimen/list_item_height"
         android:layout_gravity="center"
         android:layout_marginEnd="@dimen/list_item_margin"
+        android:background="@color/cardview_light_background"
         android:contentDescription="@string/member_avatar"
-        app:border="false"
-        app:srcCompat="@drawable/shine" />
+        app:border="false" />
 
     <TextView
         android:id="@+id/memberName"

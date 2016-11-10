@@ -61,7 +61,7 @@ public class HomeActivity extends AppCompatActivity
         (new Thread(new Runnable() {
             @Override
             public void run() {
-                Glide.get(getApplicationContext()).clearDiskCache();
+//                Glide.get(getApplicationContext()).clearDiskCache();
             }
         })).start();
 
