@@ -81,13 +81,16 @@ public class MemberFragment extends Fragment {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 1);
         MemberViewAdapter memberViewAdapter = new MemberViewAdapter(getContext(), memberItemList, ((SharingFridgeApplication) getContext().getApplicationContext()).getServerAddr());
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_member, container, false);
-
-        RecyclerView memberView = (RecyclerView) view.findViewById(R.id.memberView);
-        memberView.setHasFixedSize(true);
-        memberView.setLayoutManager(gridLayoutManager);
-        memberView.setAdapter(memberViewAdapter);
-
+        View view=null;
+        if(UserStatus.hasLogin&&!UserStatus.inGroup){
+            view = inflater.inflate(R.layout.join_group_layout, container, false);
+        }else {
+            view = inflater.inflate(R.layout.fragment_member, container, false);
+            RecyclerView memberView = (RecyclerView) view.findViewById(R.id.memberView);
+            memberView.setHasFixedSize(true);
+            memberView.setLayoutManager(gridLayoutManager);
+            memberView.setAdapter(memberViewAdapter);
+        }
         return view;
     }
 
@@ -135,8 +138,8 @@ public class MemberFragment extends Fragment {
 
     public List<MemberItem> initMemberList() {
         List<MemberItem> memberItems = new LinkedList<>();
-        if (UserStatus.hasLogin = false) {
-            memberItems.add(new MemberItem("Please login", "login to see you groupmember", "maku.jpg"));
+        if (UserStatus.hasLogin == false) {
+            memberItems.add(new MemberItem("Please login", "login to see you groupmember or join in a group", "maku.jpg"));
             return memberItems;
         }
         String sql = "select owner,count(*),sum(amount) as o from items where groupname='" + UserStatus.groupName + "' group by owner";
@@ -147,7 +150,6 @@ public class MemberFragment extends Fragment {
             int amount = c.getInt(2);
             memberItems.add(new MemberItem(owner, count + " items, total amount:" + amount, owner + ".png"));
         }
-        memberItems.add(new MemberItem("Makun", "0", "xiaoliu.png"));
         return memberItems;
     }
 

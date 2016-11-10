@@ -15,9 +15,6 @@
     <string name="error_invalid_password">The password is too short</string>
     <string name="error_incorrect_password">The password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
     <string name="action_add">Add</string>
     <string name="member_name">Member name</string>
     <string name="member_avatar">Member Avatar</string>
@@ -26,4 +23,7 @@
     <string name="refresh">refresh</string>
     <string name="join_group">join a group</string>
     <string name="auto_login">auto login</string>
+    <string name="join_group_hint">Enter a groupname here</string>
+    <string name="new_group">create a new group</string>
+    <string name="submit">submit</string>
 </resources>
