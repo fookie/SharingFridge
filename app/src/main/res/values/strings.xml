@@ -26,4 +26,12 @@
     <string name="join_group_hint">Enter a groupname here</string>
     <string name="new_group">create a new group</string>
     <string name="submit">submit</string>
+    <string name="type_name_hint">Type the name here...</string>
+    <string name="amount">Amount:</string>
+    <string name="quantity">quantity</string>
+    <string name="choose_date">choose the date</string>
+    <string name="ex_date">Expire Date:</string>
+    <string name="take_photo">TAKE A PHOTO</string>
+    <string name="add_calendar">Add to Calendar</string>
+    <string name="add_fridge">ADD INTO FRIDGE!</string>
 </resources>

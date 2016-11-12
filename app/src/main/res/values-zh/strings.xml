@@ -24,4 +24,12 @@
     <string name="title_activity_home">大家的冰箱</string>
     <string name="title_activity_login">登陆</string>
     <string name="submit">提交</string>
+    <string name="add_calendar">添加日历项</string>
+    <string name="add_fridge">放入冰箱！</string>
+    <string name="amount">数量：</string>
+    <string name="ex_date">到期时间</string>
+    <string name="take_photo">照相</string>
+    <string name="type_name_hint">在此输入物品名称...</string>
+    <string name="quantity">有多少？</string>
+    <string name="choose_date">选择日期</string>
 </resources>

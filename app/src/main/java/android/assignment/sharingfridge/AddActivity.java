@@ -103,7 +103,6 @@ public class AddActivity extends AppCompatActivity {
         dateEditText = (EditText) findViewById(R.id.dateEditText);
         itemDisplay = (ImageView) findViewById(R.id.addItemImageView);
         cameraButton = (Button) findViewById(R.id.cameraButton);
-        //calendarButton = (Button) findViewById(R.id.calendarButton);
         addButton = (Button) findViewById(R.id.addButton);
         checkBox = (CheckBox) findViewById(R.id.checkBox);
 
@@ -148,10 +147,9 @@ public class AddActivity extends AppCompatActivity {
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-                   checkCondition = true;
-                }
-                else{
+                if (isChecked) {
+                    checkCondition = true;
+                } else {
                     checkCondition = false;
                 }
             }
@@ -160,33 +158,39 @@ public class AddActivity extends AppCompatActivity {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(checkCondition) {
-                    nameEditText.setError(null);
-                    amountEditText.setError(null);
-                    amount = amountEditText.getText().toString();
-                    name = nameEditText.getText().toString();
-                    if(name.isEmpty())
-                        nameEditText.setError("Need a Name");
-                    else if(amount.isEmpty())
-                        amountEditText.setError("Need an Amount");
-                    else if(canYear<currentYear){
-                        dateEditText.setError("Wrong Date");
+                nameEditText.setError(null);
+                amountEditText.setError(null);
+                amount = amountEditText.getText().toString();
+                name = nameEditText.getText().toString();
+                if (name.isEmpty()) {
+                    nameEditText.setError("Need a Name");
+                    return;
+                } else if (amount.isEmpty()) {
+                    amountEditText.setError("Need an Amount");
+                    return;
+                } else if (canYear < currentYear) {
+                    dateEditText.setError("Wrong Date");
+                    return;
+                } else if (canMonth < currentMonth) {
+                    dateEditText.setError("Wrong Date");
+                    {
+                        return;
                     }
-                        else if(canMonth<currentMonth){
-                            dateEditText.setError("Wrong Date");
-                        }
-                        else if(canDay<currentDay){
-                            dateEditText.setError("Wrong Date");
-                        }
-                    else
-                        addCan(canDay, canMonth, canYear, name, amount);
+                } else if (canDay < currentDay) {
+                    dateEditText.setError("Wrong Date");
+                    return;
+                }
+                if (checkCondition) {
+                    addCan(canDay, canMonth, canYear, name, amount);
                 }
                 currentDate = new SimpleDateFormat("dd-MM-yyyy").format(new java.util.Date());
                 // database inserting...
-                // possible UI fresh...
-                mainDB.execSQL("INSERT INTO items ('item' ,'category' ,'amount' ,'addtime' ,'expiretime' ,'imageurl' ,'owner' ,'groupname' )VALUES ('"+name+"', 'friut', '" +amount+ "', '" +currentDate+ "', '" + selectedDate + "','local', 'local')");
-                //finish();
+                //TODO:finish imgUrl
+                String imgUrl = "";
+                mainDB.execSQL("INSERT INTO items ('item' ,'category' ,'amount' ,'addtime' ,'expiretime' ,'imageurl' ,'owner' ,'groupname' )VALUES ('" + name + "', 'friut', '" + amount + "', '" + currentDate + "', '" + selectedDate + "','" + imgUrl + "','" + UserStatus.username + "', '" + UserStatus.groupName + "')");
                 uploadInBackgroundService(getApplicationContext());
+                // possible UI fresh...
+
                 finish();
             }
         });
@@ -206,8 +210,8 @@ public class AddActivity extends AppCompatActivity {
             int bitmapWidth = photo.getWidth();
             int bitmapHeight = photo.getHeight();
             Matrix matrix = new Matrix();
-            float scaleWidth = (float) (width/bitmapWidth)/2;
-            float scaleHeight = (float) (height/bitmapHeight)/2;
+            float scaleWidth = (float) (width / bitmapWidth) / 2;
+            float scaleHeight = (float) (height / bitmapHeight) / 2;
 
             matrix.postScale(scaleWidth, scaleHeight);
             Bitmap newBitmap = Bitmap.createBitmap(photo, 0, 0, bitmapWidth, bitmapHeight, matrix, true);
@@ -220,7 +224,7 @@ public class AddActivity extends AppCompatActivity {
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd:HHmmss").format(new Date());
-        String imageFileName = UserStatus.username + "_" + timeStamp ;
+        String imageFileName = UserStatus.username + "_" + timeStamp;
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
@@ -247,9 +251,7 @@ public class AddActivity extends AppCompatActivity {
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.example.android.fileprovider",
-                        photoFile);
+                Uri photoURI = FileProvider.getUriForFile(this, "com.example.android.fileprovider", photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, CAMERA_CODE);
             }
@@ -273,8 +275,6 @@ public class AddActivity extends AppCompatActivity {
     }
 
     public void addCan(int addday, int addmonth, int addyear, String name, String amount) {
-
-
         String calId = "";
         Cursor userCursor = getContentResolver().query(Uri.parse(calendarURL), null,
                 null, null, null);
@@ -284,8 +284,8 @@ public class AddActivity extends AppCompatActivity {
 
         }
 
-        String title = ""+ name;
-        String des = "amount:"+ amount;
+        String title = "" + name;
+        String des = "amount:" + amount;
 
 //        String day_str="";
 //        String month_str="";

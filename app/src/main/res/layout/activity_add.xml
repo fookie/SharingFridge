@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:background="#FFFFFF"
         android:gravity="top"
-        android:hint="Type the name here..."
+        android:hint="@string/type_name_hint"
         android:maxLength="500"
         android:padding="5dp"
         android:textColor="#000000"
@@ -36,7 +36,7 @@
         android:weightSum="1">
 
         <TextView
-            android:text="Amount:"
+            android:text="@string/amount"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:id="@+id/textView"
@@ -50,11 +50,11 @@
             android:inputType="number"
             android:ems="10"
             android:id="@+id/amountEditText"
-            android:hint="quantity"
+            android:hint="@string/quantity"
             android:textAlignment="center" />
 
         <TextView
-            android:text="ExpireDate:"
+            android:text="@string/ex_date"
             android:layout_width="41dp"
             android:layout_height="match_parent"
             android:id="@+id/textView2"
@@ -68,7 +68,7 @@
             android:focusable="false"
             android:ems="10"
             android:id="@+id/dateEditText"
-            android:hint="choose the date" />
+            android:hint="@string/choose_date" />
 
     </LinearLayout>
 
@@ -79,23 +79,17 @@
         android:id="@+id/addItemImageView" />
 
     <Button
-        android:text="Take a Photo"
+        android:text="@string/take_photo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/cameraButton" />
 
     <CheckBox
-        android:text="Add to Calendar"
+        android:text="@string/add_calendar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:checked="false"
         android:id="@+id/checkBox" />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="add to calendar"
-        android:id="@+id/calendarButton"/>
 
     <Button
         android:id="@+id/addButton"
@@ -105,7 +99,7 @@
         android:layout_marginTop="20dp"
         android:background="#FF2066"
         android:gravity="center"
-        android:text="Add into Fridge!"
+        android:text="@string/add_fridge"
         android:textColor="#FFFFFF"
         android:textSize="20sp" />
 

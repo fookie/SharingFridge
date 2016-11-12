@@ -201,7 +201,6 @@ public class FridgeFragment extends Fragment {
             Log.i("usertest", cursor.getString(cursor.getColumnIndex("item")) + "???");
         }
         cursor.close();
-        itemsList.add(new FridgeItem("Makun", "1", "d"));
         return itemsList;
     }
 
