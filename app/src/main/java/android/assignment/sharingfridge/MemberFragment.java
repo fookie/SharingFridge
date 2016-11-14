@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -185,6 +186,10 @@ public class MemberFragment extends Fragment {
     private class submitClick implements View.OnClickListener{
         @Override
         public void onClick(View v) {
+            if(groupname.getText().toString().equals("")){
+                groupname.setError(getString(R.string.need_group_name));
+                return;
+            }
             mAuthTask =new SendRequestTask(joingroup.isChecked()?"join":"create",groupname.getText().toString());
             mAuthTask.execute();
         }
@@ -258,12 +263,17 @@ public class MemberFragment extends Fragment {
                 permission = confirm.get("permission").toString();
                 if (permission.equals("granted")) {
                     Log.d("GROUP", action+" SUCCESS");
+                    Toast.makeText(getContext(), getString(R.string.success), Toast.LENGTH_SHORT).show();
                     UserStatus.inGroup=true;
                     UserStatus.groupName=groupname;
+                }else {
+                    Log.d("GROUP",action+ "FAILED");
+                    Toast.makeText(getContext(), getString(R.string.faild), Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException je) {
                 je.printStackTrace();
                 Log.d("GROUP",action+ "FAILED");
+                Toast.makeText(getContext(), getString(R.string.faild), Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -6,7 +6,6 @@
 
     <string name="title_activity_login">Sign in</string>
     <string name="title_activity_home">Sharing Fridge</string>
-    <!-- Strings related to login -->
     <string name="prompt_username">Username</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
@@ -41,6 +40,7 @@
     <string name="left_day">day left</string>
     <string name="left_days">days left</string>
     <string name="need_name">Need a item name</string>
+    <string name="need_group_name">Please enter a group name</string>
     <string name="need_amount">Need an amount</string>
     <string name="wrong_date">this date is not available</string>
     <string name="loged_in_as">You have logged in as</string>
@@ -49,6 +49,8 @@
     <string name="set_frg">Settings</string>
     <string name="hom_frg">Home</string>
     <string name="refresh">refresh</string>
+    <string name="success">success</string>
+    <string name="faild">faild</string>
 
 
 </resources>

@@ -47,4 +47,7 @@
     <string name="wrong_date">日期不正确</string>
     <string name="Unkonwn">未知</string>
     <string name="refreshing">刷新中...</string>
+    <string name="need_group_name">请输入组名</string>
+    <string name="success">成功</string>
+    <string name="faild">失败</string>
 </resources>
