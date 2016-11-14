@@ -90,7 +90,7 @@ public class HomeActivity extends AppCompatActivity
                     // Load the Avatar for the user just logged in
 
                 } else {
-                    Toast.makeText(HomeActivity.this, "You have logged in as " + UserStatus.username, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(HomeActivity.this, getString(R.string.loged_in_as) + UserStatus.username, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -109,6 +109,7 @@ public class HomeActivity extends AppCompatActivity
             UserStatus.username=uname;
             UserStatus.groupName=ugroup;
             UserStatus.hasLogin=true;
+            UserStatus.inGroup=!UserStatus.groupName.equals("none");
         }
 
     }
@@ -227,17 +228,17 @@ public class HomeActivity extends AppCompatActivity
         //Build a tab giving some initial custom settings
         TabItemBuilder tabItemBuilder = new TabItemBuilder(this).create()
                 .setDefaultIcon(R.drawable.ic_home)
-                .setText("Home")
+                .setText(getString(R.string.hom_frg))
                 .setSelectedColor(tabColors[0])
-                .setTag("Home")
+                .setTag(getString(R.string.hom_frg))
                 .build();
 
         //finish the navigation bar by adding more tabs
         tabController = pagerBottomTabLayout.builder()
                 .addTabItem(tabItemBuilder)
-                .addTabItem(R.drawable.ic_member, "Members", tabColors[1])
-                .addTabItem(R.drawable.ic_map, "Map", tabColors[2])
-                .addTabItem(R.drawable.ic_settings, "Settings", tabColors[3])
+                .addTabItem(R.drawable.ic_member, getString(R.string.mem_frg), tabColors[1])
+                .addTabItem(R.drawable.ic_map,  getString(R.string.map_frg), tabColors[2])
+                .addTabItem(R.drawable.ic_settings,  getString(R.string.set_frg), tabColors[3])
 //                .setMode(TabLayoutMode.HIDE_TEXT)
 //                .setMode(TabLayoutMode.CHANGE_BACKGROUND_COLOR)
 //                .setMode(TabLayoutMode.HIDE_TEXT| TabLayoutMode.CHANGE_BACKGROUND_COLOR)

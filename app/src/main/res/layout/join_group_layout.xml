@@ -41,7 +41,7 @@
     </RadioGroup>
 
     <Button
-        android:text="Button"
+        android:text="@string/submit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/join_group_submit"

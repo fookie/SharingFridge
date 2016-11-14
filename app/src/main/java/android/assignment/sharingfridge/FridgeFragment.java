@@ -113,7 +113,7 @@ public class FridgeFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), "refreshing...", LENGTH_SHORT).show();
+                Toast.makeText(v.getContext(), getString(R.string.refreshing), LENGTH_SHORT).show();
                 isDataLoaded = false;
                 updateUI();
             }
@@ -185,14 +185,14 @@ public class FridgeFragment extends Fragment {
         List<FridgeItem> itemsList = new ArrayList<>();
         Cursor cursor = mainDB.rawQuery("SELECT * from items where groupname = '" + UserStatus.groupName + "'", null);
         while (cursor.moveToNext()) {
-            String expday = "Unkonwn";
+            String expday = getString(R.string.Unkonwn);
             Calendar cal = Calendar.getInstance();
             DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
             try {
                 Date nd = cal.getTime();
                 Date ed = df.parse(cursor.getString(cursor.getColumnIndex("expiretime")));
                 long days = (ed.getTime() - nd.getTime()) / (1000 * 60 * 60 * 24);
-                expday = days + 1 + ((days + 1 <= 1) ? " day left" : " days left");//+1 ensure expire today shows 0 days
+                expday = days + 1 + ((days + 1 <= 1) ? getString(R.string.left_days) : getString(R.string.left_day) );//+1 ensure expire today shows 0 days
             } catch (ParseException e) {
                 e.printStackTrace();
             }

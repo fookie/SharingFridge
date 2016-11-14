@@ -163,21 +163,21 @@ public class AddActivity extends AppCompatActivity {
                 amount = amountEditText.getText().toString();
                 name = nameEditText.getText().toString();
                 if (name.isEmpty()) {
-                    nameEditText.setError("Need a Name");
+                    nameEditText.setError(getString(R.string.need_name));
                     return;
                 } else if (amount.isEmpty()) {
-                    amountEditText.setError("Need an Amount");
+                    amountEditText.setError(getString(R.string.need_amount));
                     return;
                 } else if (canYear < currentYear) {
-                    dateEditText.setError("Wrong Date");
+                    dateEditText.setError(getString(R.string.wrong_date));
                     return;
                 } else if (canMonth < currentMonth) {
-                    dateEditText.setError("Wrong Date");
+                    dateEditText.setError(getString(R.string.wrong_date));
                     {
                         return;
                     }
                 } else if (canDay < currentDay) {
-                    dateEditText.setError("Wrong Date");
+                    dateEditText.setError(getString(R.string.wrong_date));
                     return;
                 }
                 if (checkCondition) {
@@ -335,7 +335,6 @@ public class AddActivity extends AppCompatActivity {
         values.put("event_id", id);
         values.put("minutes", 10);
         getContentResolver().insert(Uri.parse(calanderRemiderURL), values);
-        Toast.makeText(AddActivity.this, "success!!!", Toast.LENGTH_LONG).show();
     }
 
     private boolean checkIfAlreadyhavePermission() {
