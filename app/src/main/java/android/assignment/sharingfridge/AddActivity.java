@@ -36,6 +36,7 @@ import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.UploadNotificationConfig;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -43,6 +44,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import static android.assignment.sharingfridge.R.id.nameEditText;
+import static java.lang.System.out;
 
 public class AddActivity extends AppCompatActivity {
 
@@ -58,6 +60,7 @@ public class AddActivity extends AppCompatActivity {
     private Button addButton;
 
     private String imageRelativePath, imageAbsolutePath;
+    private Uri imageUri;
 
     int currentYear, currentMonth, currentDay;
     private Calendar calender = Calendar.getInstance();
@@ -199,8 +202,17 @@ public class AddActivity extends AppCompatActivity {
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_CODE && resultCode == RESULT_OK) {
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
+//            Bitmap photo = (Bitmap) data.getExtras().get("data");
             // itemDisplay.setMinimumHeight(100);
+            File photoFile = new File(imageAbsolutePath);
+            Uri uri = Uri.fromFile(photoFile);
+            Bitmap photo = null;
+            try {
+                photo = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                photo.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
             WindowManager wm = this.getWindowManager();
             int width = wm.getDefaultDisplay().getWidth();
@@ -213,11 +225,12 @@ public class AddActivity extends AppCompatActivity {
             float scaleWidth = (float) (width / bitmapWidth) / 2;
             float scaleHeight = (float) (height / bitmapHeight) / 2;
 
-            matrix.postScale(scaleWidth, scaleHeight);
-            Bitmap newBitmap = Bitmap.createBitmap(photo, 0, 0, bitmapWidth, bitmapHeight, matrix, true);
+            matrix.postScale((float)5.0,(float)5.0);
+            Bitmap newBitmap = Bitmap.createBitmap(photo, 0, 0, width, height, matrix, true);
             photo.recycle();
 
             itemDisplay.setImageBitmap(newBitmap);
+//            itemDisplay.setImageBitmap(photo);
         }
     }
 
@@ -252,10 +265,15 @@ public class AddActivity extends AppCompatActivity {
             // Continue only if the File was successfully created
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(this, "com.example.android.fileprovider", photoFile);
+                imageUri = photoURI;
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, CAMERA_CODE);
             }
         }
+    }
+
+    private void takePhoto() {
+        Intent photoIntent = new Intent();
     }
 
     /*Author: geotv
