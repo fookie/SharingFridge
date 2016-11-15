@@ -37,14 +37,6 @@ import lecho.lib.hellocharts.model.SliceValue;
 import lecho.lib.hellocharts.util.ChartUtils;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MemberFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MemberFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class MemberFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -57,13 +49,16 @@ public class MemberFragment extends Fragment {
     private EditText groupname;
     private RadioButton joingroup;
 
+    private List<MemberItem> memberItemList;
+    private MemberViewAdapter memberViewAdapter;
+    RecyclerView memberView;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private SQLiteDatabase mainDB;
 
-    private OnFragmentInteractionListener mListener;
+    private OnLoginStatusListener loginRefreshListener;
 
     public MemberFragment() {
         // Required empty public constructor
@@ -101,53 +96,52 @@ public class MemberFragment extends Fragment {
                              Bundle savedInstanceState) {
         mainDB = SQLiteDatabase.openOrCreateDatabase(getContext().getFilesDir().getAbsolutePath().replace("files", "databases") + "fridge.db", null);
         mainDB.execSQL("CREATE TABLE IF NOT EXISTS items(item char(255),category char(64),amount int,addtime char(255),expiretime char(255),imageurl char(255),owner char(255),groupname char(255))");
-        List<MemberItem> memberItemList = initMemberList();
+        memberItemList = initMemberList();
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 1);
-        MemberViewAdapter memberViewAdapter = new MemberViewAdapter(getContext(), memberItemList, ((SharingFridgeApplication) getContext().getApplicationContext()).getServerAddr());
+        memberViewAdapter = new MemberViewAdapter(getContext(), memberItemList, "http://178.62.93.103/SharingFridge/");
         // Inflate the layout for this fragment
-        View view=null;
-        if(UserStatus.hasLogin&&!UserStatus.inGroup){
-            view = inflater.inflate(R.layout.join_group_layout, container, false);
-            submit=(Button)view.findViewById(R.id.join_group_submit);
-            groupname=(EditText)view.findViewById(R.id.groupname_edittext);
-            joingroup=(RadioButton)view.findViewById(R.id.join_group_radio);
-            submit.setOnClickListener(new submitClick());
 
-        }else {
-            view = inflater.inflate(R.layout.fragment_member, container, false);
-            RecyclerView memberView = (RecyclerView) view.findViewById(R.id.memberView);
-            memberView.setHasFixedSize(true);
-            memberView.setLayoutManager(gridLayoutManager);
-            memberView.setAdapter(memberViewAdapter);
-        }
+        View view = null;
+        view = inflater.inflate(R.layout.fragment_member, container, false);
+        memberView = (RecyclerView) view.findViewById(R.id.memberView);
+        memberView.setHasFixedSize(true);
+        memberView.setLayoutManager(gridLayoutManager);
+        memberView.setAdapter(memberViewAdapter);
+
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+    public void updateUI(){
+        memberItemList = initMemberList();
+        memberViewAdapter = new MemberViewAdapter(getContext(), memberItemList, "http://178.62.93.103/SharingFridge/");
+        memberView.setAdapter(memberViewAdapter);
+        memberViewAdapter.notifyDataSetChanged();
     }
+
+    public void onResume(){
+        super.onResume();
+        updateUI();
+    }
+
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+//        if (context instanceof OnLoginStatusListener) {
+//            loginRefreshListener = (OnLoginStatusListener) context;
+//        } else {
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnLoginStatusListener");
+//        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
-        if (mainDB != null) {
-            mainDB.close();
-        }
+        loginRefreshListener = null;
+//        if (mainDB != null) {
+//            mainDB.close();
+//        }
     }
 
     /**
@@ -160,15 +154,14 @@ public class MemberFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface OnLoginStatusListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void refreshDueToLogin();
     }
 
     public List<MemberItem> initMemberList() {
         List<MemberItem> memberItems = new LinkedList<>();
         if (UserStatus.hasLogin == false) {
-
             memberItems.add(new MemberItem(getString(R.string.login_hint), getString(R.string.nousr_group_hint),"noimg"));
             return memberItems;
         }

@@ -3,7 +3,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="app_name">SharingFridge</string>
     <string name="action_settings">Settings</string>
-
+    <string name="group">Group</string>
     <string name="title_activity_login">Sign in</string>
     <string name="title_activity_home">Sharing Fridge</string>
     <string name="prompt_username">Username</string>
@@ -34,7 +34,7 @@
     <string name="add_calendar">Add to Calendar</string>
     <string name="add_fridge">ADD INTO FRIDGE!</string>
     <string name="login_hint">please login</string>
-    <string name="nousr_group_hint">login for group function</string>
+    <string name="nousr_group_hint">Login to use group feature!</string>
     <string name="group_sta_hint"> items, total amount:</string>
     <string name="Unkonwn">Unkonwn</string>
     <string name="left_day">day left</string>

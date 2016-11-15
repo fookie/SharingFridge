@@ -35,8 +35,6 @@ import me.majiajie.pagerbottomtabstrip.listener.OnTabItemSelectListener;
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         FridgeFragment.OnFragmentInteractionListener,
-        FridgeFragment.OnLoginRefreshListener,
-        MemberFragment.OnFragmentInteractionListener,
         SettingsFragment.OnFragmentInteractionListener {
 
     int[] tabColors = {0xFF00796B, 0xFFF57C00, 0xFF607D8B, 0xFF5B4947, 0xFFF57C00};
@@ -114,6 +112,7 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -157,7 +156,8 @@ public class HomeActivity extends AppCompatActivity
         if (id == R.id.nav_home) {
             // Handle the camera action
         } else if (id == R.id.nav_join_group) {
-
+            Intent groupIntent = new Intent(HomeActivity.this, GroupActivity.class);
+            startActivity(groupIntent);
         } else if (id == R.id.nav_about) {
 
         } else if (id == R.id.nav_logout) {
@@ -168,7 +168,9 @@ public class HomeActivity extends AppCompatActivity
             editor.putString("username","_null");//clear the shared preference
             editor.putString("groupName","_null");
             editor.commit();
+            Toast.makeText(getApplicationContext(), "You have logged out", Toast.LENGTH_SHORT);
             friFrag.updateUI();
+            memFrag.updateUI();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -251,11 +253,6 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public void onFragmentInteraction(Uri uri) {
 
-    }
-
-    @Override
-    public void onLoginRefresh() {
-//        friFrag.refreshFridgeList();
     }
 
     protected void onResume() {

@@ -64,7 +64,6 @@ public class FridgeFragment extends Fragment {
     private FridgeViewAdapter fridgeViewAdapter;
     private SQLiteDatabase mainDB;
     private OnFragmentInteractionListener mListener;
-    private OnLoginRefreshListener loginRefreshListener;
     private boolean isDataLoaded = false;
 
     public FridgeFragment() {
@@ -126,7 +125,6 @@ public class FridgeFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
-            loginRefreshListener = (OnLoginRefreshListener) context;
 
             //Here might need a listener for UI update(referring to TimelineFragment)
         } else {
@@ -140,9 +138,9 @@ public class FridgeFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        if (mainDB != null) {
-            mainDB.close();
-        }
+//        if (mainDB != null) {
+//            mainDB.close();
+//        }
         mAuthTask = null;
     }
 
@@ -170,9 +168,6 @@ public class FridgeFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    public interface OnLoginRefreshListener {
-        void onLoginRefresh();
-    }
 
     public List<FridgeItem> refreshFridgeList() {
         if (!isDataLoaded) {
@@ -206,10 +201,9 @@ public class FridgeFragment extends Fragment {
 
     public void updateUI() {
         fridgeItemList = refreshFridgeList();
-        fridgeViewAdapter = new FridgeViewAdapter(getContext(), fridgeItemList, ((SharingFridgeApplication) getContext().getApplicationContext()).getServerAddr());
+        fridgeViewAdapter = new FridgeViewAdapter(getContext(), fridgeItemList, "http://178.62.93.103/SharingFridge/");
         fridgeView.setAdapter(fridgeViewAdapter);
         fridgeViewAdapter.notifyDataSetChanged();
-        Log.i("resume", "?????????");
     }
 
     private void updateFromServer() {
