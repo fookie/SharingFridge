@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -200,7 +201,7 @@ public class AddActivity extends AppCompatActivity {
 
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
         if (requestCode == CAMERA_CODE && resultCode == RESULT_OK) {
 //            Bitmap photo = (Bitmap) data.getExtras().get("data");
             // itemDisplay.setMinimumHeight(100);
@@ -214,25 +215,93 @@ public class AddActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
+            int rotation = 0;
+            try {
+                ExifInterface exifInterface = new ExifInterface(photoFile.getPath());
+                int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+                switch (orientation) {
+                    case ExifInterface.ORIENTATION_ROTATE_90:
+                        rotation = 90;
+                        break;
+                    case ExifInterface.ORIENTATION_ROTATE_180:
+                        rotation = 180;
+                        break;
+                    case ExifInterface.ORIENTATION_ROTATE_270:
+                        rotation = 270;
+                        break;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Matrix rotationMatrix = new Matrix();
+            rotationMatrix.postRotate(rotation);
+            Bitmap rotationBitmap = null;
+            try {
+                rotationBitmap = Bitmap.createBitmap(photo, 0, 0, photo.getWidth(), photo.getHeight(), rotationMatrix, true);
+            } catch (OutOfMemoryError e) { }
+            if(rotationBitmap != photo)
+                photo.recycle();
+            if(rotationBitmap == null)
+                rotationBitmap = photo;
+
             WindowManager wm = this.getWindowManager();
             int width = wm.getDefaultDisplay().getWidth();
-            int height = width;
+            int height = wm.getDefaultDisplay().getHeight();
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = false;
-            int bitmapWidth = photo.getWidth();
-            int bitmapHeight = photo.getHeight();
+            int bitmapWidth = rotationBitmap.getWidth();
+            int bitmapHeight = rotationBitmap.getHeight();
+            float proportionOfWL = (float) bitmapHeight/bitmapWidth;
             Matrix matrix = new Matrix();
-            float scaleWidth = (float) (width / bitmapWidth) / 2;
-            float scaleHeight = (float) (height / bitmapHeight) / 2;
+            float scaleWidth = (float) (bitmapWidth / width) / 8;
+            float scaleHeight = (float) (bitmapHeight / (height*proportionOfWL) )/ 8;
 
-            matrix.postScale((float)5.0,(float)5.0);
-            Bitmap newBitmap = Bitmap.createBitmap(photo, 0, 0, width, height, matrix, true);
-            photo.recycle();
+            matrix.postScale(scaleWidth, scaleHeight);
+            Bitmap newBitmap = Bitmap.createBitmap(rotationBitmap, 0, 0, bitmapWidth, bitmapHeight, matrix, true);
+            rotationBitmap.recycle();
 
+//            itemDisplay.setImageBitmap(newBitmap);
             itemDisplay.setImageBitmap(newBitmap);
 //            itemDisplay.setImageBitmap(photo);
         }
     }
+
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == CAMERA_CODE && resultCode == RESULT_OK) {
+////            Bitmap photo = (Bitmap) data.getExtras().get("data");
+//            // itemDisplay.setMinimumHeight(100);
+//            File photoFile = new File(imageAbsolutePath);
+//            Uri uri = Uri.fromFile(photoFile);
+//            Bitmap photo = null;
+//            try {
+//                photo = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+//                photo.compress(Bitmap.CompressFormat.JPEG, 100, out);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            int rotation = 0;
+//
+//
+//            WindowManager wm = this.getWindowManager();
+//            int width = wm.getDefaultDisplay().getWidth();
+//            int height = width;
+//            BitmapFactory.Options options = new BitmapFactory.Options();
+//            options.inJustDecodeBounds = false;
+//            int bitmapWidth = photo.getWidth();
+//            int bitmapHeight = photo.getHeight();
+//            Matrix matrix = new Matrix();
+//            float scaleWidth = (float) (width / bitmapWidth) / 2;
+//            float scaleHeight = (float) (height / bitmapHeight) / 2;
+//
+//            matrix.postScale((float)5.0,(float)5.0);
+//            Bitmap newBitmap = Bitmap.createBitmap(photo, 0, 0, width, height, matrix, true);
+//            photo.recycle();
+//
+//            itemDisplay.setImageBitmap(newBitmap);
+////            itemDisplay.setImageBitmap(photo);
+//        }
+//    }
 
     private File createImageFile() throws IOException {
         // Create an image file name
@@ -287,6 +356,7 @@ public class AddActivity extends AppCompatActivity {
                             .setNotificationConfig(new UploadNotificationConfig())
                             .setMaxRetries(2)
                             .startUpload();
+            Log.i("upload","???");
         } catch (Exception exc) {
             Log.e("AndroidUploadService", exc.getMessage(), exc);
         }
