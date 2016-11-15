@@ -51,6 +51,7 @@
     <string name="refresh">refresh</string>
     <string name="success">success</string>
     <string name="faild">faild</string>
+    <string name="in_group_hint">you are already in group "%1$s", add in a new group will exit current group"</string>
 
 
 </resources>

@@ -50,4 +50,5 @@
     <string name="need_group_name">请输入组名</string>
     <string name="success">成功</string>
     <string name="faild">失败</string>
+    <string name="in_group_hint">你已经在小组“%1$s”中，加入新组将退出现有组</string>
 </resources>

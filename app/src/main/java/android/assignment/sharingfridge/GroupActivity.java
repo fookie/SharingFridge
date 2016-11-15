@@ -8,7 +8,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.maps.UiSettings;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,6 +29,7 @@ public class GroupActivity extends AppCompatActivity {
     private Button submit=null;
     private EditText groupname;
     private RadioButton joingroup;
+    private TextView hint;
     private SendRequestTask mAuthTask = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,23 +38,35 @@ public class GroupActivity extends AppCompatActivity {
         submit=(Button)findViewById(R.id.join_group_submit);
         groupname=(EditText)findViewById(R.id.groupname_edittext);
         joingroup=(RadioButton)findViewById(R.id.join_group_radio);
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        hint=(TextView)findViewById(R.id.in_group_hint);
+        submit.setOnClickListener(new submitClick());
+    }
 
-            }
-        });
+    protected void onResume(){
+        if(!UserStatus.hasLogin){
+            hint.setText(getString(R.string.nousr_group_hint));
+        }
+        if(UserStatus.inGroup){
+            hint.setText(String.format(getString(R.string.in_group_hint), UserStatus.groupName));
+        }
+
+        super.onResume();
     }
 
     private class submitClick implements View.OnClickListener{
+
         @Override
         public void onClick(View v) {
+            if(!UserStatus.hasLogin){
+                return;
+            }
             if(groupname.getText().toString().equals("")){
                 groupname.setError(getString(R.string.need_group_name));
                 return;
-            }
-            mAuthTask =new SendRequestTask(joingroup.isChecked()?"join":"create",groupname.getText().toString());
-            mAuthTask.execute();
+            } 
+                mAuthTask = new SendRequestTask(joingroup.isChecked() ? "join" : "create", groupname.getText().toString());
+                mAuthTask.execute();
+
         }
     }
 
@@ -77,7 +93,6 @@ public class GroupActivity extends AppCompatActivity {
                 conn.setConnectTimeout(15000);/* milliseconds */
                 conn.setDoInput(true);
                 conn.setDoOutput(true);
-                //conn.setRequestProperty("Content-Type", "application/json");
                 //make json object
                 JSONObject jo = new JSONObject();
                 jo.put("action", action);
