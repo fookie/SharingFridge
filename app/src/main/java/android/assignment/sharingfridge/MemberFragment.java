@@ -162,7 +162,7 @@ public class MemberFragment extends Fragment {
     public List<MemberItem> initMemberList() {
         List<MemberItem> memberItems = new LinkedList<>();
         if (UserStatus.hasLogin == false) {
-            memberItems.add(new MemberItem(getString(R.string.login_hint), getString(R.string.nousr_group_hint),"noimg"));
+            memberItems.add(new MemberItem(getContext().getResources().getString(R.string.login_hint), getContext().getResources().getString(R.string.nousr_group_hint),"noimg"));
             return memberItems;
         }
         String sql = "select owner,count(*),sum(amount) as o from items where groupname='" + UserStatus.groupName + "' group by owner";
@@ -171,8 +171,9 @@ public class MemberFragment extends Fragment {
             String owner = c.getString(0);
             int count = c.getInt(1);
             int amount = c.getInt(2);
-            memberItems.add(new MemberItem(owner, count + getString(R.string.group_sta_hint) + amount, owner + ".png"));
+            memberItems.add(new MemberItem(owner, count + getContext().getResources().getString(R.string.group_sta_hint) + amount, owner + ".png"));
         }
+
         return memberItems;
     }
 
