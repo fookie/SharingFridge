@@ -3,6 +3,7 @@ package android.assignment.sharingfridge;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -266,6 +267,15 @@ public class HomeActivity extends AppCompatActivity
         groupnameView.setText(UserStatus.groupName);
         if (UserStatus.username!="Click here to login"){
             // set avatar!
+            Glide.with(this).load("http://178.62.93.103/SharingFridge/avatars/" + UserStatus.username + ".png")
+                    .centerCrop()
+                    .placeholder(R.drawable.image_loading)
+                    .error(R.drawable.image_corrupt)
+                    .dontAnimate()
+                    .into(avatarView);
+        } else {
+            Drawable icon = getResources().getDrawable(R.drawable.ic_default);
+            avatarView.setImageDrawable(icon);
         }
     }
 
