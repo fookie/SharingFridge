@@ -17,6 +17,6 @@ public class Initializer extends Application{
         // Gradle automatically generates proper variable as below.
         UploadService.NAMESPACE = BuildConfig.APPLICATION_ID;
         // Or, you can define it manually.
-        UploadService.NAMESPACE = "com.yourcompany.yourapp";
+        UploadService.NAMESPACE = "android.assignment.sharingfridge";
     }
 }
