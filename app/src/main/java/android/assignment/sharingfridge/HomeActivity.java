@@ -162,16 +162,20 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_about) {
 
         } else if (id == R.id.nav_logout) {
-            UserStatus.resetStatus();
-            refreshUserStatus();
-            SharedPreferences preferences = getSharedPreferences("user-status", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("username","_null");//clear the shared preference
-            editor.putString("groupName","_null");
-            editor.commit();
-            Toast.makeText(getApplicationContext(), "You have logged out", Toast.LENGTH_SHORT);
-            friFrag.updateUI();
-            memFrag.updateUI();
+            if(UserStatus.hasLogin){
+                UserStatus.resetStatus();
+                refreshUserStatus();
+                SharedPreferences preferences = getSharedPreferences("user-status", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("username","_null");//clear the shared preference
+                editor.putString("groupName","_null");
+                editor.commit();
+                Toast.makeText(getApplicationContext(), "You have successfully logged out", Toast.LENGTH_SHORT);
+                friFrag.updateUI();
+                memFrag.updateUI();
+            } else {
+                Toast.makeText(getApplicationContext(), "You are already logged out!", Toast.LENGTH_SHORT);
+            }
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
