@@ -35,8 +35,8 @@
     <string name="add_fridge">ADD INTO FRIDGE!</string>
     <string name="login_hint">please login</string>
     <string name="nousr_group_hint">Login to use group feature!</string>
-    <string name="group_sta_hint"> items, total amount:</string>
-    <string name="Unkonwn">Unkonwn</string>
+    <string name="group_sta_hint"> items, total amount: </string>
+    <string name="Unknown">Unkonwn</string>
     <string name="left_day">day left</string>
     <string name="left_days">days left</string>
     <string name="need_name">Need a item name</string>

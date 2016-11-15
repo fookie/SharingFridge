@@ -112,10 +112,12 @@ public class MemberFragment extends Fragment {
     }
 
     public void updateUI(){
-        memberItemList = initMemberList();
-        memberViewAdapter = new MemberViewAdapter(getContext(), memberItemList, "http://178.62.93.103/SharingFridge/");
-        memberView.setAdapter(memberViewAdapter);
-        memberViewAdapter.notifyDataSetChanged();
+        if(isAdded()){
+            memberItemList = initMemberList();
+            memberViewAdapter = new MemberViewAdapter(getContext(), memberItemList, "http://178.62.93.103/SharingFridge/");
+            memberView.setAdapter(memberViewAdapter);
+            memberViewAdapter.notifyDataSetChanged();
+        }
     }
 
     public void onResume(){
@@ -162,7 +164,7 @@ public class MemberFragment extends Fragment {
     public List<MemberItem> initMemberList() {
         List<MemberItem> memberItems = new LinkedList<>();
         if (UserStatus.hasLogin == false) {
-            memberItems.add(new MemberItem(getContext().getResources().getString(R.string.login_hint), getContext().getResources().getString(R.string.nousr_group_hint),"noimg"));
+            memberItems.add(new MemberItem(getString(R.string.login_hint), getString(R.string.nousr_group_hint),"noimg"));
             return memberItems;
         }
         String sql = "select owner,count(*),sum(amount) as o from items where groupname='" + UserStatus.groupName + "' group by owner";

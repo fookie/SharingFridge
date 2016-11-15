@@ -146,11 +146,13 @@ public class FridgeFragment extends Fragment {
 
     public void onResume() {
         super.onResume();
-        fridgeItemList = refreshFridgeList();
-        fridgeViewAdapter = new FridgeViewAdapter(getContext(), fridgeItemList, ((SharingFridgeApplication) getContext().getApplicationContext()).getServerAddr());
-        fridgeView.setAdapter(fridgeViewAdapter);
-        fridgeViewAdapter.notifyDataSetChanged();
-        Log.i("resume", "Normal!!!!!!!!!!!!");
+        if (isAdded()){
+            fridgeItemList = refreshFridgeList();
+            fridgeViewAdapter = new FridgeViewAdapter(getContext(), fridgeItemList, ((SharingFridgeApplication) getContext().getApplicationContext()).getServerAddr());
+            fridgeView.setAdapter(fridgeViewAdapter);
+            fridgeViewAdapter.notifyDataSetChanged();
+            Log.i("resume", "Normal!!!!!!!!!!!!");
+        }
     }
 
     /**
@@ -180,7 +182,7 @@ public class FridgeFragment extends Fragment {
         List<FridgeItem> itemsList = new ArrayList<>();
         Cursor cursor = mainDB.rawQuery("SELECT * from items where groupname = '" + UserStatus.groupName + "'", null);
         while (cursor.moveToNext()) {
-            String expday = getString(R.string.Unkonwn);
+            String expday = getString(R.string.Unknown);
             Calendar cal = Calendar.getInstance();
             DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
             try {
@@ -200,10 +202,13 @@ public class FridgeFragment extends Fragment {
     }
 
     public void updateUI() {
-        fridgeItemList = refreshFridgeList();
-        fridgeViewAdapter = new FridgeViewAdapter(getContext(), fridgeItemList, "http://178.62.93.103/SharingFridge/");
-        fridgeView.setAdapter(fridgeViewAdapter);
-        fridgeViewAdapter.notifyDataSetChanged();
+        if(isAdded()){
+            fridgeItemList = refreshFridgeList();
+            fridgeViewAdapter = new FridgeViewAdapter(getContext(), fridgeItemList, "http://178.62.93.103/SharingFridge/");
+            fridgeView.setAdapter(fridgeViewAdapter);
+            fridgeViewAdapter.notifyDataSetChanged();
+        }
+
     }
 
     private void updateFromServer() {
