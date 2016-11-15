@@ -247,15 +247,15 @@ public class AddActivity extends AppCompatActivity {
 
             WindowManager wm = this.getWindowManager();
             int width = wm.getDefaultDisplay().getWidth();
-            int height = wm.getDefaultDisplay().getHeight();
+//            int height = wm.getDefaultDisplay().getHeight();
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = false;
             int bitmapWidth = rotationBitmap.getWidth();
             int bitmapHeight = rotationBitmap.getHeight();
-            float proportionOfWL = (float) bitmapHeight/bitmapWidth;
+//            float proportionOfWL = (float) bitmapHeight/bitmapWidth;
             Matrix matrix = new Matrix();
-            float scaleWidth = (float) (bitmapWidth / width) / 8;
-            float scaleHeight = (float) (bitmapHeight / (height*proportionOfWL) )/ 8;
+            float scaleWidth = (float) width / (bitmapWidth * 2);
+            float scaleHeight = (float) scaleWidth * bitmapWidth / bitmapHeight;
 
             matrix.postScale(scaleWidth, scaleHeight);
             Bitmap newBitmap = Bitmap.createBitmap(rotationBitmap, 0, 0, bitmapWidth, bitmapHeight, matrix, true);
