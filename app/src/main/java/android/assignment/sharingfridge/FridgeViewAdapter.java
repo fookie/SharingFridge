@@ -18,13 +18,13 @@ import java.util.List;
  * Created by EveLIn3 on 2016/10/16.
  */
 
-public class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
+class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
 
     private String serverPicsPath = "";
     private List<FridgeItem> fridgeItemsList;
     private Context homeContext;
 
-    public FridgeViewAdapter(Context context, List<FridgeItem> fil, String serverPath) {
+    FridgeViewAdapter(Context context, List<FridgeItem> fil, String serverPath) {
         homeContext = context;
         fridgeItemsList = fil;
         serverPicsPath = serverPath + serverPicsPath;
@@ -41,6 +41,9 @@ public class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
     public void onBindViewHolder(FridgeViewHolder holder, int position) {
         holder.nameView.setText(fridgeItemsList.get(position).getName());
         holder.dateView.setText(fridgeItemsList.get(position).getDate());
+        holder.categoryView.setText(fridgeItemsList.get(position).getCategory());
+        holder.amountView.setText(String.valueOf(fridgeItemsList.get(position).getAmount()));
+        holder.ownerView.setText(fridgeItemsList.get(position).getOwner());
         //TODO change the place holder and error
         Glide.with(homeContext).load(serverPicsPath + fridgeItemsList.get(position).getPhotoURL())
                 .centerCrop()

@@ -62,7 +62,7 @@
         <activity
             android:name=".AddActivity"
             android:label="New Item"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

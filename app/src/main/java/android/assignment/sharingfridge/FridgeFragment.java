@@ -101,7 +101,7 @@ public class FridgeFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_fridge, container, false);
 
         fridgeView = (RecyclerView) v.findViewById(R.id.fridgeView);
-        gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        gridLayoutManager = new GridLayoutManager(getContext(), 1);
         fridgeView.setHasFixedSize(true);
         fridgeView.setLayoutManager(gridLayoutManager);
 //        fridgeView.setAdapter(fridgeViewAdapter);
@@ -146,7 +146,7 @@ public class FridgeFragment extends Fragment {
 
     public void onResume() {
         super.onResume();
-        if (isAdded()){
+        if (isAdded()) {
             fridgeItemList = refreshFridgeList();
             fridgeViewAdapter = new FridgeViewAdapter(getContext(), fridgeItemList, ((SharingFridgeApplication) getContext().getApplicationContext()).getServerAddr());
             fridgeView.setAdapter(fridgeViewAdapter);
@@ -189,11 +189,11 @@ public class FridgeFragment extends Fragment {
                 Date nd = cal.getTime();
                 Date ed = df.parse(cursor.getString(cursor.getColumnIndex("expiretime")));
                 long days = (ed.getTime() - nd.getTime()) / (1000 * 60 * 60 * 24);
-                expday = days + 1 + ((days + 1 <= 1) ? getString(R.string.left_days) : getString(R.string.left_day) );//+1 ensure expire today shows 0 days
+                expday = days + 1 + ((days + 1 <= 1) ? getString(R.string.left_days) : getString(R.string.left_day));//+1 ensure expire today shows 0 days
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            FridgeItem tempfi = new FridgeItem(cursor.getString(cursor.getColumnIndex("item")), expday, cursor.getString(cursor.getColumnIndex("imageurl")));
+            FridgeItem tempfi = new FridgeItem(cursor.getString(cursor.getColumnIndex("item")), expday, cursor.getString(cursor.getColumnIndex("imageurl")), cursor.getString(cursor.getColumnIndex("owner")), cursor.getString(cursor.getColumnIndex("category")), cursor.getInt(cursor.getColumnIndex("amount")));
             itemsList.add(tempfi);
             Log.i("usertest", cursor.getString(cursor.getColumnIndex("item")) + "???");
         }
@@ -202,7 +202,7 @@ public class FridgeFragment extends Fragment {
     }
 
     public void updateUI() {
-        if(isAdded()){
+        if (isAdded()) {
             fridgeItemList = refreshFridgeList();
             fridgeViewAdapter = new FridgeViewAdapter(getContext(), fridgeItemList, "http://178.62.93.103/SharingFridge/");
             fridgeView.setAdapter(fridgeViewAdapter);
