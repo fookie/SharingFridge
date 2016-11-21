@@ -262,8 +262,8 @@ public class FridgeFragment extends Fragment {
                 InputStream inputStream = conn.getInputStream();
 
                 // Convert the InputStream into a string
-                int length = JSON_MAX_SIZE;
-                String contentAsString = convertInputStreamToString(inputStream, length);
+//                 int length = JSON_MAX_SIZE;
+                String contentAsString = getLongStringFromInputStream(inputStream);
                 return contentAsString;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -276,6 +276,17 @@ public class FridgeFragment extends Fragment {
             char[] buffer = new char[length];
             reader.read(buffer);
             return new String(buffer);
+        }
+        
+        public String getLongStringFromInputStream(InputStream stream) throws IOException {
+            StringBuilder strBuilder = new StringBuilder();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
+            String perLine;
+            while ((perLine = reader.readLine()) != null){
+                strBuilder.append(perLine);
+            }
+            String result = strBuilder.toString();
+            return result;
         }
 
         @Override
