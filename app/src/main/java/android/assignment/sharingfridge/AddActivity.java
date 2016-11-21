@@ -33,10 +33,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.ServerResponse;
 import net.gotev.uploadservice.UploadInfo;
 import net.gotev.uploadservice.UploadNotificationConfig;
+import net.gotev.uploadservice.UploadService;
 import net.gotev.uploadservice.UploadStatusDelegate;
 
 import java.io.File;
@@ -194,7 +196,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                 //TODO:finish imgUrl
                 String imgUrl = "";
                 mainDB.execSQL("INSERT INTO items ('item' ,'category' ,'amount' ,'addtime' ,'expiretime' ,'imageurl' ,'owner' ,'groupname' )VALUES ('" + name + "', 'friut', '" + amount + "', '" + currentDate + "', '" + selectedDate + "','" + imgUrl + "','" + UserStatus.username + "', '" + UserStatus.groupName + "')");
-                uploadInBackgroundService(getApplicationContext());
+                uploadInBackgroundService();
                 // possible UI fresh...
 
 //                finish();
@@ -271,7 +273,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
 
     private File createImageFile() throws IOException {
         // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd:HHmmss").format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = UserStatus.username + "_" + timeStamp;
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
@@ -311,7 +313,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
     /*Author: geotv
     * reference from: https://github.com/gotev/android-upload-service
     * */
-    public void uploadInBackgroundService(final Context context) {
+    public void uploadInBackgroundService() {
         try {
 //            MultipartUploadRequest req=new MultipartUploadRequest(context,"http://178.62.93.103/SharingFridge/upload.php");
 //
@@ -322,19 +324,45 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
 //                            .setMaxRetries(2)
 //                            .setDelegate(this)
 //                            .startUpload();
-
+            Log.v("picPath", imageAbsolutePath);
             MultipartUploadRequest req = new MultipartUploadRequest(this, "http://178.62.93.103/SharingFridge/upload2.php")
                     .addFileToUpload(imageAbsolutePath, "file")
                     .setNotificationConfig(new UploadNotificationConfig())
                     .setUsesFixedLengthStreamingMode(true)
                     .setMaxRetries(3);
 
-            String uploadId = req.setDelegate(this).startUpload();
+            req.setUtf8Charset();
+
+            String uploadId = req.setDelegate(new UploadStatusDelegate() {
+                @Override
+                public void onProgress(UploadInfo uploadInfo) {
+                    Toast.makeText(AddActivity.this, "InProgress", Toast.LENGTH_SHORT).show();
+                    Log.v("=network=", uploadInfo.getUploadRateString());
+                }
+
+                @Override
+                public void onError(UploadInfo uploadInfo, Exception exception) {
+                    Toast.makeText(AddActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onCompleted(UploadInfo uploadInfo, ServerResponse serverResponse) {
+                    Toast.makeText(AddActivity.this, "Completed", Toast.LENGTH_SHORT).show();
+                    Log.v("=network=", serverResponse.getBodyAsString());
+                }
+
+                @Override
+                public void onCancelled(UploadInfo uploadInfo) {
+                    Toast.makeText(AddActivity.this, "Cancelled", Toast.LENGTH_SHORT).show();
+                }
+            }).startUpload();
+
             Log.i("upload", "id:" + uploadId);
         } catch (Exception exc) {
             Log.e("AndroidUploadService", exc.getMessage(), exc);
         }
     }
+
 
     public void addCan(int addday, int addmonth, int addyear, String name, String amount) {
         String calId = "";
