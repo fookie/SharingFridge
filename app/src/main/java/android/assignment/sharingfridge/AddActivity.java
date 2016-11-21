@@ -3,7 +3,6 @@ package android.assignment.sharingfridge;
 import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -13,7 +12,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.CalendarContract;
 import android.provider.MediaStore;
@@ -21,7 +22,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -33,17 +33,23 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.ServerResponse;
 import net.gotev.uploadservice.UploadInfo;
 import net.gotev.uploadservice.UploadNotificationConfig;
-import net.gotev.uploadservice.UploadService;
 import net.gotev.uploadservice.UploadStatusDelegate;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -60,12 +66,12 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
     public EditText dateEditText;
     private ImageView itemDisplay;
     private Button cameraButton;
-    //private Button calendarButton;
     private CheckBox checkBox;
     private Button addButton;
 
-    private String imageRelativePath, imageAbsolutePath;
+    private String imageRelativePath, imageAbsolutePath,filename;
     private Uri imageUri;
+    private SendRequestTask mAuthTask=null;
 
     int currentYear, currentMonth, currentDay;
     private Calendar calender = Calendar.getInstance();
@@ -193,13 +199,15 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                 }
                 currentDate = new SimpleDateFormat("dd-MM-yyyy").format(new java.util.Date());
                 // database inserting...
-                //TODO:finish imgUrl
-                String imgUrl = "";
+                //TODO:finsh category
+                String imgUrl = "image/"+filename;
+                Log.d("filename",filename);
                 mainDB.execSQL("INSERT INTO items ('item' ,'category' ,'amount' ,'addtime' ,'expiretime' ,'imageurl' ,'owner' ,'groupname' )VALUES ('" + name + "', 'friut', '" + amount + "', '" + currentDate + "', '" + selectedDate + "','" + imgUrl + "','" + UserStatus.username + "', '" + UserStatus.groupName + "')");
+                mAuthTask=new SendRequestTask(name,"cata",amount,currentDate,selectedDate,imgUrl);
+                mAuthTask.execute();
                 uploadInBackgroundService();
                 // possible UI fresh...
-
-//                finish();
+                finish();
             }
         });
 
@@ -210,6 +218,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
 //            Bitmap photo = (Bitmap) data.getExtras().get("data");
             // itemDisplay.setMinimumHeight(100);
             File photoFile = new File(imageAbsolutePath);
+            filename=photoFile.getName();
             Uri uri = Uri.fromFile(photoFile);
             Bitmap photo = null;
             try {
@@ -315,15 +324,6 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
     * */
     public void uploadInBackgroundService() {
         try {
-//            MultipartUploadRequest req=new MultipartUploadRequest(context,"http://178.62.93.103/SharingFridge/upload.php");
-//
-//
-//            String uploadId = new MultipartUploadRequest(context, "http://178.62.93.103/SharingFridge/upload2.php")
-//                            .addFileToUpload(imageAbsolutePath, "file")
-//                            .setNotificationConfig(new UploadNotificationConfig())
-//                            .setMaxRetries(2)
-//                            .setDelegate(this)
-//                            .startUpload();
             Log.v("picPath", imageAbsolutePath);
             MultipartUploadRequest req = new MultipartUploadRequest(this, "http://178.62.93.103/SharingFridge/upload2.php")
                     .addFileToUpload(imageAbsolutePath, "file")
@@ -471,4 +471,90 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
     public void onCancelled(UploadInfo uploadInfo) {
 
     }
+
+
+    private class SendRequestTask extends AsyncTask<String, Void, String> {
+        private String urlString = "http://178.62.93.103/SharingFridge/share.php";
+        private String item,category,amount,addtime,expiretime,imageurl;
+
+        public SendRequestTask(String item,String category,String amount,String addtime,String expiretime,String imageurl) {
+            this.item=item;
+            this.category=category;
+            this.amount=amount;
+            this.addtime=addtime;
+            this.expiretime=expiretime;
+            this.imageurl=imageurl;
+        }
+
+        protected String doInBackground(String... params) {
+            return performPostCall();
+        }
+
+        public String performPostCall() {
+            Log.d("send post", "performPostCall");
+            String response = "";
+            try {
+                URL url = new URL(urlString);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setReadTimeout(10000);
+                conn.setConnectTimeout(15000);/* milliseconds */
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+                //make json object
+                JSONObject jo = new JSONObject();
+                jo.put("item", item);
+                jo.put("category", category);
+                jo.put("amount", amount);
+                jo.put("addtime", addtime);
+                jo.put("expiretime", expiretime);
+                jo.put("imageurl", imageurl);
+                jo.put("owner", UserStatus.username);
+                jo.put("groupname", UserStatus.groupName);
+
+                String tosend = jo.toString();
+                Log.d("JSON", tosend);
+
+                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
+                outputStreamWriter.write("share=" + tosend);
+                outputStreamWriter.flush();
+                outputStreamWriter.close();
+
+                int responseCode = conn.getResponseCode();
+
+                InputStream inputStream = conn.getInputStream();
+
+                // Convert the InputStream into a string
+                int length = 500;
+                String contentAsString = convertInputStreamToString(inputStream, length);
+                return contentAsString;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return response;
+        }
+
+        public String convertInputStreamToString(InputStream stream, int length) throws IOException {
+            Reader reader = null;
+            reader = new InputStreamReader(stream, "UTF-8");
+            char[] buffer = new char[length];
+            reader.read(buffer);
+            return new String(buffer);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            mAuthTask = null;
+            String permission;
+            try {
+                JSONObject confirm = new JSONObject(result);
+                permission = confirm.get("result").toString();
+            } catch (JSONException je) {
+                Log.d("UPLOAD DB","failed!");
+                je.printStackTrace();
+            }
+        }
+    }
+
+
 }
