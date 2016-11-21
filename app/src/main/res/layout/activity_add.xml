@@ -75,6 +75,14 @@
 
         </LinearLayout>
 
+        <EditText
+            android:id="@+id/categoryEditText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:ems="10"
+            android:focusable="false"
+            android:hint="@string/choose_category" />
+
         <ImageView
             android:id="@+id/addItemImageView"
             android:layout_width="match_parent"

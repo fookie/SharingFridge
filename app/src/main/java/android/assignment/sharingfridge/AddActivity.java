@@ -1,7 +1,9 @@
 package android.assignment.sharingfridge;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -23,6 +25,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -51,8 +54,10 @@ import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
@@ -64,10 +69,14 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
     private EditText nameEditText;
     private EditText amountEditText;
     public EditText dateEditText;
+    public EditText categoryEditText;
     private ImageView itemDisplay;
     private Button cameraButton;
     private CheckBox checkBox;
     private Button addButton;
+
+    private static final String[] CATEGORYS = new String[]{"Fruit", "Vegetable", "Pork", "Chicken", "Beef", "Fish", "Others"};
+
 
     private String imageRelativePath, imageAbsolutePath,filename;
     private Uri imageUri;
@@ -88,8 +97,10 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
     public int canDay;
     public String name;
     public String amount;
+    public String cat;
     public String selectedDate;
     public String currentDate;
+    public String selectedCategory = null;
     public boolean checkCondition;
 
     private SQLiteDatabase mainDB;
@@ -115,6 +126,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
         nameEditText = (EditText) findViewById(R.id.nameEditText);
         amountEditText = (EditText) findViewById(R.id.amountEditText);
         dateEditText = (EditText) findViewById(R.id.dateEditText);
+        categoryEditText = (EditText) findViewById(R.id.categoryEditText);
         itemDisplay = (ImageView) findViewById(R.id.addItemImageView);
         cameraButton = (Button) findViewById(R.id.cameraButton);
         addButton = (Button) findViewById(R.id.addButton);
@@ -148,6 +160,36 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
             }
         });
 
+        categoryEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.categoryEditText:
+                        View outerView = LayoutInflater.from(AddActivity.this).inflate(R.layout.wheel_view, null);
+                        WheelView wv = (WheelView) outerView.findViewById(R.id.wheel_v);
+                        wv.setOffset(2);
+                        wv.setItems(Arrays.asList(CATEGORYS));
+                        wv.setSeletion(3);
+                        wv.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
+                            @Override
+                            public void onSelected(int selectedIndex, String cate) {
+                                categoryEditText.setText(cate);
+                                selectedCategory = cate;
+                            }
+                        });
+
+                        new AlertDialog.Builder(AddActivity.this)
+                                .setTitle("WheelView in Dialog")
+                                .setView(outerView)
+                                .setPositiveButton("OK", null)
+                                .show();
+
+                        break;
+                }
+
+            }
+        });
+
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -176,11 +218,15 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                 amountEditText.setError(null);
                 amount = amountEditText.getText().toString();
                 name = nameEditText.getText().toString();
+                cat = categoryEditText.getText().toString();
                 if (name.isEmpty()) {
                     nameEditText.setError(getString(R.string.need_name));
                     return;
                 } else if (amount.isEmpty()) {
                     amountEditText.setError(getString(R.string.need_amount));
+                    return;
+                } else if (cat.isEmpty()) {
+                    categoryEditText.setError(getString(R.string.need_category));
                     return;
                 } else if (canYear < currentYear) {
                     dateEditText.setError(getString(R.string.wrong_date));
@@ -202,8 +248,8 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                 //TODO:finsh category
                 String imgUrl = "image/"+filename;
                 Log.d("filename",filename);
-                mainDB.execSQL("INSERT INTO items ('item' ,'category' ,'amount' ,'addtime' ,'expiretime' ,'imageurl' ,'owner' ,'groupname' )VALUES ('" + name + "', 'friut', '" + amount + "', '" + currentDate + "', '" + selectedDate + "','" + imgUrl + "','" + UserStatus.username + "', '" + UserStatus.groupName + "')");
-                mAuthTask=new SendRequestTask(name,"cata",amount,currentDate,selectedDate,imgUrl);
+                mainDB.execSQL("INSERT INTO items ('item' ,'category' ,'amount' ,'addtime' ,'expiretime' ,'imageurl' ,'owner' ,'groupname' )VALUES ('" + name + "', '" + selectedCategory + "', '" + amount + "', '" + currentDate + "', '" + selectedDate + "','" + imgUrl + "','" + UserStatus.username + "', '" + UserStatus.groupName + "')");
+                mAuthTask=new SendRequestTask(name,selectedCategory,amount,currentDate,selectedDate,imgUrl);
                 mAuthTask.execute();
                 uploadInBackgroundService();
                 // possible UI fresh...

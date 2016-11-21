@@ -32,6 +32,7 @@
     <string name="type_name_hint">在此输入物品名称...</string>
     <string name="quantity">有多少？</string>
     <string name="choose_date">选择日期</string>
+    <string name="choose_category">选择类别</string>
     <string name="login_hint">请登陆</string>
     <string name="nousr_group_hint">登陆以启用组功能</string>
     <string name="group_sta_hint">个物品，总量：</string>
@@ -43,6 +44,7 @@
     <string name="mem_frg">小组成员</string>
     <string name="need_amount">请输入数量</string>
     <string name="need_name">请输入名称</string>
+    <string name="need_category">请选择类别</string>
     <string name="set_frg">设置</string>
     <string name="wrong_date">日期不正确</string>
     <string name="Unknown">未知</string>

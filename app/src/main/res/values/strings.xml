@@ -29,6 +29,7 @@
     <string name="amount">Amount:</string>
     <string name="quantity">quantity</string>
     <string name="choose_date">choose the date</string>
+    <string name="choose_category">choose a category</string>
     <string name="ex_date">Expire Date:</string>
     <string name="take_photo">TAKE A PHOTO</string>
     <string name="add_calendar">Add to Calendar</string>
@@ -42,6 +43,7 @@
     <string name="need_name">Need a item name</string>
     <string name="need_group_name">Please enter a group name</string>
     <string name="need_amount">Need an amount</string>
+    <string name="need_category">Need a category</string>
     <string name="wrong_date">this date is not available</string>
     <string name="loged_in_as">You have logged in as</string>
     <string name="mem_frg">Member</string>
