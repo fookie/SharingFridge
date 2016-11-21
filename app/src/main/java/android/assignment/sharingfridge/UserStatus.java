@@ -9,6 +9,7 @@ public final class UserStatus {
     public static String username="Click here to login";
     public static boolean inGroup=false;
     public static String groupName ="local";
+    public static boolean hasChanged=false;
 
     public static void resetStatus(){
         username = "Click here to login";

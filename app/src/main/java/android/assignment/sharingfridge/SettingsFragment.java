@@ -157,15 +157,16 @@ public class SettingsFragment extends Fragment {
         int dayIndex = 0;
         int weekLength = dayNumOfWeek(dayOfWeek);
         int weekLengthPlus1 = weekLength + 1;
-        while(dayIndex<=weekLength){
-            String dayToCheck = getDateString(formattedDate, dayIndex-weekLength);
-            Cursor cursor = mainDB.rawQuery("SELECT count(*) from items where groupname = '" + UserStatus.groupName + "' and expiretime = " + dayToCheck + "", null);
+        while(dayIndex<=6){
+            String dayToCheck = getDateString(formattedDate, dayIndex + 1 - weekLength);
+            Cursor cursor = mainDB.rawQuery("SELECT * FROM items WHERE groupname = '" + UserStatus.groupName + "'", null);
+//            Cursor cursor = mainDB.rawQuery("SELECT * FROM items WHERE groupname = '" + UserStatus.groupName + "' AND expiretime = '" + dayToCheck + "'", null);
             int count = cursor.getCount();
             while(cursor.moveToNext()){
                 int dayTotal = cursor.getInt(0);// index 0 stands for sum(amount)
-                frigeDataSet[0][dayIndex] = dayTotal;
+                frigeDataSet[0][dayIndex] = count;
             }
-            Log.i("=linedata=","dayToCheck: " + dayToCheck + "dayOfWeek: " + dayOfWeek +  " data: " + frigeDataSet[0][dayIndex]);
+            Log.i("=linedata=","dayToCheck: " + dayToCheck + " dayOfWeek: " + dayOfWeek +  " data: " + frigeDataSet[0][dayIndex]);
             cursor.close();
             dayIndex++;
         }

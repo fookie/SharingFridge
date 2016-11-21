@@ -117,12 +117,17 @@ public class MemberFragment extends Fragment {
             memberViewAdapter = new MemberViewAdapter(getContext(), memberItemList, "http://178.62.93.103/SharingFridge/");
             memberView.setAdapter(memberViewAdapter);
             memberViewAdapter.notifyDataSetChanged();
+        } else {
+            Log.d("updateUI", "not added, failed.");
         }
     }
 
     public void onResume(){
         super.onResume();
-        updateUI();
+        memberItemList = initMemberList();
+        memberViewAdapter = new MemberViewAdapter(getContext(), memberItemList, "http://178.62.93.103/SharingFridge/");
+        memberView.setAdapter(memberViewAdapter);
+        memberViewAdapter.notifyDataSetChanged();
     }
 
 
@@ -141,9 +146,9 @@ public class MemberFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         loginRefreshListener = null;
-//        if (mainDB != null) {
-//            mainDB.close();
-//        }
+        if (mainDB != null) {
+            mainDB.close();
+        }
     }
 
     /**
@@ -158,7 +163,7 @@ public class MemberFragment extends Fragment {
      */
     public interface OnLoginStatusListener {
         // TODO: Update argument type and name
-        void refreshDueToLogin();
+        void refreshDueToUserChange();
     }
 
     public List<MemberItem> initMemberList() {

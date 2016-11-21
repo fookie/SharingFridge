@@ -170,6 +170,8 @@ public class HomeActivity extends AppCompatActivity
                 editor.putString("username","_null");//clear the shared preference
                 editor.putString("groupName","_null");
                 editor.commit();
+                UserStatus.hasChanged = true;
+                friFrag.setNewUserDataNotLoaded();
                 Toast.makeText(getApplicationContext(), "You have successfully logged out", Toast.LENGTH_SHORT);
                 friFrag.updateUI();
                 memFrag.updateUI();
@@ -264,6 +266,16 @@ public class HomeActivity extends AppCompatActivity
         super.onResume();
         refreshUserStatus();
 //        friFrag.updateUI();
+        memFrag.updateUI();
+        if (UserStatus.hasChanged && UserStatus.hasLogin) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            //transaction.setCustomAnimations(R.anim.push_up_in,R.anim.push_up_out);
+            transaction.replace(R.id.fragment_container_home, myFragments.get(0));
+            transaction.commit();
+            tabController.setSelect(0);
+            UserStatus.hasChanged = false;
+        }
+        Log.i("resume", "Activity resumed. Should've updated.");
     }
 
     public void refreshUserStatus() {
@@ -282,5 +294,4 @@ public class HomeActivity extends AppCompatActivity
             avatarView.setImageDrawable(icon);
         }
     }
-
 }

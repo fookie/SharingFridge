@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -225,6 +226,7 @@ public class LoginActivity extends AppCompatActivity {
                 // Convert the InputStream into a string
                 int length = 500;
                 String contentAsString = convertInputStreamToString(inputStream, length);
+                conn.disconnect();
                 return contentAsString;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -267,6 +269,8 @@ public class LoginActivity extends AppCompatActivity {
                         editor.putString("groupName","_null");
                         editor.commit();
                     }
+                    UserStatus.hasChanged = true;
+                    Toast.makeText(getApplicationContext(), "You have loggen in as " + UserStatus.username, Toast.LENGTH_LONG);
                     finish();
                 }
             } catch (JSONException je) {
