@@ -187,7 +187,7 @@ public class FridgeFragment extends Fragment {
     }
 
 
-    public List<FridgeItem> refreshFridgeList() {
+    private List<FridgeItem> refreshFridgeList() {
         if (!isDataLoaded) {
             Log.d("database", "database updating..");
             updateFromServer();
@@ -333,7 +333,7 @@ public class FridgeFragment extends Fragment {
 
             } catch (Exception je) {
                 //je.printStackTrace();
-                Log.d("database", "jsonLen: " + jsonlen + "Problem when updating :" + je);
+                Log.d("database", "Problem when updating :" + je);
                 isDataLoaded = false;
             }
             taskDB.close();
