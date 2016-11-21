@@ -33,8 +33,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+
 import net.gotev.uploadservice.MultipartUploadRequest;
+import net.gotev.uploadservice.ServerResponse;
+import net.gotev.uploadservice.UploadInfo;
 import net.gotev.uploadservice.UploadNotificationConfig;
+import net.gotev.uploadservice.UploadService;
+import net.gotev.uploadservice.UploadStatusDelegate;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -42,12 +47,11 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
-import static android.assignment.sharingfridge.R.id.nameEditText;
-import static java.lang.System.out;
-
-public class AddActivity extends AppCompatActivity {
+public class AddActivity extends AppCompatActivity implements UploadStatusDelegate {
 
     private final int CAMERA_CODE = 330;
 
@@ -192,16 +196,16 @@ public class AddActivity extends AppCompatActivity {
                 //TODO:finish imgUrl
                 String imgUrl = "";
                 mainDB.execSQL("INSERT INTO items ('item' ,'category' ,'amount' ,'addtime' ,'expiretime' ,'imageurl' ,'owner' ,'groupname' )VALUES ('" + name + "', 'friut', '" + amount + "', '" + currentDate + "', '" + selectedDate + "','" + imgUrl + "','" + UserStatus.username + "', '" + UserStatus.groupName + "')");
-                uploadInBackgroundService(getApplicationContext());
+                uploadInBackgroundService();
                 // possible UI fresh...
 
-                finish();
+//                finish();
             }
         });
 
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_CODE && resultCode == RESULT_OK) {
 //            Bitmap photo = (Bitmap) data.getExtras().get("data");
             // itemDisplay.setMinimumHeight(100);
@@ -210,7 +214,7 @@ public class AddActivity extends AppCompatActivity {
             Bitmap photo = null;
             try {
                 photo = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                photo.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                //   photo.compress(Bitmap.CompressFormat.JPEG, 100, null);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -239,10 +243,11 @@ public class AddActivity extends AppCompatActivity {
             Bitmap rotationBitmap = null;
             try {
                 rotationBitmap = Bitmap.createBitmap(photo, 0, 0, photo.getWidth(), photo.getHeight(), rotationMatrix, true);
-            } catch (OutOfMemoryError e) { }
-            if(rotationBitmap != photo)
+            } catch (OutOfMemoryError e) {
+            }
+            if (rotationBitmap != photo)
                 photo.recycle();
-            if(rotationBitmap == null)
+            if (rotationBitmap == null)
                 rotationBitmap = photo;
 
             WindowManager wm = this.getWindowManager();
@@ -260,52 +265,15 @@ public class AddActivity extends AppCompatActivity {
             matrix.postScale(scaleWidth, scaleHeight);
             Bitmap newBitmap = Bitmap.createBitmap(rotationBitmap, 0, 0, bitmapWidth, bitmapHeight, matrix, true);
             rotationBitmap.recycle();
-
-//            itemDisplay.setImageBitmap(newBitmap);
             itemDisplay.setImageBitmap(newBitmap);
 //            itemDisplay.setImageBitmap(photo);
         }
     }
 
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (requestCode == CAMERA_CODE && resultCode == RESULT_OK) {
-////            Bitmap photo = (Bitmap) data.getExtras().get("data");
-//            // itemDisplay.setMinimumHeight(100);
-//            File photoFile = new File(imageAbsolutePath);
-//            Uri uri = Uri.fromFile(photoFile);
-//            Bitmap photo = null;
-//            try {
-//                photo = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-//                photo.compress(Bitmap.CompressFormat.JPEG, 100, out);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            int rotation = 0;
-//
-//
-//            WindowManager wm = this.getWindowManager();
-//            int width = wm.getDefaultDisplay().getWidth();
-//            int height = width;
-//            BitmapFactory.Options options = new BitmapFactory.Options();
-//            options.inJustDecodeBounds = false;
-//            int bitmapWidth = photo.getWidth();
-//            int bitmapHeight = photo.getHeight();
-//            Matrix matrix = new Matrix();
-//            float scaleWidth = (float) (width / bitmapWidth) / 2;
-//            float scaleHeight = (float) (height / bitmapHeight) / 2;
-//
-//            matrix.postScale((float)5.0,(float)5.0);
-//            Bitmap newBitmap = Bitmap.createBitmap(photo, 0, 0, width, height, matrix, true);
-//            photo.recycle();
-//
-//            itemDisplay.setImageBitmap(newBitmap);
-////            itemDisplay.setImageBitmap(photo);
-//        }
-//    }
 
     private File createImageFile() throws IOException {
         // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd:HHmmss").format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = UserStatus.username + "_" + timeStamp;
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
@@ -341,26 +309,60 @@ public class AddActivity extends AppCompatActivity {
         }
     }
 
-    private void takePhoto() {
-        Intent photoIntent = new Intent();
-    }
 
     /*Author: geotv
     * reference from: https://github.com/gotev/android-upload-service
     * */
-    public void uploadInBackgroundService(final Context context) {
+    public void uploadInBackgroundService() {
         try {
-            String uploadId =
-                    new MultipartUploadRequest(context, "http://178.62.93.103/SharingFridge/image")
-                            .addFileToUpload(imageAbsolutePath, "sample")
-                            .setNotificationConfig(new UploadNotificationConfig())
-                            .setMaxRetries(2)
-                            .startUpload();
-            Log.i("upload","???");
+//            MultipartUploadRequest req=new MultipartUploadRequest(context,"http://178.62.93.103/SharingFridge/upload.php");
+//
+//
+//            String uploadId = new MultipartUploadRequest(context, "http://178.62.93.103/SharingFridge/upload2.php")
+//                            .addFileToUpload(imageAbsolutePath, "file")
+//                            .setNotificationConfig(new UploadNotificationConfig())
+//                            .setMaxRetries(2)
+//                            .setDelegate(this)
+//                            .startUpload();
+            Log.v("picPath", imageAbsolutePath);
+            MultipartUploadRequest req = new MultipartUploadRequest(this, "http://178.62.93.103/SharingFridge/upload2.php")
+                    .addFileToUpload(imageAbsolutePath, "file")
+                    .setNotificationConfig(new UploadNotificationConfig())
+                    .setUsesFixedLengthStreamingMode(true)
+                    .setMaxRetries(3);
+
+            req.setUtf8Charset();
+
+            String uploadId = req.setDelegate(new UploadStatusDelegate() {
+                @Override
+                public void onProgress(UploadInfo uploadInfo) {
+                    Toast.makeText(AddActivity.this, "InProgress", Toast.LENGTH_SHORT).show();
+                    Log.v("=network=", uploadInfo.getUploadRateString());
+                }
+
+                @Override
+                public void onError(UploadInfo uploadInfo, Exception exception) {
+                    Toast.makeText(AddActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onCompleted(UploadInfo uploadInfo, ServerResponse serverResponse) {
+                    Toast.makeText(AddActivity.this, "Completed", Toast.LENGTH_SHORT).show();
+                    Log.v("=network=", serverResponse.getBodyAsString());
+                }
+
+                @Override
+                public void onCancelled(UploadInfo uploadInfo) {
+                    Toast.makeText(AddActivity.this, "Cancelled", Toast.LENGTH_SHORT).show();
+                }
+            }).startUpload();
+
+            Log.i("upload", "id:" + uploadId);
         } catch (Exception exc) {
             Log.e("AndroidUploadService", exc.getMessage(), exc);
         }
     }
+
 
     public void addCan(int addday, int addmonth, int addyear, String name, String amount) {
         String calId = "";
@@ -374,25 +376,6 @@ public class AddActivity extends AppCompatActivity {
 
         String title = "" + name;
         String des = "amount:" + amount;
-
-//        String day_str="";
-//        String month_str="";
-
-//        EditText title_text=(EditText)  findViewById(R.id.editText);
-//        EditText des_text=(EditText)findViewById(R.id.editText2);
-//        EditText day_text=(EditText)findViewById(R.id.editText3);
-//        EditText month_text=(EditText)findViewById(R.id.editText4);
-
-//        title = title_text .getText().toString();
-//        des = des_text .getText().toString();
-//        day_str = day_text.getText().toString();
-//        month_str = month_text.getText().toString();
-
-//        int day=Integer.parseInt(day_str);
-//        int month=Integer.parseInt(month_str)-1;
-
-//        int day= Integer.parseInt(date.substring(0,1));
-//        int month=Integer.parseInt(date.substring(3,4));
         int day = addday;
         int month = addmonth;
         int year = addyear;
@@ -451,6 +434,41 @@ public class AddActivity extends AppCompatActivity {
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+
+    }
+
+    @Override
+    public void onProgress(UploadInfo uploadInfo) {
+        Log.i(TAG, String.format(Locale.getDefault(), "ID: %1$s (%2$d%%) at %3$.2f Kbit/s",
+                uploadInfo.getUploadId(), uploadInfo.getProgressPercent(),
+                uploadInfo.getUploadRate()));
+    }
+
+    @Override
+    public void onError(UploadInfo uploadInfo, Exception exception) {
+
+    }
+
+    @Override
+    public void onCompleted(UploadInfo uploadInfo, ServerResponse serverResponse) {
+        Log.i(TAG, String.format(Locale.getDefault(),
+                "ID %1$s: completed in %2$ds at %3$.2f Kbit/s. Response code: %4$d, body:[%5$s]",
+                uploadInfo.getUploadId(), uploadInfo.getElapsedTime() / 1000,
+                uploadInfo.getUploadRate(), serverResponse.getHttpCode(),
+                serverResponse.getBodyAsString()));
+        for (Map.Entry<String, String> header : serverResponse.getHeaders().entrySet()) {
+            Log.i("Header", header.getKey() + ": " + header.getValue());
+        }
+
+        Log.e(TAG, "Printing response body bytes");
+        byte[] ba = serverResponse.getBody();
+        for (int j = 0; j < ba.length; j++) {
+            Log.e(TAG, String.format("%02X ", ba[j]));
+        }
+    }
+
+    @Override
+    public void onCancelled(UploadInfo uploadInfo) {
 
     }
 }

@@ -24,6 +24,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    compile 'net.gotev:uploadservice:3.0.3'
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.android.support:design:23.4.0'
     compile 'me.majiajie:pager-bottom-tab-strip:1.0.0'
@@ -36,5 +37,4 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.google.android.gms:play-services-maps:9.6.1'
     compile files('libs/hellocharts-library-1.5.8.jar')
-    compile 'net.gotev:uploadservice:3.0.3'
 }
