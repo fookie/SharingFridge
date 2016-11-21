@@ -53,7 +53,7 @@ public class FridgeFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private static final int JSON_MAX_SIZE = 500000;
+    private static final int JSON_MAX_SIZE = 50000;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -66,7 +66,6 @@ public class FridgeFragment extends Fragment {
     private SQLiteDatabase mainDB;
     private OnFragmentInteractionListener mListener;
     private boolean isDataLoaded = false;
-    private boolean needToUpdateUI = true;
 
     public FridgeFragment() {
         // Required empty public constructor
@@ -187,10 +186,6 @@ public class FridgeFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    public interface OnLoginUpdateListener {
-        void onLoginUpdate();
-    }
-
 
     public List<FridgeItem> refreshFridgeList() {
         if (!isDataLoaded) {
@@ -201,11 +196,7 @@ public class FridgeFragment extends Fragment {
         }
 
         List<FridgeItem> itemsList = new ArrayList<>();
-        Log.d("database2", "Group: " + UserStatus.groupName);
         Cursor cursor = mainDB.rawQuery("SELECT * from items where groupname = '" + UserStatus.groupName + "'", null);
-        Cursor cursor2 = mainDB.rawQuery("SELECT * from items", null);
-        Log.d("database233", "groupCount: " + cursor.getCount());
-        Log.d("database233", "ALLCount : " + cursor2.getCount());
         while (cursor.moveToNext()) {
             String expday = getString(R.string.Unknown);
             Calendar cal = Calendar.getInstance();
@@ -220,7 +211,7 @@ public class FridgeFragment extends Fragment {
             }
             FridgeItem tempfi = new FridgeItem(cursor.getString(cursor.getColumnIndex("item")), expday, cursor.getString(cursor.getColumnIndex("imageurl")), cursor.getString(cursor.getColumnIndex("owner")), cursor.getString(cursor.getColumnIndex("category")), cursor.getInt(cursor.getColumnIndex("amount")));
             itemsList.add(tempfi);
-//            Log.i("usertest", cursor.getString(cursor.getColumnIndex("item")) + "???");
+            Log.i("usertest", cursor.getString(cursor.getColumnIndex("item")) + "???");
         }
         cursor.close();
         return itemsList;
@@ -238,7 +229,7 @@ public class FridgeFragment extends Fragment {
 
     }
 
-    public void updateFromServer() {
+    private void updateFromServer() {
         if (!UserStatus.groupName.equals("local")) {
             mAuthTask = new SendRequestTask(UserStatus.groupName);
             mAuthTask.execute("");
@@ -323,12 +314,9 @@ public class FridgeFragment extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             mAuthTask = null;
-            int jsonlen = 0;
             try {
                 JSONArray jr = new JSONArray(result);
-                jsonlen = jr.length();
                 taskDB.execSQL("delete from items where groupname != 'local'");
-                Log.d("database3", "data Wiped!");
                 for (int i = 0; i < jr.length(); i++) {
                     JSONObject jo = jr.getJSONObject(i);
                     try {//remove all the data except local group data
