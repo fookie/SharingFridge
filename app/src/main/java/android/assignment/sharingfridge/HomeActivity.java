@@ -247,7 +247,7 @@ public class HomeActivity extends AppCompatActivity
                 .addTabItem(tabItemBuilder)
                 .addTabItem(R.drawable.ic_member, getString(R.string.mem_frg), tabColors[1])
                 .addTabItem(R.drawable.ic_map,  getString(R.string.map_frg), tabColors[2])
-                .addTabItem(R.drawable.ic_settings,  getString(R.string.set_frg), tabColors[3])
+                .addTabItem(R.drawable.ic_statistics,  getString(R.string.set_frg), tabColors[3])
 //                .setMode(TabLayoutMode.HIDE_TEXT)
 //                .setMode(TabLayoutMode.CHANGE_BACKGROUND_COLOR)
 //                .setMode(TabLayoutMode.HIDE_TEXT| TabLayoutMode.CHANGE_BACKGROUND_COLOR)
