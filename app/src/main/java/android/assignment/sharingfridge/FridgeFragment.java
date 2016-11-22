@@ -147,8 +147,12 @@ public class FridgeFragment extends Fragment {
         super.onResume();
         if (true) {
             if (!isDataLoaded) {
-                Log.d("database", "database updating..");
-                updateFromServer();
+                if(!UserStatus.hasLogin){
+                    updateUI();
+                }else {
+                    Log.d("database", "database updating..");
+                    updateFromServer();
+                }
             } else {
                 Log.d("database", "not updated, using local database instead");
                 fridgeItemList = refreshFridgeList();
@@ -223,7 +227,7 @@ public class FridgeFragment extends Fragment {
             fridgeView.setAdapter(fridgeViewAdapter);
             fridgeViewAdapter.notifyDataSetChanged();
         } else {
-            Log.d("updateUI", "not added, failed.");
+            Log.d("updateUI", "FF - not added, failed.");
         }
 
     }

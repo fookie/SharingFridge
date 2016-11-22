@@ -167,7 +167,8 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                         WheelView wv = (WheelView) outerView.findViewById(R.id.wheel_v);
                         wv.setOffset(2);
                         wv.setItems(Arrays.asList(CATEGORYS));
-                        wv.setSeletion(3);
+                        wv.setSeletion(3);//chicken
+                        selectedCategory="Chicken";//default value 好像没用
                         wv.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
                             @Override
                             public void onSelected(int selectedIndex, String cate) {
