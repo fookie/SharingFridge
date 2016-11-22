@@ -46,7 +46,7 @@
     <string name="loged_in_as">You have logged in as</string>
     <string name="mem_frg">Member</string>
     <string name="map_frg">Map</string>
-    <string name="set_frg">Settings</string>
+    <string name="set_frg">Statics</string>
     <string name="hom_frg">Home</string>
     <string name="refresh">refresh</string>
     <string name="success">success</string>

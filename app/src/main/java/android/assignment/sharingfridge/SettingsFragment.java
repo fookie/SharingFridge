@@ -65,7 +65,7 @@ public class SettingsFragment extends Fragment {
     private boolean hasPoints = true;
     private ValueShape shape = ValueShape.CIRCLE;
     private boolean isFilled = false;
-    private boolean hasLabels = false;
+    private boolean hasLabels = true;
     private boolean isCubic = false;
     private boolean hasLabelForSelected = false;
     private boolean pointsHaveDifferentColor = false;
@@ -156,25 +156,20 @@ public class SettingsFragment extends Fragment {
         mainDB = SQLiteDatabase.openOrCreateDatabase(getContext().getFilesDir().getAbsolutePath().replace("files", "databases") + "fridge.db", null);
         int dayIndex = 0;
         int weekLength = dayNumOfWeek(dayOfWeek);
-        int weekLengthPlus1 = weekLength + 1;
         while(dayIndex<=6){
-            String dayToCheck = getDateString(formattedDate, dayIndex + 1 - weekLength);
-            Cursor cursor = mainDB.rawQuery("SELECT * FROM items WHERE groupname = '" + UserStatus.groupName + "'", null);
-//            Cursor cursor = mainDB.rawQuery("SELECT * FROM items WHERE groupname = '" + UserStatus.groupName + "' AND expiretime = '" + dayToCheck + "'", null);
+            String dayToCheck = getDateString(formattedDate, dayIndex);
+//            Cursor cursor = mainDB.rawQuery("SELECT * FROM items WHERE groupname = '" + UserStatus.groupName + "'", null);
+            Cursor cursor = mainDB.rawQuery("SELECT * FROM items WHERE groupname = '" + UserStatus.groupName + "' AND expiretime = '" + dayToCheck + "'", null);
             int count = cursor.getCount();
             while(cursor.moveToNext()){
                 int dayTotal = cursor.getInt(0);// index 0 stands for sum(amount)
                 frigeDataSet[0][dayIndex] = count;
             }
-            Log.i("=linedata=","dayToCheck: " + dayToCheck + " dayOfWeek: " + dayOfWeek +  " data: " + frigeDataSet[0][dayIndex]);
+            Log.i("=linedata=","dayToCheck: " + dayToCheck + " GroupName: " + UserStatus.groupName +  " num: " + frigeDataSet[0][dayIndex]);
             cursor.close();
             dayIndex++;
         }
 
-        while(weekLengthPlus1<7){
-            frigeDataSet[0][weekLengthPlus1] = 0;
-            weekLengthPlus1++;
-        }
         mainDB.close();
 
         List<Line> lines = new ArrayList<Line>();
@@ -209,20 +204,20 @@ public class SettingsFragment extends Fragment {
                 // axisX.setName("Week");
                 List<AxisValue> unit = new ArrayList<AxisValue>();
 
-                AxisValue sunday = new AxisValue(0);
-                unit.add(sunday.setLabel("Sun"));
-                AxisValue monday = new AxisValue(1);
-                unit.add(monday.setLabel("Mon"));
-                AxisValue tuesday = new AxisValue(2);
-                unit.add(tuesday.setLabel("Tue"));
-                AxisValue wednesday = new AxisValue(3);
-                unit.add(wednesday.setLabel("Wed"));
-                AxisValue thursday = new AxisValue(4);
-                unit.add(thursday.setLabel("Thu"));
-                AxisValue friday = new AxisValue(5);
-                unit.add(friday.setLabel("Fri"));
-                AxisValue saturday = new AxisValue(6);
-                unit.add(saturday.setLabel("Sat"));
+                AxisValue today = new AxisValue(0);
+                unit.add(today.setLabel("Today"));
+                AxisValue tomorrow = new AxisValue(1);
+                unit.add(tomorrow.setLabel("Tomorrow"));
+                AxisValue dayAfterTomw = new AxisValue(2);
+                unit.add(dayAfterTomw.setLabel("2 day"));
+                AxisValue threeDay = new AxisValue(3);
+                unit.add(threeDay.setLabel("3 day"));
+                AxisValue fourDay = new AxisValue(4);
+                unit.add(fourDay.setLabel("4 day"));
+                AxisValue fiveDay = new AxisValue(5);
+                unit.add(fiveDay.setLabel("5 day"));
+                AxisValue sixDay = new AxisValue(6);
+                unit.add(sixDay.setLabel("6 day"));
 
                 axisX.setValues(unit);
 
@@ -248,7 +243,7 @@ public class SettingsFragment extends Fragment {
 //        }
 
         mainDB = SQLiteDatabase.openOrCreateDatabase(this.getContext().getFilesDir().getAbsolutePath().replace("files", "databases") + "fridge.db", null);
-        Cursor defaultCursor = mainDB.rawQuery("SELECT SUM(amount), owner FROM items GROUP BY owner", null);
+        Cursor defaultCursor = mainDB.rawQuery("SELECT SUM(amount), owner FROM items where groupname = '" + UserStatus.groupName + "' GROUP BY owner", null);
 //        Cursor transportCursor = mainDB.rawQuery("SELECT SUM(amount) FROM spendings WHERE category = \" default \"  ",null);
         while(defaultCursor.moveToNext()){
             float eachCategoryTotal = defaultCursor.getFloat(0);
@@ -260,7 +255,7 @@ public class SettingsFragment extends Fragment {
         mainDB.close();
 
         pieData = new PieChartData(values);
-        pieData.setHasLabels(!hasLabels);
+        pieData.setHasLabels(hasLabels);
         pieData.setHasLabelsOnlyForSelected(hasLabelForSelected);
         pieData.setHasLabelsOutside(hasLabelsOutside);
         pieData.setHasCenterCircle(hasCenterCircle);

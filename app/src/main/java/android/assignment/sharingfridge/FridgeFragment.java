@@ -211,7 +211,7 @@ public class FridgeFragment extends Fragment {
             }
             FridgeItem tempfi = new FridgeItem(cursor.getString(cursor.getColumnIndex("item")), expday, cursor.getString(cursor.getColumnIndex("imageurl")), cursor.getString(cursor.getColumnIndex("owner")), cursor.getString(cursor.getColumnIndex("category")), cursor.getInt(cursor.getColumnIndex("amount")));
             itemsList.add(tempfi);
-            Log.i("usertest", cursor.getString(cursor.getColumnIndex("item")) + "???");
+            Log.i("usertest", cursor.getString(cursor.getColumnIndex("item")) + " at " + cursor.getString(cursor.getColumnIndex("expiretime")));
         }
         cursor.close();
         return itemsList;
