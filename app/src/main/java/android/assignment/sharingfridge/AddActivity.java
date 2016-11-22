@@ -24,7 +24,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -158,6 +161,8 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
             }
         });
 
+        dateEditText.setLongClickable(false);
+
         categoryEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -165,10 +170,10 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                     case R.id.categoryEditText:
                         View outerView = LayoutInflater.from(AddActivity.this).inflate(R.layout.wheel_view, null);
                         WheelView wv = (WheelView) outerView.findViewById(R.id.wheel_v);
+                        categoryEditText.setText("Chicken");
                         wv.setOffset(2);
                         wv.setItems(Arrays.asList(CATEGORYS));
-                        wv.setSeletion(3);//chicken
-                        selectedCategory="Chicken";//default value 好像没用
+                        wv.setSeletion(3);
                         wv.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
                             @Override
                             public void onSelected(int selectedIndex, String cate) {
@@ -188,6 +193,8 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
 
             }
         });
+
+        categoryEditText.setLongClickable(false);
 
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -514,6 +521,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
     public void onCancelled(UploadInfo uploadInfo) {
 
     }
+
 
 
     private class SendRequestTask extends AsyncTask<String, Void, String> {
