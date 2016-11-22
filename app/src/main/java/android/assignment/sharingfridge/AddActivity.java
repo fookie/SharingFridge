@@ -3,7 +3,6 @@ package android.assignment.sharingfridge;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -57,7 +56,6 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
@@ -78,9 +76,9 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
     private static final String[] CATEGORYS = new String[]{"Fruit", "Vegetable", "Pork", "Chicken", "Beef", "Fish", "Others"};
 
 
-    private String imageRelativePath, imageAbsolutePath,filename;
+    private String imageRelativePath, imageAbsolutePath, filename;
     private Uri imageUri;
-    private SendRequestTask mAuthTask=null;
+    private SendRequestTask mAuthTask = null;
 
     int currentYear, currentMonth, currentDay;
     private Calendar calender = Calendar.getInstance();
@@ -179,9 +177,9 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                         });
 
                         new AlertDialog.Builder(AddActivity.this)
-                                .setTitle("WheelView in Dialog")
+                                .setTitle(getString(R.string.choose_category))
                                 .setView(outerView)
-                                .setPositiveButton("OK", null)
+                                .setPositiveButton(getString(R.string.submit), null)
                                 .show();
 
                         break;
@@ -233,9 +231,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                     return;
                 } else if (canMonth < currentMonth) {
                     dateEditText.setError(getString(R.string.wrong_date));
-                    {
-                        return;
-                    }
+                    return;
                 } else if (canDay < currentDay) {
                     dateEditText.setError(getString(R.string.wrong_date));
                     return;
@@ -244,15 +240,15 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                     addCan(canDay, canMonth, canYear, name, amount);
                 }
                 currentDate = new SimpleDateFormat("dd-MM-yyyy").format(new java.util.Date());
-                // database inserting...
-                //TODO:finsh category
-                String imgUrl = "image/"+filename;
-                Log.d("filename",filename);
-                mainDB.execSQL("INSERT INTO items ('item' ,'category' ,'amount' ,'addtime' ,'expiretime' ,'imageurl' ,'owner' ,'groupname' )VALUES ('" + name + "', '" + selectedCategory + "', '" + amount + "', '" + currentDate + "', '" + selectedDate + "','" + imgUrl + "','" + UserStatus.username + "', '" + UserStatus.groupName + "')");
-                mAuthTask=new SendRequestTask(name,selectedCategory,amount,currentDate,selectedDate,imgUrl);
-                mAuthTask.execute();
-                uploadInBackgroundService();
-                // possible UI fresh...
+                String imgUrl = "image/" + filename;
+                if (UserStatus.hasLogin) {
+                    mainDB.execSQL("INSERT INTO items ('item' ,'category' ,'amount' ,'addtime' ,'expiretime' ,'imageurl' ,'owner' ,'groupname' )VALUES ('" + name + "', '" + selectedCategory + "', '" + amount + "', '" + currentDate + "', '" + selectedDate + "','" + imgUrl + "','" + UserStatus.username + "', '" + UserStatus.groupName + "')");
+                    mAuthTask = new SendRequestTask(name, selectedCategory, amount, currentDate, selectedDate, imgUrl);
+                    mAuthTask.execute();
+                    uploadInBackgroundService();
+                } else {//do not upload when did not login also set the user name as "local user"
+                    mainDB.execSQL("INSERT INTO items ('item' ,'category' ,'amount' ,'addtime' ,'expiretime' ,'imageurl' ,'owner' ,'groupname' )VALUES ('" + name + "', '" + selectedCategory + "', '" + amount + "', '" + currentDate + "', '" + selectedDate + "','" + imageAbsolutePath + "','" + "local user" + "', '" + UserStatus.groupName + "')");
+                }
                 finish();
             }
         });
@@ -264,7 +260,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
 //            Bitmap photo = (Bitmap) data.getExtras().get("data");
             // itemDisplay.setMinimumHeight(100);
             File photoFile = new File(imageAbsolutePath);
-            filename=photoFile.getName();
+            filename = photoFile.getName();
             Uri uri = Uri.fromFile(photoFile);
             Bitmap photo = null;
             try {
@@ -315,7 +311,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
 //            float proportionOfWL = (float) bitmapHeight/bitmapWidth;
             Matrix matrix = new Matrix();
             float scaleWidth = (float) width / (bitmapWidth * 2);
-            float scaleHeight = (float) scaleWidth * bitmapWidth / bitmapHeight;
+            float scaleHeight = scaleWidth * bitmapWidth / bitmapHeight;
 
             matrix.postScale(scaleWidth, scaleHeight);
             Bitmap newBitmap = Bitmap.createBitmap(rotationBitmap, 0, 0, bitmapWidth, bitmapHeight, matrix, true);
@@ -521,15 +517,15 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
 
     private class SendRequestTask extends AsyncTask<String, Void, String> {
         private String urlString = "http://178.62.93.103/SharingFridge/share.php";
-        private String item,category,amount,addtime,expiretime,imageurl;
+        private String item, category, amount, addtime, expiretime, imageurl;
 
-        public SendRequestTask(String item,String category,String amount,String addtime,String expiretime,String imageurl) {
-            this.item=item;
-            this.category=category;
-            this.amount=amount;
-            this.addtime=addtime;
-            this.expiretime=expiretime;
-            this.imageurl=imageurl;
+        public SendRequestTask(String item, String category, String amount, String addtime, String expiretime, String imageurl) {
+            this.item = item;
+            this.category = category;
+            this.amount = amount;
+            this.addtime = addtime;
+            this.expiretime = expiretime;
+            this.imageurl = imageurl;
         }
 
         protected String doInBackground(String... params) {
@@ -596,7 +592,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                 JSONObject confirm = new JSONObject(result);
                 permission = confirm.get("result").toString();
             } catch (JSONException je) {
-                Log.d("UPLOAD DB","failed!");
+                Log.d("UPLOAD DB", "failed!");
                 je.printStackTrace();
             }
         }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,12 +46,13 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
         holder.amountView.setText(String.valueOf(fridgeItemsList.get(position).getAmount()));
         holder.ownerView.setText(fridgeItemsList.get(position).getOwner());
         //TODO change the place holder and error
-        Glide.with(homeContext).load(serverPicsPath + fridgeItemsList.get(position).getPhotoURL())
-                .centerCrop()
-                .placeholder(R.drawable.image_loading)
-                .error(R.drawable.image_corrupt)
-                .dontAnimate()
-                .into(holder.photoView);
+        Glide.with(homeContext).load( ((fridgeItemsList.get(position).getOwner().equals("local user"))?"":serverPicsPath) + fridgeItemsList.get(position).getPhotoURL())
+                    .centerCrop()
+                    .placeholder(R.drawable.image_loading)
+                    .error(R.drawable.image_corrupt)
+                    .dontAnimate()
+                    .into(holder.photoView);
+
     }
 
     @Override
