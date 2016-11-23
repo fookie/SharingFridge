@@ -1,6 +1,7 @@
 package android.assignment.sharingfridge;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
@@ -23,11 +24,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.ActionMode;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -63,6 +62,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
+@SuppressWarnings("SpellCheckingInspection")
 public class AddActivity extends AppCompatActivity implements UploadStatusDelegate {
 
     private final int CAMERA_CODE = 330;
@@ -72,23 +72,17 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
     public EditText dateEditText;
     public EditText categoryEditText;
     private ImageView itemDisplay;
-    private Button cameraButton;
-    private CheckBox checkBox;
-    private Button addButton;
 
-    private static final String[] CATEGORYS = new String[]{"Fruit", "Vegetable", "Pork", "Chicken", "Beef", "Fish", "Others"};
+    private static String[] CATEGORIES;
 
 
-    private String imageRelativePath, imageAbsolutePath, filename;
-    private Uri imageUri;
+    private String imageAbsolutePath;
+    private String filename;
     private SendRequestTask mAuthTask = null;
 
     int currentYear, currentMonth, currentDay;
     private Calendar calender = Calendar.getInstance();
 
-    private static String calendarURL = "content://com.android.calendar/events";
-    private static String calanderEventURL = "content://com.android.calendar/events";
-    private static String calanderRemiderURL = "content://com.android.calendar/reminders";
     public static final String permission_read = Manifest.permission.READ_CALENDAR;
     public static final String permission_write = Manifest.permission.WRITE_CALENDAR;
     public static final String TAG = "CalendarActivity";
@@ -106,7 +100,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
 
     private SQLiteDatabase mainDB;
 
-    private static final int REQUEST_CODE = 0;
+    private static final int REQUEST_CODE = 0;//TODO Delete or not
     static final String[] PERMISSION = new String[]{
             permission_read,
             permission_write,
@@ -123,15 +117,15 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                 requestForSpecificPermission();
             }
         }
-
+        CATEGORIES = getResources().getStringArray(R.array.categories);
         nameEditText = (EditText) findViewById(R.id.nameEditText);
         amountEditText = (EditText) findViewById(R.id.amountEditText);
         dateEditText = (EditText) findViewById(R.id.dateEditText);
         categoryEditText = (EditText) findViewById(R.id.categoryEditText);
         itemDisplay = (ImageView) findViewById(R.id.addItemImageView);
-        cameraButton = (Button) findViewById(R.id.cameraButton);
-        addButton = (Button) findViewById(R.id.addButton);
-        checkBox = (CheckBox) findViewById(R.id.checkBox);
+        Button cameraButton = (Button) findViewById(R.id.cameraButton);
+        Button addButton = (Button) findViewById(R.id.addButton);
+        CheckBox checkBox = (CheckBox) findViewById(R.id.checkBox);
 
         mainDB = SQLiteDatabase.openOrCreateDatabase(this.getFilesDir().getAbsolutePath().replace("files", "databases") + "fridge.db", null);
         mainDB.execSQL("CREATE TABLE IF NOT EXISTS items(item char(255),category char(64),amount int,addtime char(255),expiretime char(255),imageurl char(255),owner char(255),groupname char(255))");
@@ -152,7 +146,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                                 canYear = year;
                                 canMonth = month;
                                 canDay = day;
-                                selectedDate = new SimpleDateFormat("dd-MM-yyyy").format(calender.getTime());
+                                selectedDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(calender.getTime());
                                 dateEditText.setText(selectedDate);
                             }
                         }, currentYear, currentMonth, currentDay);
@@ -170,9 +164,9 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                     case R.id.categoryEditText:
                         View outerView = LayoutInflater.from(AddActivity.this).inflate(R.layout.wheel_view, null);
                         WheelView wv = (WheelView) outerView.findViewById(R.id.wheel_v);
-                        categoryEditText.setText("Chicken");
+//                        categoryEditText.setText("Chicken");
                         wv.setOffset(2);
-                        wv.setItems(Arrays.asList(CATEGORYS));
+                        wv.setItems(Arrays.asList(CATEGORIES));
                         wv.setSeletion(3);
                         wv.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
                             @Override
@@ -196,70 +190,76 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
 
         categoryEditText.setLongClickable(false);
 
-        cameraButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-//                startActivityForResult(cameraIntent, CAMERA_CODE);
-                takeFullSizePicture();
-            }
-        });
+        if (cameraButton != null) {
+            cameraButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                    //                startActivityForResult(cameraIntent, CAMERA_CODE);
+                    takeFullSizePicture();
+                }
+            });
+        }
 
 
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    checkCondition = true;
-                } else {
-                    checkCondition = false;
+        if (checkBox != null) {
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        checkCondition = true;
+                    } else {
+                        checkCondition = false;
+                    }
                 }
-            }
-        });
+            });
+        }
 
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                nameEditText.setError(null);
-                amountEditText.setError(null);
-                amount = amountEditText.getText().toString();
-                name = nameEditText.getText().toString();
-                cat = categoryEditText.getText().toString();
-                if (name.isEmpty()) {
-                    nameEditText.setError(getString(R.string.need_name));
-                    return;
-                } else if (amount.isEmpty()) {
-                    amountEditText.setError(getString(R.string.need_amount));
-                    return;
-                } else if (cat.isEmpty()) {
-                    categoryEditText.setError(getString(R.string.need_category));
-                    return;
-                } else if (canYear < currentYear) {
-                    dateEditText.setError(getString(R.string.wrong_date));
-                    return;
-                } else if (canMonth < currentMonth) {
-                    dateEditText.setError(getString(R.string.wrong_date));
-                    return;
-                } else if (canDay < currentDay) {
-                    dateEditText.setError(getString(R.string.wrong_date));
-                    return;
+        if (addButton != null) {
+            addButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    nameEditText.setError(null);
+                    amountEditText.setError(null);
+                    amount = amountEditText.getText().toString();
+                    name = nameEditText.getText().toString();
+                    cat = categoryEditText.getText().toString();
+                    if (name.isEmpty()) {
+                        nameEditText.setError(getString(R.string.need_name));
+                        return;
+                    } else if (amount.isEmpty()) {
+                        amountEditText.setError(getString(R.string.need_amount));
+                        return;
+                    } else if (cat.isEmpty()) {
+                        categoryEditText.setError(getString(R.string.need_category));
+                        return;
+                    } else if (canYear < currentYear) {
+                        dateEditText.setError(getString(R.string.wrong_date));
+                        return;
+                    } else if (canMonth < currentMonth) {
+                        dateEditText.setError(getString(R.string.wrong_date));
+                        return;
+                    } else if (canDay < currentDay) {
+                        dateEditText.setError(getString(R.string.wrong_date));
+                        return;
+                    }
+                    if (checkCondition) {
+                        addCan(canDay, canMonth, canYear, name, amount);
+                    }
+                    currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+                    String imgUrl = "image/" + filename;
+                    if (UserStatus.hasLogin) {
+                        mainDB.execSQL("INSERT INTO items ('item' ,'category' ,'amount' ,'addtime' ,'expiretime' ,'imageurl' ,'owner' ,'groupname' )VALUES ('" + name + "', '" + selectedCategory + "', '" + amount + "', '" + currentDate + "', '" + selectedDate + "','" + imgUrl + "','" + UserStatus.username + "', '" + UserStatus.groupName + "')");
+                        mAuthTask = new SendRequestTask(name, selectedCategory, amount, currentDate, selectedDate, imgUrl);
+                        mAuthTask.execute();
+                        uploadInBackgroundService();
+                    } else {//do not upload when did not login also set the user name as "local user"
+                        mainDB.execSQL("INSERT INTO items ('item' ,'category' ,'amount' ,'addtime' ,'expiretime' ,'imageurl' ,'owner' ,'groupname' )VALUES ('" + name + "', '" + selectedCategory + "', '" + amount + "', '" + currentDate + "', '" + selectedDate + "','" + imageAbsolutePath + "','" + "local user" + "', '" + UserStatus.groupName + "')");
+                    }
+                    finish();
                 }
-                if (checkCondition) {
-                    addCan(canDay, canMonth, canYear, name, amount);
-                }
-                currentDate = new SimpleDateFormat("dd-MM-yyyy").format(new java.util.Date());
-                String imgUrl = "image/" + filename;
-                if (UserStatus.hasLogin) {
-                    mainDB.execSQL("INSERT INTO items ('item' ,'category' ,'amount' ,'addtime' ,'expiretime' ,'imageurl' ,'owner' ,'groupname' )VALUES ('" + name + "', '" + selectedCategory + "', '" + amount + "', '" + currentDate + "', '" + selectedDate + "','" + imgUrl + "','" + UserStatus.username + "', '" + UserStatus.groupName + "')");
-                    mAuthTask = new SendRequestTask(name, selectedCategory, amount, currentDate, selectedDate, imgUrl);
-                    mAuthTask.execute();
-                    uploadInBackgroundService();
-                } else {//do not upload when did not login also set the user name as "local user"
-                    mainDB.execSQL("INSERT INTO items ('item' ,'category' ,'amount' ,'addtime' ,'expiretime' ,'imageurl' ,'owner' ,'groupname' )VALUES ('" + name + "', '" + selectedCategory + "', '" + amount + "', '" + currentDate + "', '" + selectedDate + "','" + imageAbsolutePath + "','" + "local user" + "', '" + UserStatus.groupName + "')");
-                }
-                finish();
-            }
-        });
+            });
+        }
 
     }
 
@@ -301,21 +301,25 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
             rotationMatrix.postRotate(rotation);
             Bitmap rotationBitmap = null;
             try {
-                rotationBitmap = Bitmap.createBitmap(photo, 0, 0, photo.getWidth(), photo.getHeight(), rotationMatrix, true);
-            } catch (OutOfMemoryError e) {
+                rotationBitmap = Bitmap.createBitmap(photo, 0, 0, photo != null ? photo.getWidth() : 0, photo != null ? photo.getHeight() : 0, rotationMatrix, true);
+            } catch (OutOfMemoryError e) {//TODO keep or not
             }
             if (rotationBitmap != photo)
-                photo.recycle();
+                if (photo != null) {
+                    photo.recycle();
+                }
             if (rotationBitmap == null)
                 rotationBitmap = photo;
 
             WindowManager wm = this.getWindowManager();
-            int width = wm.getDefaultDisplay().getWidth();
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            wm.getDefaultDisplay().getMetrics(displayMetrics);
+            int width = displayMetrics.widthPixels;
 //            int height = wm.getDefaultDisplay().getHeight();
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = false;
-            int bitmapWidth = rotationBitmap.getWidth();
-            int bitmapHeight = rotationBitmap.getHeight();
+            int bitmapWidth = rotationBitmap != null ? rotationBitmap.getWidth() : 0;
+            int bitmapHeight = rotationBitmap != null ? rotationBitmap.getHeight() : 0;
 //            float proportionOfWL = (float) bitmapHeight/bitmapWidth;
             Matrix matrix = new Matrix();
             float scaleWidth = (float) width / (bitmapWidth * 2);
@@ -323,7 +327,9 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
 
             matrix.postScale(scaleWidth, scaleHeight);
             Bitmap newBitmap = Bitmap.createBitmap(rotationBitmap, 0, 0, bitmapWidth, bitmapHeight, matrix, true);
-            rotationBitmap.recycle();
+            if (rotationBitmap != null) {
+                rotationBitmap.recycle();
+            }
             itemDisplay.setImageBitmap(newBitmap);
 //            itemDisplay.setImageBitmap(photo);
         }
@@ -342,7 +348,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
         );
 
         // Save a file: path for use with ACTION_VIEW intents
-        imageRelativePath = "file:" + image.getAbsolutePath();
+        String imageRelativePath = "file:" + image.getAbsolutePath();//TODO Keep or not
         imageAbsolutePath = image.getAbsolutePath();
         return image;
     }
@@ -361,7 +367,6 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
             // Continue only if the File was successfully created
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(this, "com.example.android.fileprovider", photoFile);
-                imageUri = photoURI;
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, CAMERA_CODE);
             }
@@ -377,7 +382,12 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
             Log.v("picPath", imageAbsolutePath);
             MultipartUploadRequest req = new MultipartUploadRequest(this, "http://178.62.93.103/SharingFridge/upload2.php")
                     .addFileToUpload(imageAbsolutePath, "file")
-                    .setNotificationConfig(new UploadNotificationConfig())
+                    .setNotificationConfig(new UploadNotificationConfig().setIcon(R.drawable.ic_upload)
+                            .setCompletedIcon(R.drawable.ic_upload_done)
+                            .setErrorIcon(R.drawable.ic_error).setTitle("Image sync")
+                            .setInProgressMessage("Picture synchronizing")
+                            .setErrorMessage("Error in synchronizing")
+                            .setCompletedMessage("Synchronization completed in [[ELAPSED_TIME]]").setClearOnAction(true).setRingToneEnabled(false))
                     .setUsesFixedLengthStreamingMode(true)
                     .setMaxRetries(3);
 
@@ -416,19 +426,19 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
 
     public void addCan(int addday, int addmonth, int addyear, String name, String amount) {
         String calId = "";
+        String calendarURL = "content://com.android.calendar/events";
         Cursor userCursor = getContentResolver().query(Uri.parse(calendarURL), null,
                 null, null, null);
-        if (userCursor.getCount() > 0) {
-            userCursor.moveToFirst();
-            calId = userCursor.getString(userCursor.getColumnIndex("_id"));
+        if ((userCursor != null ? userCursor.getCount() : 0) > 0) {
+            if (userCursor != null) {
+                userCursor.moveToFirst();
+            }
+            calId = userCursor != null ? userCursor.getString(userCursor.getColumnIndex("_id")) : null;
 
         }
 
         String title = "" + name;
         String des = "amount:" + amount;
-        int day = addday;
-        int month = addmonth;
-        int year = addyear;
 
         ContentValues event = new ContentValues();
         event.put("title", title);
@@ -436,9 +446,9 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
         event.put("calendar_id", calId);
 
         Calendar mCalendar = Calendar.getInstance();
-        mCalendar.set(Calendar.DAY_OF_MONTH, day);
-        mCalendar.set(Calendar.MONTH, month);
-        mCalendar.set(Calendar.YEAR, year);
+        mCalendar.set(Calendar.DAY_OF_MONTH, addday);
+        mCalendar.set(Calendar.MONTH, addmonth);
+        mCalendar.set(Calendar.YEAR, addyear);
         mCalendar.set(Calendar.HOUR_OF_DAY, 10);
         mCalendar.set(Calendar.MINUTE, 0);
         long start = mCalendar.getTime().getTime();
@@ -450,12 +460,17 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
         event.put("hasAlarm", 1);
 
         event.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().getID());
+        String calanderEventURL = "content://com.android.calendar/events";
         Uri newEvent = getContentResolver().insert(Uri.parse(calanderEventURL), event);
-        long id = Long.parseLong(newEvent.getLastPathSegment());
+        long id = Long.parseLong(newEvent != null ? newEvent.getLastPathSegment() : null);
         ContentValues values = new ContentValues();
         values.put("event_id", id);
         values.put("minutes", 10);
+        String calanderRemiderURL = "content://com.android.calendar/reminders";
         getContentResolver().insert(Uri.parse(calanderRemiderURL), values);
+        if (userCursor != null) {
+            userCursor.close();
+        }
     }
 
     private boolean checkIfAlreadyhavePermission() {
@@ -512,8 +527,8 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
 
         Log.e(TAG, "Printing response body bytes");
         byte[] ba = serverResponse.getBody();
-        for (int j = 0; j < ba.length; j++) {
-            Log.e(TAG, String.format("%02X ", ba[j]));
+        for (byte aBa : ba) {
+            Log.e(TAG, String.format("%02X ", aBa));
         }
     }
 
@@ -523,12 +538,11 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
     }
 
 
-
     private class SendRequestTask extends AsyncTask<String, Void, String> {
         private String urlString = "http://178.62.93.103/SharingFridge/share.php";
         private String item, category, amount, addtime, expiretime, imageurl;
 
-        public SendRequestTask(String item, String category, String amount, String addtime, String expiretime, String imageurl) {
+        SendRequestTask(String item, String category, String amount, String addtime, String expiretime, String imageurl) {
             this.item = item;
             this.category = category;
             this.amount = amount;
@@ -541,7 +555,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
             return performPostCall();
         }
 
-        public String performPostCall() {
+        String performPostCall() {
             Log.d("send post", "performPostCall");
             String response = "";
             try {
@@ -577,15 +591,14 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
 
                 // Convert the InputStream into a string
                 int length = 500;
-                String contentAsString = convertInputStreamToString(inputStream, length);
-                return contentAsString;
+                return convertInputStreamToString(inputStream, length);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             return response;
         }
 
-        public String convertInputStreamToString(InputStream stream, int length) throws IOException {
+        String convertInputStreamToString(InputStream stream, int length) throws IOException {
             Reader reader = null;
             reader = new InputStreamReader(stream, "UTF-8");
             char[] buffer = new char[length];

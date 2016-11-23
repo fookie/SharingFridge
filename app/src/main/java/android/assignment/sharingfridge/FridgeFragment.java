@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -145,27 +146,25 @@ public class FridgeFragment extends Fragment {
 
     public void onResume() {
         super.onResume();
-        if (true) {
-            if (!isDataLoaded) {
-                if(!UserStatus.hasLogin){
-                    updateUI();
-                }else {
-                    Log.d("database", "database updating..");
-                    updateFromServer();
-                }
+        if (!isDataLoaded) {
+            if (!UserStatus.hasLogin) {
+                updateUI();
             } else {
-                Log.d("database", "not updated, using local database instead");
-                fridgeItemList = refreshFridgeList();
-                fridgeViewAdapter = new FridgeViewAdapter(getContext(), fridgeItemList, ((SharingFridgeApplication) getContext().getApplicationContext()).getServerAddr());
-                fridgeView.setAdapter(fridgeViewAdapter);
-                fridgeViewAdapter.notifyDataSetChanged();
+                Log.d("database", "database updating..");
+                updateFromServer();
             }
-            Log.i("FridgeResume", "resume and refreshed");
+        } else {
+            Log.d("database", "not updated, using local database instead");
+            fridgeItemList = refreshFridgeList();
+            fridgeViewAdapter = new FridgeViewAdapter(getContext(), fridgeItemList, ((SharingFridgeApplication) getContext().getApplicationContext()).getServerAddr());
+            fridgeView.setAdapter(fridgeViewAdapter);
+            fridgeViewAdapter.notifyDataSetChanged();
         }
+        Log.i("FridgeResume", "resume and refreshed");
     }
 
-    public boolean userHasChanged(){
-        if(UserStatus.hasChanged){
+    public boolean userHasChanged() {
+        if (UserStatus.hasChanged) {
             UserStatus.hasChanged = false;
             isDataLoaded = false;
             Log.d("user", "userHasChanged");
@@ -241,7 +240,7 @@ public class FridgeFragment extends Fragment {
         }
     }
 
-    public void setNewUserDataNotLoaded(){
+    public void setNewUserDataNotLoaded() {
         isDataLoaded = false;
     }
 
@@ -307,7 +306,7 @@ public class FridgeFragment extends Fragment {
             StringBuilder strBuilder = new StringBuilder();
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
             String perLine;
-            while ((perLine = reader.readLine()) != null){
+            while ((perLine = reader.readLine()) != null) {
                 strBuilder.append(perLine);
             }
             String result = strBuilder.toString();
@@ -343,13 +342,13 @@ public class FridgeFragment extends Fragment {
         }
     }
 
-    public void updateFridgeList(){
+    public void updateFridgeList() {
         List<FridgeItem> itemsList = new ArrayList<>();
         Cursor cursor = mainDB.rawQuery("SELECT * from items where groupname = '" + UserStatus.groupName + "'", null);
         while (cursor.moveToNext()) {
             String expday = getString(R.string.Unknown);
             Calendar cal = Calendar.getInstance();
-            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
             try {
                 Date nd = cal.getTime();
                 Date ed = df.parse(cursor.getString(cursor.getColumnIndex("expiretime")));

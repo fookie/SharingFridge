@@ -54,6 +54,13 @@
     <string name="success">success</string>
     <string name="faild">faild</string>
     <string name="in_group_hint">you are already in group "%1$s", join in a new group will exit current group"</string>
-
-
+    <string-array name="categories">
+        <item>Fruit</item>
+        <item>Vegetable</item>
+        <item>Pork</item>
+        <item>Chicken</item>
+        <item>Beef</item>
+        <item>Fish</item>
+        <item>Other</item>
+    </string-array>
 </resources>
