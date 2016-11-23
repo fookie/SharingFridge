@@ -77,6 +77,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
     private Button addButton;
 
     private static final String[] CATEGORYS = new String[]{"Fruit", "Vegetable", "Pork", "Chicken", "Beef", "Fish", "Others"};
+    private static final String[] CATEGORYS_CHINESE = new String[] {"水果", "蔬菜", "猪肉", "鸡肉", "牛肉", "鱼肉", "其他"};
 
 
     private String imageRelativePath, imageAbsolutePath, filename;
@@ -170,9 +171,18 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                     case R.id.categoryEditText:
                         View outerView = LayoutInflater.from(AddActivity.this).inflate(R.layout.wheel_view, null);
                         WheelView wv = (WheelView) outerView.findViewById(R.id.wheel_v);
-                        categoryEditText.setText("Chicken");
+
                         wv.setOffset(2);
-                        wv.setItems(Arrays.asList(CATEGORYS));
+                        Locale locale = getResources().getConfiguration().locale;
+                        String language = locale.getLanguage();
+                        if (language.endsWith("zh")){
+                            categoryEditText.setText("鸡肉");
+                            wv.setItems(Arrays.asList(CATEGORYS_CHINESE));
+                        }
+                        else{
+                            categoryEditText.setText("Chicken");
+                            wv.setItems(Arrays.asList(CATEGORYS));
+                        }
                         wv.setSeletion(3);
                         wv.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
                             @Override
