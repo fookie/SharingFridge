@@ -2,6 +2,7 @@ package android.assignment.sharingfridge;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -49,9 +50,10 @@ public class MapViewFragment extends Fragment {
                 addMarker(new LatLng(53.307358, -6.215584), "Molloys Centra", "Store in UCD", false);
                 // For showing a move to my location button
                 if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    Log.d("MAP", "NO PERMISSION");
+                    Log.d("GMAP", "NO PERMISSION");
                 } else {
                     googleMap.setMyLocationEnabled(true);
+                    Log.d("GMAP",googleMap+"");
                 }
             }
         });
@@ -96,5 +98,9 @@ public class MapViewFragment extends Fragment {
     public void onLowMemory() {
         super.onLowMemory();
         mMapView.onLowMemory();
+    }
+
+    public void setCurrentLocation(Location loc){
+
     }
 }

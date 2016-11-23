@@ -1,12 +1,19 @@
 package android.assignment.sharingfridge;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -25,6 +32,16 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,18 +61,23 @@ public class HomeActivity extends AppCompatActivity
     DrawerLayout drawer;
     TextView usernameView, groupnameView;
     ImageView avatarView;
-
+    SendRequestTask mAuthTask = null;
     FridgeFragment friFrag;
     MemberFragment memFrag;
     MapViewFragment mapFrag;
     SettingsFragment setFrag;
 
+    LocationManager locationManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        this.initLocation();
 
         (new Thread(new Runnable() {
             @Override
@@ -101,14 +123,14 @@ public class HomeActivity extends AppCompatActivity
         initNavBar();
 
         SharedPreferences preferences = getSharedPreferences("user-status", Context.MODE_PRIVATE);
-        String uname=preferences.getString("username", null);
-        String ugroup=preferences.getString("groupName", null);
-        Log.d("auto-login",uname+" "+ugroup);
-        if(uname!=null&&ugroup!=null&&!uname.equals("_null")&&!ugroup.equals("_null")){
-            UserStatus.username=uname;
-            UserStatus.groupName=ugroup;
-            UserStatus.hasLogin=true;
-            UserStatus.inGroup=!UserStatus.groupName.equals("none");
+        String uname = preferences.getString("username", null);
+        String ugroup = preferences.getString("groupName", null);
+        Log.d("auto-login", uname + " " + ugroup);
+        if (uname != null && ugroup != null && !uname.equals("_null") && !ugroup.equals("_null")) {
+            UserStatus.username = uname;
+            UserStatus.groupName = ugroup;
+            UserStatus.hasLogin = true;
+            UserStatus.inGroup = !UserStatus.groupName.equals("none");
         }
 
     }
@@ -162,13 +184,13 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_about) {
 
         } else if (id == R.id.nav_logout) {
-            if(UserStatus.hasLogin){
+            if (UserStatus.hasLogin) {
                 UserStatus.resetStatus();
                 refreshUserStatus();
                 SharedPreferences preferences = getSharedPreferences("user-status", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putString("username","_null");//clear the shared preference
-                editor.putString("groupName","_null");
+                editor.putString("username", "_null");//clear the shared preference
+                editor.putString("groupName", "_null");
                 editor.commit();
                 UserStatus.hasChanged = true;
                 friFrag.setNewUserDataNotLoaded();
@@ -246,8 +268,8 @@ public class HomeActivity extends AppCompatActivity
         tabController = pagerBottomTabLayout.builder()
                 .addTabItem(tabItemBuilder)
                 .addTabItem(R.drawable.ic_member, getString(R.string.mem_frg), tabColors[1])
-                .addTabItem(R.drawable.ic_map,  getString(R.string.map_frg), tabColors[2])
-                .addTabItem(R.drawable.ic_statistics,  getString(R.string.set_frg), tabColors[3])
+                .addTabItem(R.drawable.ic_map, getString(R.string.map_frg), tabColors[2])
+                .addTabItem(R.drawable.ic_statistics, getString(R.string.set_frg), tabColors[3])
 //                .setMode(TabLayoutMode.HIDE_TEXT)
 //                .setMode(TabLayoutMode.CHANGE_BACKGROUND_COLOR)
 //                .setMode(TabLayoutMode.HIDE_TEXT| TabLayoutMode.CHANGE_BACKGROUND_COLOR)
@@ -275,13 +297,17 @@ public class HomeActivity extends AppCompatActivity
             tabController.setSelect(0);
             UserStatus.hasChanged = false;
         }
+        if(UserStatus.hasLogin&&UserStatus.needToUploadLoaction){
+            mAuthTask=new SendRequestTask(UserStatus.location);
+            mAuthTask.execute();
+        }
         Log.i("resume", "Activity resumed. Should've updated.");
     }
 
     public void refreshUserStatus() {
         usernameView.setText(UserStatus.username);
         groupnameView.setText(UserStatus.groupName);
-        if (UserStatus.username!="Click here to login"){
+        if (UserStatus.username != "Click here to login") {
             // set avatar!
             Glide.with(this).load("http://178.62.93.103/SharingFridge/avatars/" + UserStatus.username + ".png")
                     .centerCrop()
@@ -292,6 +318,136 @@ public class HomeActivity extends AppCompatActivity
         } else {
             Drawable icon = getResources().getDrawable(R.drawable.ic_default);
             avatarView.setImageDrawable(icon);
+        }
+    }
+
+    public void initLocation() {
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        LocationListener locationListener = new MyLocationListener();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            String permissions[] = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+            ActivityCompat.requestPermissions(HomeActivity.this, permissions, 5230);
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+
+        } else {
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 10, locationListener);
+        }
+    }
+
+    private class MyLocationListener implements LocationListener {
+        @Override
+        public void onLocationChanged(Location location) {
+           // Toast.makeText(getBaseContext(), "Location changed: Lat: " + location.getLatitude() + " Lng: " + location.getLongitude(), Toast.LENGTH_SHORT).show();
+            String longitude = "Longitude: " + location.getLongitude();
+            Log.v("LOCATION", longitude);
+            String latitude = "Latitude: " + location.getLatitude();
+            Log.v("LOCATION", latitude);
+            if(UserStatus.hasLogin) {
+                Log.v("LOCATION", "post");
+                mAuthTask = new SendRequestTask(location);
+                mAuthTask.execute();
+            }else{
+                Log.v("LOCATION", "wait");
+                UserStatus.location=location;
+                UserStatus.needToUploadLoaction=true;
+            }
+
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        LocationListener locationListener = new MyLocationListener();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+        } else {
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 10, locationListener);
+        }
+    }
+
+    private class SendRequestTask extends AsyncTask<String, Void, String> {
+        private String urlString = "http://178.62.93.103/SharingFridge/location.php";
+        private Double Longitude, Latitude;
+
+        public SendRequestTask(Location location) {
+            this.Latitude = location.getLatitude();
+            this.Longitude = location.getLongitude();
+        }
+
+        protected String doInBackground(String... params) {
+            return performPostCall();
+        }
+
+        public String performPostCall() {
+            Log.d("send post-location", "performPostCall");
+            String response = "";
+            try {
+                URL url = new URL(urlString);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setReadTimeout(10000);
+                conn.setConnectTimeout(15000);/* milliseconds */
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+                //conn.setRequestProperty("Content-Type", "application/json");
+                //make json object
+                JSONObject jo = new JSONObject();
+                jo.put("action", "upload");
+                jo.put("user", UserStatus.username);
+                jo.put("lo", Longitude);
+                jo.put("la", Latitude);
+                String tosend = jo.toString();
+                Log.d("JSON", tosend);
+
+                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
+                outputStreamWriter.write("location=" + tosend);
+                outputStreamWriter.flush();
+                outputStreamWriter.close();
+
+                int responseCode = conn.getResponseCode();
+
+                InputStream inputStream = conn.getInputStream();
+
+                // Convert the InputStream into a string
+                int length = 500;
+                String contentAsString = convertInputStreamToString(inputStream, length);
+                conn.disconnect();
+                return contentAsString;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return response;
+        }
+
+        public String convertInputStreamToString(InputStream stream, int length) throws IOException {
+            Reader reader = null;
+            reader = new InputStreamReader(stream, "UTF-8");
+            char[] buffer = new char[length];
+            reader.read(buffer);
+            return new String(buffer);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            mAuthTask = null;
         }
     }
 }
