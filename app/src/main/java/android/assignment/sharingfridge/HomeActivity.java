@@ -297,8 +297,8 @@ public class HomeActivity extends AppCompatActivity
             tabController.setSelect(0);
             UserStatus.hasChanged = false;
         }
-        if(UserStatus.hasLogin&&UserStatus.needToUploadLoaction){
-            mAuthTask=new SendRequestTask(UserStatus.location);
+        if (UserStatus.hasLogin && UserStatus.needToUploadLoaction) {
+            mAuthTask = new SendRequestTask(UserStatus.location);
             mAuthTask.execute();
         }
         Log.i("resume", "Activity resumed. Should've updated.");
@@ -341,19 +341,19 @@ public class HomeActivity extends AppCompatActivity
     private class MyLocationListener implements LocationListener {
         @Override
         public void onLocationChanged(Location location) {
-           // Toast.makeText(getBaseContext(), "Location changed: Lat: " + location.getLatitude() + " Lng: " + location.getLongitude(), Toast.LENGTH_SHORT).show();
+            // Toast.makeText(getBaseContext(), "Location changed: Lat: " + location.getLatitude() + " Lng: " + location.getLongitude(), Toast.LENGTH_SHORT).show();
             String longitude = "Longitude: " + location.getLongitude();
             Log.v("LOCATION", longitude);
             String latitude = "Latitude: " + location.getLatitude();
             Log.v("LOCATION", latitude);
-            if(UserStatus.hasLogin) {
+            if (UserStatus.hasLogin) {
                 Log.v("LOCATION", "post");
                 mAuthTask = new SendRequestTask(location);
                 mAuthTask.execute();
-            }else{
+            } else {
                 Log.v("LOCATION", "wait");
-                UserStatus.location=location;
-                UserStatus.needToUploadLoaction=true;
+                UserStatus.location = location;
+                UserStatus.needToUploadLoaction = true;
             }
 
         }
@@ -423,9 +423,7 @@ public class HomeActivity extends AppCompatActivity
                 outputStreamWriter.close();
 
                 int responseCode = conn.getResponseCode();
-
                 InputStream inputStream = conn.getInputStream();
-
                 // Convert the InputStream into a string
                 int length = 500;
                 String contentAsString = convertInputStreamToString(inputStream, length);
