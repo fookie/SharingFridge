@@ -16,7 +16,7 @@
     <string name="member_activity">组员界面</string>
     <string name="member_avatar">组员头像</string>
     <string name="member_name">组员名</string>
-    <string name="navigation_drawer_close"></string>
+    <string name="navigation_drawer_close">关闭抽屉</string>
     <string name="new_group">建新组</string>
     <string name="prompt_password">密码</string>
     <string name="prompt_username">用户名</string>
@@ -53,4 +53,8 @@
     <string name="success">成功</string>
     <string name="faild">失败</string>
     <string name="in_group_hint">你已经在小组“%1$s”中，加入新组将退出现有组</string>
+    <string name="group">小组</string>
+    <string name="logout">登出</string>
+    <string name="navigation_drawer_open">打开抽屉</string>
+    <string name="settings">设置</string>
 </resources>

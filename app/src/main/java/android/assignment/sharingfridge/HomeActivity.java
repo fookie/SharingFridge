@@ -55,7 +55,7 @@ public class HomeActivity extends AppCompatActivity
         FridgeFragment.OnFragmentInteractionListener,
         SettingsFragment.OnFragmentInteractionListener {
 
-    int[] tabColors = {0xFF00796B, 0xFFF57C00, 0xFF607D8B, 0xFF5B4947, 0xFFF57C00};
+    int[] tabColors = {0xFFB71C1C, 0xFFF57F17, 0xFF0D47A1, 0xFF9C27B0, 0xFFF57C00};
     Controller tabController;
     List<Fragment> myFragments;
     DrawerLayout drawer;
