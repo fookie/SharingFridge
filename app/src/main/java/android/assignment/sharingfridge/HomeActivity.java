@@ -45,6 +45,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.rong.imkit.RongIM;
+import io.rong.imlib.RongIMClient;
 import me.majiajie.pagerbottomtabstrip.Controller;
 import me.majiajie.pagerbottomtabstrip.PagerBottomTabLayout;
 import me.majiajie.pagerbottomtabstrip.TabItemBuilder;
@@ -68,6 +70,8 @@ public class HomeActivity extends AppCompatActivity
     SettingsFragment setFrag;
 
     LocationManager locationManager;
+
+    private String deanToken = "vFYnLXrKzFpkaj/j+dHS/CQkWiv5kCN44VOVakTuZH9/OFCy8PGMCqAQM3thz6RaFu9POdG0hXt1iOWklJrI7w==";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,6 +136,24 @@ public class HomeActivity extends AppCompatActivity
             UserStatus.hasLogin = true;
             UserStatus.inGroup = !UserStatus.groupName.equals("none");
         }
+
+        RongIM.connect(deanToken, new RongIMClient.ConnectCallback() {
+            @Override
+            public void onTokenIncorrect() {
+
+            }
+
+            @Override
+            public void onSuccess(String s) {
+
+                Log.e("onSuccess","onSuccess userid:"+s);
+            }
+
+            @Override
+            public void onError(RongIMClient.ErrorCode errorCode) {
+                Log.e("onError","onError userid:"+errorCode.getValue());
+            }
+        });
 
     }
 
