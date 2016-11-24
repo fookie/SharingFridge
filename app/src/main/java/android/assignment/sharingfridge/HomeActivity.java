@@ -334,8 +334,12 @@ public class HomeActivity extends AppCompatActivity
             // for ActivityCompat#requestPermissions for more details.
 
         } else {
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 10, locationListener);
-        }
+            try {
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 10, locationListener);
+            }catch (IllegalArgumentException e){
+                Log.d("LOCATION","Does not support network_provider");
+            }
+            }
     }
 
     private class MyLocationListener implements LocationListener {

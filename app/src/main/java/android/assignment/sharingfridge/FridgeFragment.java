@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -149,27 +150,25 @@ public class FridgeFragment extends Fragment {
 
     public void onResume() {
         super.onResume();
-        if (true) {
-            if (!isDataLoaded) {
-                if(!UserStatus.hasLogin){
-                    updateUI();
-                }else {
-                    Log.d("database", "database updating..");
-                    updateFromServer();
-                }
+        if (!isDataLoaded) {
+            if (!UserStatus.hasLogin) {
+                updateUI();
             } else {
-                Log.d("database", "not updated, using local database instead");
-                fridgeItemList = refreshFridgeList();
-                fridgeViewAdapter = new FridgeViewAdapter(getContext(), fridgeItemList, ((SharingFridgeApplication) getContext().getApplicationContext()).getServerAddr());
-                fridgeView.setAdapter(fridgeViewAdapter);
-                fridgeViewAdapter.notifyDataSetChanged();
+                Log.d("database", "database updating..");
+                updateFromServer();
             }
-            Log.i("FridgeResume", "resume and refreshed");
+        } else {
+            Log.d("database", "not updated, using local database instead");
+            fridgeItemList = refreshFridgeList();
+            fridgeViewAdapter = new FridgeViewAdapter(getContext(), fridgeItemList, ((SharingFridgeApplication) getContext().getApplicationContext()).getServerAddr());
+            fridgeView.setAdapter(fridgeViewAdapter);
+            fridgeViewAdapter.notifyDataSetChanged();
         }
+        Log.i("FridgeResume", "resume and refreshed");
     }
 
-    public boolean userHasChanged(){
-        if(UserStatus.hasChanged){
+    public boolean userHasChanged() {
+        if (UserStatus.hasChanged) {
             UserStatus.hasChanged = false;
             isDataLoaded = false;
             Log.d("user", "userHasChanged");
@@ -224,7 +223,7 @@ public class FridgeFragment extends Fragment {
         while (cursor.moveToNext()) {
             String expday = getString(R.string.Unknown);
             Calendar cal = Calendar.getInstance();
-            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
             try {
                 Date nd = cal.getTime();
                 Date ed = df.parse(cursor.getString(cursor.getColumnIndex("expiretime")));
@@ -265,7 +264,7 @@ public class FridgeFragment extends Fragment {
         }
     }
 
-    public void setNewUserDataNotLoaded(){
+    public void setNewUserDataNotLoaded() {
         isDataLoaded = false;
     }
 
@@ -331,7 +330,7 @@ public class FridgeFragment extends Fragment {
             StringBuilder strBuilder = new StringBuilder();
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
             String perLine;
-            while ((perLine = reader.readLine()) != null){
+            while ((perLine = reader.readLine()) != null) {
                 strBuilder.append(perLine);
             }
             String result = strBuilder.toString();
@@ -343,7 +342,7 @@ public class FridgeFragment extends Fragment {
             mAuthTask = null;
             try {
                 JSONArray jr = new JSONArray(result);
-                taskDB.execSQL("delete from items where groupname != 'local'");
+                taskDB.execSQL("DELETE FROM items WHERE groupname != 'local'");
                 for (int i = 0; i < jr.length(); i++) {
                     JSONObject jo = jr.getJSONObject(i);
                     try {//remove all the data except local group data
@@ -367,13 +366,13 @@ public class FridgeFragment extends Fragment {
         }
     }
 
-    public void updateFridgeList(){
+    public void updateFridgeList() {
         List<FridgeItem> itemsList = new ArrayList<>();
         Cursor cursor = mainDB.rawQuery("SELECT * from items where groupname = '" + UserStatus.groupName + "'", null);
         while (cursor.moveToNext()) {
             String expday = getString(R.string.Unknown);
             Calendar cal = Calendar.getInstance();
-            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
             try {
                 Date nd = cal.getTime();
                 Date ed = df.parse(cursor.getString(cursor.getColumnIndex("expiretime")));
