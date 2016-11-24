@@ -96,6 +96,7 @@ public class MemberFragment extends Fragment {
                              Bundle savedInstanceState) {
         mainDB = SQLiteDatabase.openOrCreateDatabase(getContext().getFilesDir().getAbsolutePath().replace("files", "databases") + "fridge.db", null);
         mainDB.execSQL("CREATE TABLE IF NOT EXISTS items(item char(255),category char(64),amount int,addtime char(255),expiretime char(255),imageurl char(255),owner char(255),groupname char(255))");
+        mainDB.execSQL("CREATE TABLE IF NOT EXISTS dummy(item char(255),category char(64),amount int,addtime char(255),expiretime char(255),imageurl char(255),owner char(255),groupname char(255))");
         memberItemList = initMemberList();
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 1);
         memberViewAdapter = new MemberViewAdapter(getContext(), memberItemList, "http://178.62.93.103/SharingFridge/");
@@ -172,13 +173,15 @@ public class MemberFragment extends Fragment {
             memberItems.add(new MemberItem(getString(R.string.login_hint), getString(R.string.nousr_group_hint),"noimg"));
             return memberItems;
         }
-        String sql = "select owner,count(*),sum(amount) as o from items where groupname='" + UserStatus.groupName + "' group by owner";
+       // String sql = "select items.owner,count(*),sum(items.amount) from items left join dummy on items.owner=dummy.owner ";
+        String sql="select owner from dummy";
         Cursor c = mainDB.rawQuery(sql, null);
         while (c.moveToNext()) {
             String owner = c.getString(0);
-            int count = c.getInt(1);
-            int amount = c.getInt(2);
-            memberItems.add(new MemberItem(owner, count + getContext().getResources().getString(R.string.group_sta_hint) + amount, owner + ".png"));
+//            int count = c.getInt(1);
+//            int amount = c.getInt(2);
+//            memberItems.add(new MemberItem(owner, count + getContext().getResources().getString(R.string.group_sta_hint) + amount, owner + ".png"));
+            memberItems.add(new MemberItem(owner,"",owner+".png"));
         }
 
         return memberItems;
