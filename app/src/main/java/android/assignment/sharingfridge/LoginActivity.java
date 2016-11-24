@@ -34,6 +34,9 @@ import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import io.rong.imkit.RongIM;
+import io.rong.imlib.model.UserInfo;
+
 /**
  * A login screen that offers login via email/password.
  */
@@ -271,6 +274,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                     UserStatus.hasChanged = true;
                     Toast.makeText(getApplicationContext(), "You have loggen in as " + UserStatus.username, Toast.LENGTH_LONG);
+//                    RongIM.getInstance().refreshUserInfoCache(new UserInfo(UserStatus.username, UserStatus.username, Uri.parse("http://178.62.93.103/SharingFridge/avatars/"+UserStatus.username+".png")));
                     finish();
                 }
             } catch (JSONException je) {

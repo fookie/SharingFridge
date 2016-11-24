@@ -47,6 +47,7 @@ import java.util.List;
 
 import io.rong.imkit.RongIM;
 import io.rong.imlib.RongIMClient;
+import io.rong.imlib.model.UserInfo;
 import me.majiajie.pagerbottomtabstrip.Controller;
 import me.majiajie.pagerbottomtabstrip.PagerBottomTabLayout;
 import me.majiajie.pagerbottomtabstrip.TabItemBuilder;
@@ -137,6 +138,17 @@ public class HomeActivity extends AppCompatActivity
             UserStatus.inGroup = !UserStatus.groupName.equals("none");
         }
 
+//        RongIM.setUserInfoProvider(new RongIM.UserInfoProvider() {
+//
+//            @Override
+//            public UserInfo getUserInfo(String userId) {
+//
+//                return findUserById(userId);//根据 userId 去你的用户系统里查询对应的用户信息返回给融云 SDK。
+//            }
+//
+//        }, true);
+        RongIM.getInstance().setCurrentUserInfo(findUserById("Dean"));
+        RongIM.getInstance().setMessageAttachedUserInfo(true);
         RongIM.connect(deanToken, new RongIMClient.ConnectCallback() {
             @Override
             public void onTokenIncorrect() {
@@ -145,8 +157,8 @@ public class HomeActivity extends AppCompatActivity
 
             @Override
             public void onSuccess(String s) {
-
-                Log.e("onSuccess","onSuccess userid:"+s);
+                Toast.makeText(getApplicationContext(), "Chat Connection Ready", Toast.LENGTH_LONG).show();
+                Log.e("onSuccess","onSuccess username: "+s);
             }
 
             @Override
@@ -362,6 +374,11 @@ public class HomeActivity extends AppCompatActivity
                 Log.d("LOCATION","Does not support network_provider");
             }
             }
+    }
+
+    public UserInfo findUserById(String uid){
+        UserInfo uInfo = new UserInfo(uid, uid, Uri.parse("http://178.62.93.103/SharingFridge/avatars/"+uid+".png"));
+        return  uInfo;
     }
 
     private class MyLocationListener implements LocationListener {

@@ -1,19 +1,11 @@
 package android.assignment.sharingfridge;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.NinePatch;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.Icon;
-import android.graphics.drawable.NinePatchDrawable;
+
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -50,12 +42,14 @@ public class MemberViewAdapter extends RecyclerView.Adapter<MemberViewHolder> {
         name = memberItemList.get(position).getName();
         holder.name.setText(name);
         holder.activity.setText(memberItemList.get(position).getAct());
-        holder.cell.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RongIM.getInstance().startPrivateChat(homeContext, name, "Talking to " + name);
-            }
-        });
+//        holder.cell.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Log.d("chat","Name: " + name);
+//                RongIM.getInstance().startPrivateChat(homeContext, name, "Talking to " + name);
+//            }
+//        });
+        holder.cell.setOnClickListener(new cellOnClickListener(name));
         //TODO change the placeholder and error later
         Glide.with(homeContext).load(picPath + memberItemList.get(position).getAvatarUrl())
                 .centerCrop()
@@ -69,5 +63,17 @@ public class MemberViewAdapter extends RecyclerView.Adapter<MemberViewHolder> {
     @Override
     public int getItemCount() {
         return memberItemList.size();
+    }
+
+    class cellOnClickListener implements View.OnClickListener {
+
+        String userID;
+        public cellOnClickListener(String id){
+            userID = id;
+        }
+        @Override
+        public void onClick(View v) {
+            RongIM.getInstance().startPrivateChat(homeContext, userID, null);
+        }
     }
 }

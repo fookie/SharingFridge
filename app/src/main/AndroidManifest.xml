@@ -20,11 +20,9 @@
         android:name=".SharingFridgeApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="SharingFridge"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:node="merge"
-        tools:replace="android:label">
+        tools:node="merge">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBMEowVM6gteCP8b5wCV1tZ_Jt6tn23Sds" />
@@ -77,7 +75,8 @@
         </provider>
 
         <activity
-            android:name=".ChatActivity">
+            android:name=".ChatActivity"
+            android:label="Chat">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -88,6 +87,7 @@
                     android:scheme="rong" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>
