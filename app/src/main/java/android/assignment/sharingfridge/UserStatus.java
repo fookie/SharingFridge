@@ -12,7 +12,7 @@ public final class UserStatus {
     public static boolean inGroup=false;
     public static String groupName ="local";
     public static boolean hasChanged=false;
-
+    public static String token="";
     public static Location location;
     public static boolean needToUploadLoaction=false;
     public static void resetStatus(){
@@ -20,6 +20,7 @@ public final class UserStatus {
         inGroup = false;
         groupName = "local";
         hasLogin = false;//do not reset location here
+        token="";
     }
 
 }

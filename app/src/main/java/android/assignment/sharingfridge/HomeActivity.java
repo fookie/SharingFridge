@@ -130,42 +130,37 @@ public class HomeActivity extends AppCompatActivity
         SharedPreferences preferences = getSharedPreferences("user-status", Context.MODE_PRIVATE);
         String uname = preferences.getString("username", null);
         String ugroup = preferences.getString("groupName", null);
+        String utoken=preferences.getString("token",null);
         Log.d("auto-login", uname + " " + ugroup);
         if (uname != null && ugroup != null && !uname.equals("_null") && !ugroup.equals("_null")) {
             UserStatus.username = uname;
             UserStatus.groupName = ugroup;
+            UserStatus.token=utoken;
             UserStatus.hasLogin = true;
             UserStatus.inGroup = !UserStatus.groupName.equals("none");
         }
+        Log.d("CHAT-TOKEN",UserStatus.token);
+        if(UserStatus.token!=null&&!UserStatus.token.equals("")) {
+            RongIM.getInstance().setCurrentUserInfo(findUserById(UserStatus.username));
+            RongIM.getInstance().setMessageAttachedUserInfo(true);
+            RongIM.connect(UserStatus.token, new RongIMClient.ConnectCallback() {
+                @Override
+                public void onTokenIncorrect() {
 
-//        RongIM.setUserInfoProvider(new RongIM.UserInfoProvider() {
-//
-//            @Override
-//            public UserInfo getUserInfo(String userId) {
-//
-//                return findUserById(userId);//根据 userId 去你的用户系统里查询对应的用户信息返回给融云 SDK。
-//            }
-//
-//        }, true);
-        RongIM.getInstance().setCurrentUserInfo(findUserById("Dean"));
-        RongIM.getInstance().setMessageAttachedUserInfo(true);
-        RongIM.connect(deanToken, new RongIMClient.ConnectCallback() {
-            @Override
-            public void onTokenIncorrect() {
+                }
 
-            }
+                @Override
+                public void onSuccess(String s) {
 
-            @Override
-            public void onSuccess(String s) {
-                Toast.makeText(getApplicationContext(), "Chat Connection Ready", Toast.LENGTH_LONG).show();
-                Log.e("onSuccess","onSuccess username: "+s);
-            }
+                    Log.e("onSuccess", "onSuccess userid:" + s);
+                }
 
-            @Override
-            public void onError(RongIMClient.ErrorCode errorCode) {
-                Log.e("onError","onError userid:"+errorCode.getValue());
-            }
-        });
+                @Override
+                public void onError(RongIMClient.ErrorCode errorCode) {
+                    Log.e("onError", "onError userid:" + errorCode.getValue());
+                }
+            });
+        }
 
     }
 
@@ -225,6 +220,7 @@ public class HomeActivity extends AppCompatActivity
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putString("username", "_null");//clear the shared preference
                 editor.putString("groupName", "_null");
+                editor.putString("token","");
                 editor.commit();
                 UserStatus.hasChanged = true;
                 friFrag.setNewUserDataNotLoaded();

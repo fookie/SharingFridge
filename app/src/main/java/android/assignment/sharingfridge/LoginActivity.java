@@ -257,6 +257,7 @@ public class LoginActivity extends AppCompatActivity {
                     UserStatus.hasLogin = true;
                     UserStatus.username = username;
                     String groupName = confirm.get("groupname").toString();
+                    String token = confirm.get("token").toString();
                     UserStatus.inGroup = !groupName.equals("none");
                     UserStatus.groupName = groupName;
                     Log.d("LOGIN", "SUCCESS");
@@ -265,11 +266,13 @@ public class LoginActivity extends AppCompatActivity {
                     if(auto_login.isChecked()) {
                         editor.putString("username",username);
                         editor.putString("groupName",groupName);
+                        editor.putString("token",token);
                         editor.commit();
                     }
                     else{
                         editor.putString("username","_null");//clear the shared preference
                         editor.putString("groupName","_null");
+                        editor.putString("token","");
                         editor.commit();
                     }
                     UserStatus.hasChanged = true;
