@@ -32,7 +32,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -139,7 +138,7 @@ public class HomeActivity extends AppCompatActivity
             UserStatus.hasLogin = true;
             UserStatus.inGroup = !UserStatus.groupName.equals("none");
         }
-        Log.d("CHAT-TOKEN",UserStatus.token);
+//        Log.d("CHAT-TOKEN",UserStatus.token);
         if(UserStatus.token!=null&&!UserStatus.token.equals("")) {
             RongIM.getInstance().setCurrentUserInfo(findUserById(UserStatus.username));
             RongIM.getInstance().setMessageAttachedUserInfo(true);
