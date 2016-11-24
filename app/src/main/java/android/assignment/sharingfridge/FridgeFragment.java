@@ -178,7 +178,7 @@ public class FridgeFragment extends Fragment {
     }
 
     public String language(String a) {
-        int index=0;
+        int index = 3;
         for(int i=0;i<CATEGORYS.length;i++){
             if(a.equals(CATEGORYS[i]) || a.equals(CATEGORYS_CHINESE[i])) {
                 index = i;
