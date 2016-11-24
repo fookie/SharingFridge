@@ -3,9 +3,14 @@ package android.assignment.sharingfridge;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.database.SQLException;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -13,11 +18,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -37,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 
 public class MapViewFragment extends Fragment {
@@ -52,7 +61,7 @@ public class MapViewFragment extends Fragment {
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
         mMapView.onResume(); // needed to get the map to display immediately
-        mAuthTask =new SendRequestTask();
+        mAuthTask = new SendRequestTask();
         mAuthTask.execute();
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
@@ -67,11 +76,11 @@ public class MapViewFragment extends Fragment {
     /**
      * @param ll           LatLng position
      * @param title        the titile of mark
-     * @param detail       detail shown on the mark
      * @param switchcamera if switch camera to this Mark
      */
-    private void addMarker(LatLng ll, String title, String detail, boolean switchcamera) {
-        googleMap.addMarker(new MarkerOptions().position(ll).title(title).snippet(detail));
+    private void addMarker(LatLng ll, String title, boolean switchcamera, Bitmap theBitmap) {
+        BitmapDescriptor bitmap = BitmapDescriptorFactory.fromBitmap(theBitmap);
+        googleMap.addMarker(new MarkerOptions().position(ll).title(title).icon(bitmap));
         if (switchcamera) {
             CameraPosition cameraPosition = new CameraPosition.Builder().target(ll).zoom(12).build();
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
@@ -160,7 +169,7 @@ public class MapViewFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String result) {
-            Log.d("send post-loc-","exx");
+            Log.d("send post-loc-", "exx");
             mAuthTask = null;
             try {
                 JSONArray jr = new JSONArray(result);
@@ -177,7 +186,8 @@ public class MapViewFragment extends Fragment {
                         Iterator it = markers.entrySet().iterator();
                         while (it.hasNext()) {
                             Map.Entry entry = (Map.Entry) it.next();
-                            addMarker((LatLng) entry.getValue(), (String) entry.getKey(), "", false);
+                            //  addMarker((LatLng) entry.getValue(), (String) entry.getKey(), false);
+                            new SetMarkerTask((LatLng) entry.getValue(), (String) entry.getKey(), false).execute();
                         }
 //                addMarker(new LatLng(53.318994, -6.213717), "Tesco", "supermarket", false);
 //                addMarker(new LatLng(53.335628, -6.243302), "Tesco Metro", "supermarket", false);
@@ -197,6 +207,45 @@ public class MapViewFragment extends Fragment {
             }
 
         }
+    }
+
+    private class SetMarkerTask extends AsyncTask<Void, Void, Void> {
+        private Bitmap theBitmap;
+        private LatLng ll;
+        private String title;
+        private boolean switchcamera;
+
+        public SetMarkerTask(LatLng ll, String title, boolean switchcamera) {
+            this.ll = ll;
+            this.title = title;
+            this.switchcamera = switchcamera;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+//            Looper.prepare();
+            try {
+                theBitmap = Glide.
+                        with(MapViewFragment.this).
+                        load("http://178.62.93.103/SharingFridge/avatars/" + title + ".png").
+                        asBitmap().
+                        into(64, 64).
+                        get();
+            } catch (final ExecutionException e) {
+                Log.e("MAP bitmap", e.getMessage());
+            } catch (final InterruptedException e) {
+                Log.e("MAP bitmap", e.getMessage());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void dummy) {
+            if (null != theBitmap) {
+                addMarker(ll, title, switchcamera, theBitmap);
+            }
+        }
+
     }
 
 }
