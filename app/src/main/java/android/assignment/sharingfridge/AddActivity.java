@@ -188,7 +188,9 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                             @Override
                             public void onSelected(int selectedIndex, String cate) {
                                 categoryEditText.setText(cate);
-                                selectedCategory = cate;
+                                int i = selectedIndex;
+                                selectedCategory = CATEGORYS[i];
+//                                selectedCategory = cate;
                             }
                         });
 
