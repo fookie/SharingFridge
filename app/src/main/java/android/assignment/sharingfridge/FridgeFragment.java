@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -65,6 +66,9 @@ public class FridgeFragment extends Fragment {
     private SQLiteDatabase mainDB;
     private OnFragmentInteractionListener mListener;
     private boolean isDataLoaded = false;
+
+    private static final String[] CATEGORYS = new String[]{"Fruit", "Vegetable", "Pork", "Chicken", "Beef", "Fish", "Others"};
+    private static final String[] CATEGORYS_CHINESE = new String[] {"水果", "蔬菜", "猪肉", "鸡肉", "牛肉", "鱼肉", "其他"};
 
     public FridgeFragment() {
         // Required empty public constructor
@@ -174,6 +178,23 @@ public class FridgeFragment extends Fragment {
         return false;
     }
 
+    public String language(String a) {
+        int index=0;
+        for(int i=0;i<CATEGORYS.length;i++){
+            if(a.equals(CATEGORYS[i]) || a.equals(CATEGORYS_CHINESE[i])) {
+                index = i;
+                break;
+            }
+        }
+        Locale locale = getResources().getConfiguration().locale;
+        String language = locale.getLanguage();
+        if (language.endsWith("zh"))
+            a = CATEGORYS_CHINESE[index];
+        else
+            a = CATEGORYS[index];
+        return a;
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -212,7 +233,10 @@ public class FridgeFragment extends Fragment {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            FridgeItem tempfi = new FridgeItem(cursor.getString(cursor.getColumnIndex("item")), expday, cursor.getString(cursor.getColumnIndex("imageurl")), cursor.getString(cursor.getColumnIndex("owner")), cursor.getString(cursor.getColumnIndex("category")), cursor.getInt(cursor.getColumnIndex("amount")));
+
+            String cat = language(cursor.getString(cursor.getColumnIndex("category")));
+            FridgeItem tempfi = new FridgeItem(cursor.getString(cursor.getColumnIndex("item")), expday, cursor.getString(cursor.getColumnIndex("imageurl")), cursor.getString(cursor.getColumnIndex("owner")), cat, cursor.getInt(cursor.getColumnIndex("amount")));
+//            FridgeItem tempfi = new FridgeItem(cursor.getString(cursor.getColumnIndex("item")), expday, cursor.getString(cursor.getColumnIndex("imageurl")), cursor.getString(cursor.getColumnIndex("owner")), cursor.getString(cursor.getColumnIndex("category")), cursor.getInt(cursor.getColumnIndex("amount")));
             itemsList.add(tempfi);
             Log.i("usertest", cursor.getString(cursor.getColumnIndex("item")) + " at " + cursor.getString(cursor.getColumnIndex("expiretime")));
         }
@@ -358,7 +382,9 @@ public class FridgeFragment extends Fragment {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            FridgeItem tempfi = new FridgeItem(cursor.getString(cursor.getColumnIndex("item")), expday, cursor.getString(cursor.getColumnIndex("imageurl")), cursor.getString(cursor.getColumnIndex("owner")), cursor.getString(cursor.getColumnIndex("category")), cursor.getInt(cursor.getColumnIndex("amount")));
+
+            String cat = language(cursor.getString(cursor.getColumnIndex("category")));
+            FridgeItem tempfi = new FridgeItem(cursor.getString(cursor.getColumnIndex("item")), expday, cursor.getString(cursor.getColumnIndex("imageurl")), cursor.getString(cursor.getColumnIndex("owner")), cat, cursor.getInt(cursor.getColumnIndex("amount")));
             itemsList.add(tempfi);
         }
         cursor.close();
