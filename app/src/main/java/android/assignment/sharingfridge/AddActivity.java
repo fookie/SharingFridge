@@ -153,7 +153,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                                 canYear = year;
                                 canMonth = month;
                                 canDay = day;
-                                selectedDate = new SimpleDateFormat("dd-MM-yyyy").format(calender.getTime());
+                                selectedDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(calender.getTime());
                                 dateEditText.setText(selectedDate);
                             }
                         }, currentYear, currentMonth, currentDay);
@@ -257,7 +257,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                 if (checkCondition) {
                     addCan(canDay, canMonth, canYear, name, amount);
                 }
-                currentDate = new SimpleDateFormat("dd-MM-yyyy").format(new java.util.Date());
+                currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new java.util.Date());
                 String imgUrl = "image/" + filename;
                 if (UserStatus.hasLogin) {
                     mainDB.execSQL("INSERT INTO items ('item' ,'category' ,'amount' ,'addtime' ,'expiretime' ,'imageurl' ,'owner' ,'groupname' )VALUES ('" + name + "', '" + selectedCategory + "', '" + amount + "', '" + currentDate + "', '" + selectedDate + "','" + imgUrl + "','" + UserStatus.username + "', '" + UserStatus.groupName + "')");
@@ -387,7 +387,12 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
             Log.v("picPath", imageAbsolutePath);
             MultipartUploadRequest req = new MultipartUploadRequest(this, "http://178.62.93.103/SharingFridge/upload2.php")
                     .addFileToUpload(imageAbsolutePath, "file")
-                    .setNotificationConfig(new UploadNotificationConfig())
+                    .setNotificationConfig(new UploadNotificationConfig().setIcon(R.drawable.ic_upload)
+                            .setCompletedIcon(R.drawable.ic_upload_done)
+                            .setErrorIcon(R.drawable.ic_error).setTitle(getString(R.string.image_synced))
+                            .setInProgressMessage(getString(R.string.image_syncing))
+                            .setErrorMessage(getString(R.string.image_sync_error))
+                            .setCompletedMessage(getString(R.string.image_sync_completed)).setClearOnAction(true).setRingToneEnabled(false))
                     .setUsesFixedLengthStreamingMode(true)
                     .setMaxRetries(3);
 
@@ -396,24 +401,24 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
             String uploadId = req.setDelegate(new UploadStatusDelegate() {
                 @Override
                 public void onProgress(UploadInfo uploadInfo) {
-                    Toast.makeText(AddActivity.this, "InProgress", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(AddActivity.this, "InProgress", Toast.LENGTH_SHORT).show();
                     Log.v("=network=", uploadInfo.getUploadRateString());
                 }
 
                 @Override
                 public void onError(UploadInfo uploadInfo, Exception exception) {
-                    Toast.makeText(AddActivity.this, "Error", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(AddActivity.this, "Error", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onCompleted(UploadInfo uploadInfo, ServerResponse serverResponse) {
-                    Toast.makeText(AddActivity.this, "Completed", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(AddActivity.this, "Completed", Toast.LENGTH_SHORT).show();
                     Log.v("=network=", serverResponse.getBodyAsString());
                 }
 
                 @Override
                 public void onCancelled(UploadInfo uploadInfo) {
-                    Toast.makeText(AddActivity.this, "Cancelled", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(AddActivity.this, "Cancelled", Toast.LENGTH_SHORT).show();
                 }
             }).startUpload();
 

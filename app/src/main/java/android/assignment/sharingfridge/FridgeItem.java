@@ -11,6 +11,8 @@ public class FridgeItem {
     private String owner;
     private String category;
     private int amount;
+    private boolean expanded = false;
+    private boolean reductionBox = false;
 
     public FridgeItem(String n, String d, String imgURL, String o, String c, int a) {
         this.name = n;
@@ -37,6 +39,30 @@ public class FridgeItem {
         return amount;
     }
 
+    public boolean reverseExpanded() {
+        return expanded = !expanded;
+    }
+
+    public void setButtonsExpanded(boolean expanded) {
+        this.expanded = expanded;
+    }
+
+    public boolean isReductionBox() {
+        return reductionBox;
+    }
+
+    public void setReductionBox(boolean reductionBox) {
+        this.reductionBox = reductionBox;
+    }
+
+    public boolean reverseReductionBox() {
+        return reductionBox = !reductionBox;
+    }
+
+    public boolean isButtonsExpanded() {
+        return expanded;
+    }
+
     public String getCategory() {
         return category;
     }
@@ -61,6 +87,9 @@ public class FridgeItem {
         this.name = n;
     }
 
+    public void minus(int sub) {
+        amount -= sub;
+    }
 
     public void setDate(String d) {
         this.date = d;

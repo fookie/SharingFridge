@@ -54,6 +54,10 @@
     <string name="success">success</string>
     <string name="faild">faild</string>
     <string name="in_group_hint">you are already in group "%1$s", join in a new group will exit current group"</string>
+    <string name="image_synced">Image synchronized</string>
+    <string name="image_syncing">Picture synchronizing</string>
+    <string name="image_sync_error">Error in synchronizing</string>
+    <string name="image_sync_completed">Synchronization completed in [[ELAPSED_TIME]]</string>
     <string-array name="categories">
         <item>Fruit</item>
         <item>Vegetable</item>
