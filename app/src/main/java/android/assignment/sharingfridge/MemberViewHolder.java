@@ -3,6 +3,7 @@ package android.assignment.sharingfridge;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,18 +16,20 @@ public class MemberViewHolder extends RecyclerView.ViewHolder {
     TextView name;
     TextView activity;
     TextView divider;
+    RelativeLayout cell;
 
     public MemberViewHolder(View itemView) {
         super(itemView);
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(v.getContext(), "Member Clicked", Toast.LENGTH_SHORT).show();
-            }
-        });
+//        itemView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(v.getContext(), "Member Clicked", Toast.LENGTH_SHORT).show();
+//            }
+//        });
         avatar = (ImageView) itemView.findViewById(R.id.memberAvatar);
         name = (TextView) itemView.findViewById(R.id.memberName);
         activity = (TextView) itemView.findViewById(R.id.memberAct);
         divider= (TextView) itemView.findViewById(R.id.memberItemDivider);
+        cell = (RelativeLayout) itemView.findViewById(R.id.memberWhole);
     }
 }

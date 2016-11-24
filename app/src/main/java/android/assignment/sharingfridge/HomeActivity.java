@@ -45,6 +45,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.rong.imkit.RongIM;
+import io.rong.imlib.RongIMClient;
+import io.rong.imlib.model.UserInfo;
 import me.majiajie.pagerbottomtabstrip.Controller;
 import me.majiajie.pagerbottomtabstrip.PagerBottomTabLayout;
 import me.majiajie.pagerbottomtabstrip.TabItemBuilder;
@@ -55,7 +58,7 @@ public class HomeActivity extends AppCompatActivity
         FridgeFragment.OnFragmentInteractionListener,
         SettingsFragment.OnFragmentInteractionListener {
 
-    int[] tabColors = {0xFF00796B, 0xFFF57C00, 0xFF607D8B, 0xFF5B4947, 0xFFF57C00};
+    int[] tabColors = {0xFFB71C1C, 0xFFF57F17, 0xFF0D47A1, 0xFF9C27B0, 0xFFF57C00};
     Controller tabController;
     List<Fragment> myFragments;
     DrawerLayout drawer;
@@ -68,6 +71,8 @@ public class HomeActivity extends AppCompatActivity
     SettingsFragment setFrag;
 
     LocationManager locationManager;
+
+    private String deanToken = "vFYnLXrKzFpkaj/j+dHS/CQkWiv5kCN44VOVakTuZH9/OFCy8PGMCqAQM3thz6RaFu9POdG0hXt1iOWklJrI7w==";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,12 +130,35 @@ public class HomeActivity extends AppCompatActivity
         SharedPreferences preferences = getSharedPreferences("user-status", Context.MODE_PRIVATE);
         String uname = preferences.getString("username", null);
         String ugroup = preferences.getString("groupName", null);
+        String utoken=preferences.getString("token",null);
         Log.d("auto-login", uname + " " + ugroup);
         if (uname != null && ugroup != null && !uname.equals("_null") && !ugroup.equals("_null")) {
             UserStatus.username = uname;
             UserStatus.groupName = ugroup;
+            UserStatus.token=utoken;
             UserStatus.hasLogin = true;
             UserStatus.inGroup = !UserStatus.groupName.equals("none");
+        }
+        Log.d("CHAT-TOKEN",UserStatus.token);
+        if(UserStatus.token!=null&&!UserStatus.token.equals("")) {
+            RongIM.getInstance().setCurrentUserInfo(findUserById(UserStatus.username));
+            RongIM.getInstance().setMessageAttachedUserInfo(true);
+            RongIM.connect(UserStatus.token, new RongIMClient.ConnectCallback() {
+                @Override
+                public void onTokenIncorrect() {
+                }
+
+                @Override
+                public void onSuccess(String s) {
+                    UserStatus.chatConnected = true;
+                    Log.e("onSuccess", "onSuccess userid:" + s);
+                }
+
+                @Override
+                public void onError(RongIMClient.ErrorCode errorCode) {
+                    Log.e("onError", "onError userid:" + errorCode.getValue());
+                }
+            });
         }
 
     }
@@ -191,6 +219,7 @@ public class HomeActivity extends AppCompatActivity
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putString("username", "_null");//clear the shared preference
                 editor.putString("groupName", "_null");
+                editor.putString("token","");
                 editor.commit();
                 UserStatus.hasChanged = true;
                 friFrag.setNewUserDataNotLoaded();
@@ -340,6 +369,11 @@ public class HomeActivity extends AppCompatActivity
                 Log.d("LOCATION","Does not support network_provider");
             }
             }
+    }
+
+    public UserInfo findUserById(String uid){
+        UserInfo uInfo = new UserInfo(uid, uid, Uri.parse("http://178.62.93.103/SharingFridge/avatars/"+uid+".png"));
+        return  uInfo;
     }
 
     private class MyLocationListener implements LocationListener {

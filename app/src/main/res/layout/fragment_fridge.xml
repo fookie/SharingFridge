@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context="android.assignment.sharingfridge.FridgeFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
@@ -16,7 +15,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="@dimen/fab_margin"
-        app:backgroundTint="@android:color/holo_green_light" />
+        app:backgroundTint="@color/colorAccent" />
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"

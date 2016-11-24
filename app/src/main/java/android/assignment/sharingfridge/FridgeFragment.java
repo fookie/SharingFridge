@@ -69,7 +69,7 @@ public class FridgeFragment extends Fragment {
     private boolean isDataLoaded = false;
 
     private static final String[] CATEGORYS = new String[]{"Fruit", "Vegetable", "Pork", "Chicken", "Beef", "Fish", "Others"};
-    private static final String[] CATEGORYS_CHINESE = new String[]{"水果", "蔬菜", "猪肉", "鸡肉", "牛肉", "鱼肉", "其他"};
+    private static final String[] CATEGORYS_CHINESE = new String[] {"水果", "蔬菜", "猪肉", "鸡肉", "牛肉", "鱼肉", "其他"};
 
     public FridgeFragment() {
         // Required empty public constructor
@@ -178,9 +178,9 @@ public class FridgeFragment extends Fragment {
     }
 
     public String language(String a) {
-        int index = 0;
-        for (int i = 0; i < CATEGORYS.length; i++) {
-            if (a.equals(CATEGORYS[i]) || a.equals(CATEGORYS_CHINESE[i])) {
+        int index = 3;
+        for(int i=0;i<CATEGORYS.length;i++){
+            if(a.equals(CATEGORYS[i]) || a.equals(CATEGORYS_CHINESE[i])) {
                 index = i;
                 break;
             }
@@ -277,6 +277,7 @@ public class FridgeFragment extends Fragment {
             groupname = gn;
             taskDB = SQLiteDatabase.openOrCreateDatabase(getContext().getFilesDir().getAbsolutePath().replace("files", "databases") + "fridge.db", null);
             taskDB.execSQL("CREATE TABLE IF NOT EXISTS items(item char(255),category char(64),amount int,addtime char(255),expiretime char(255),imageurl char(255),owner char(255),groupname char(255))");
+            taskDB.execSQL("CREATE TABLE IF NOT EXISTS dummy(item char(255),category char(64),amount int,addtime char(255),expiretime char(255),imageurl char(255),owner char(255),groupname char(255))");
         }
 
         protected String doInBackground(String... params) {
@@ -343,11 +344,15 @@ public class FridgeFragment extends Fragment {
             try {
                 JSONArray jr = new JSONArray(result);
                 taskDB.execSQL("DELETE FROM items WHERE groupname != 'local'");
+                taskDB.execSQL("DELETE FROM dummy");
                 for (int i = 0; i < jr.length(); i++) {
                     JSONObject jo = jr.getJSONObject(i);
                     try {//remove all the data except local group data
-                        taskDB.execSQL("INSERT INTO items ('item' ,'category' ,'amount' ,'addtime' ,'expiretime' ,'imageurl' ,'owner' ,'groupname' )VALUES ('" + jo.getString("item") + "', '" + jo.getString("category") + "', '" + jo.getString("amount") + "', '" + jo.getString("addtime") + "', '" + jo.getString("expiretime") + "', '" + jo.getString("imageurl") + "', '" + jo.getString("owner") + "', '" + jo.getString("groupname") + "')");
-                        //Log.d("database","inserting: "+jo.getString("item"));
+                        if(jo.getString("item").equals("__dummy")){
+                            taskDB.execSQL("INSERT INTO dummy ('item' ,'category' ,'amount' ,'addtime' ,'expiretime' ,'imageurl' ,'owner' ,'groupname' )VALUES ('" + jo.getString("item") + "', '" + jo.getString("category") + "', '" + jo.getString("amount") + "', '" + jo.getString("addtime") + "', '" + jo.getString("expiretime") + "', '" + jo.getString("imageurl") + "', '" + jo.getString("owner") + "', '" + jo.getString("groupname") + "')");
+                        }else {
+                            taskDB.execSQL("INSERT INTO items ('item' ,'category' ,'amount' ,'addtime' ,'expiretime' ,'imageurl' ,'owner' ,'groupname' )VALUES ('" + jo.getString("item") + "', '" + jo.getString("category") + "', '" + jo.getString("amount") + "', '" + jo.getString("addtime") + "', '" + jo.getString("expiretime") + "', '" + jo.getString("imageurl") + "', '" + jo.getString("owner") + "', '" + jo.getString("groupname") + "')");
+                        }//Log.d("database","inserting: "+jo.getString("item"));
                     } catch (SQLException e) {
                         Log.d("database", "error:" + e.toString());
                     }

@@ -67,4 +67,6 @@
         <item>Fish</item>
         <item>Other</item>
     </string-array>
+    <string name="logout">log out</string>
+    <string name="settings">settings</string>
 </resources>

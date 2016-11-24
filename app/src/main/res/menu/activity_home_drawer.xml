@@ -12,12 +12,12 @@
             android:id="@+id/nav_join_group" />
         <item
             android:id="@+id/nav_about"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="About" />
+            android:icon="@drawable/ic_menu_manage"
+            android:title="@string/settings" />
         <item
             android:id="@+id/nav_logout"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Log out" />
+            android:icon="?android:attr/actionModeCloseDrawable"
+            android:title="@string/logout" />
     </group>
 
 

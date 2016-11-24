@@ -34,6 +34,10 @@ import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import io.rong.imkit.RongIM;
+import io.rong.imlib.RongIMClient;
+import io.rong.imlib.model.UserInfo;
+
 /**
  * A login screen that offers login via email/password.
  */
@@ -254,23 +258,50 @@ public class LoginActivity extends AppCompatActivity {
                     UserStatus.hasLogin = true;
                     UserStatus.username = username;
                     String groupName = confirm.get("groupname").toString();
+                    String token = confirm.get("token").toString();
                     UserStatus.inGroup = !groupName.equals("none");
                     UserStatus.groupName = groupName;
+                    UserStatus.token = token;
                     Log.d("LOGIN", "SUCCESS");
                     SharedPreferences preferences = getSharedPreferences("user-status", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();
                     if(auto_login.isChecked()) {
                         editor.putString("username",username);
                         editor.putString("groupName",groupName);
+                        editor.putString("token",token);
                         editor.commit();
                     }
                     else{
                         editor.putString("username","_null");//clear the shared preference
                         editor.putString("groupName","_null");
+                        editor.putString("token","");
                         editor.commit();
                     }
                     UserStatus.hasChanged = true;
                     Toast.makeText(getApplicationContext(), "You have loggen in as " + UserStatus.username, Toast.LENGTH_LONG);
+
+                    if (!UserStatus.chatConnected) {
+                        RongIM.getInstance().setCurrentUserInfo(findUserById(UserStatus.username));
+                        RongIM.getInstance().setMessageAttachedUserInfo(true);
+                        RongIM.connect(UserStatus.token, new RongIMClient.ConnectCallback() {
+                            @Override
+                            public void onTokenIncorrect() {
+                            }
+
+                            @Override
+                            public void onSuccess(String s) {
+                                UserStatus.chatConnected = true;
+                                Log.e("onSuccess", "onSuccess userid:" + s);
+                            }
+
+                            @Override
+                            public void onError(RongIMClient.ErrorCode errorCode) {
+                                Log.e("onError", "onError userid:" + errorCode.getValue());
+                            }
+                        });
+                    }
+
+//                    RongIM.getInstance().refreshUserInfoCache(new UserInfo(UserStatus.username, UserStatus.username, Uri.parse("http://178.62.93.103/SharingFridge/avatars/"+UserStatus.username+".png")));
                     finish();
                 }
             } catch (JSONException je) {
@@ -280,6 +311,11 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d("LOGIN", "FAILED");
             }
         }
+    }
+
+    public UserInfo findUserById(String uid){
+        UserInfo uInfo = new UserInfo(uid, uid, Uri.parse("http://178.62.93.103/SharingFridge/avatars/"+uid+".png"));
+        return  uInfo;
     }
 
 
