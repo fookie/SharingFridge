@@ -1,7 +1,6 @@
 package android.assignment.sharingfridge;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
@@ -127,7 +126,6 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
         Button addButton = (Button) findViewById(R.id.addButton);
         CheckBox checkBox = (CheckBox) findViewById(R.id.checkBox);
 
-        mainDB = SQLiteDatabase.openOrCreateDatabase(this.getFilesDir().getAbsolutePath().replace("files", "databases") + "fridge.db", null);
         mainDB.execSQL("CREATE TABLE IF NOT EXISTS items(item char(255),category char(64),amount int,addtime char(255),expiretime char(255),imageurl char(255),owner char(255),groupname char(255))");
 
         dateEditText.setOnClickListener(new View.OnClickListener() {

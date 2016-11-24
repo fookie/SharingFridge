@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -202,7 +203,7 @@ public class FridgeFragment extends Fragment {
         while (cursor.moveToNext()) {
             String expday = getString(R.string.Unknown);
             Calendar cal = Calendar.getInstance();
-            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
             try {
                 Date nd = cal.getTime();
                 Date ed = df.parse(cursor.getString(cursor.getColumnIndex("expiretime")));
@@ -318,7 +319,7 @@ public class FridgeFragment extends Fragment {
             mAuthTask = null;
             try {
                 JSONArray jr = new JSONArray(result);
-                taskDB.execSQL("delete from items where groupname != 'local'");
+                taskDB.execSQL("DELETE FROM items WHERE groupname != 'local'");
                 for (int i = 0; i < jr.length(); i++) {
                     JSONObject jo = jr.getJSONObject(i);
                     try {//remove all the data except local group data

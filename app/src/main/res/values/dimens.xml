@@ -16,4 +16,5 @@
     <item name="list_divider_height" type="dimen">0.5dp</item>
     <dimen name="pie_chart_text1_size">32sp</dimen>
     <dimen name="pie_chart_text2_size">16dp</dimen>
+    <dimen name="toolbar_height">56dp</dimen>
 </resources>

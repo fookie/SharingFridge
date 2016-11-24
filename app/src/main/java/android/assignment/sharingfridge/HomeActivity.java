@@ -101,14 +101,14 @@ public class HomeActivity extends AppCompatActivity
         initNavBar();
 
         SharedPreferences preferences = getSharedPreferences("user-status", Context.MODE_PRIVATE);
-        String uname=preferences.getString("username", null);
-        String ugroup=preferences.getString("groupName", null);
-        Log.d("auto-login",uname+" "+ugroup);
-        if(uname!=null&&ugroup!=null&&!uname.equals("_null")&&!ugroup.equals("_null")){
-            UserStatus.username=uname;
-            UserStatus.groupName=ugroup;
-            UserStatus.hasLogin=true;
-            UserStatus.inGroup=!UserStatus.groupName.equals("none");
+        String uname = preferences.getString("username", null);
+        String ugroup = preferences.getString("groupName", null);
+        Log.d("auto-login", uname + " " + ugroup);
+        if (uname != null && ugroup != null && !uname.equals("_null") && !ugroup.equals("_null")) {
+            UserStatus.username = uname;
+            UserStatus.groupName = ugroup;
+            UserStatus.hasLogin = true;
+            UserStatus.inGroup = !UserStatus.groupName.equals("none");
         }
 
     }
@@ -162,13 +162,13 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_about) {
 
         } else if (id == R.id.nav_logout) {
-            if(UserStatus.hasLogin){
+            if (UserStatus.hasLogin) {
                 UserStatus.resetStatus();
                 refreshUserStatus();
                 SharedPreferences preferences = getSharedPreferences("user-status", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putString("username","_null");//clear the shared preference
-                editor.putString("groupName","_null");
+                editor.putString("username", "_null");//clear the shared preference
+                editor.putString("groupName", "_null");
                 editor.commit();
                 UserStatus.hasChanged = true;
                 friFrag.setNewUserDataNotLoaded();
@@ -246,8 +246,8 @@ public class HomeActivity extends AppCompatActivity
         tabController = pagerBottomTabLayout.builder()
                 .addTabItem(tabItemBuilder)
                 .addTabItem(R.drawable.ic_member, getString(R.string.mem_frg), tabColors[1])
-                .addTabItem(R.drawable.ic_map,  getString(R.string.map_frg), tabColors[2])
-                .addTabItem(R.drawable.ic_statistics,  getString(R.string.set_frg), tabColors[3])
+                .addTabItem(R.drawable.ic_map, getString(R.string.map_frg), tabColors[2])
+                .addTabItem(R.drawable.ic_statistics, getString(R.string.set_frg), tabColors[3])
 //                .setMode(TabLayoutMode.HIDE_TEXT)
 //                .setMode(TabLayoutMode.CHANGE_BACKGROUND_COLOR)
 //                .setMode(TabLayoutMode.HIDE_TEXT| TabLayoutMode.CHANGE_BACKGROUND_COLOR)
@@ -281,7 +281,7 @@ public class HomeActivity extends AppCompatActivity
     public void refreshUserStatus() {
         usernameView.setText(UserStatus.username);
         groupnameView.setText(UserStatus.groupName);
-        if (UserStatus.username!="Click here to login"){
+        if (UserStatus.username != "Click here to login") {
             // set avatar!
             Glide.with(this).load("http://178.62.93.103/SharingFridge/avatars/" + UserStatus.username + ".png")
                     .centerCrop()
