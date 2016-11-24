@@ -129,31 +129,35 @@ public class HomeActivity extends AppCompatActivity
         SharedPreferences preferences = getSharedPreferences("user-status", Context.MODE_PRIVATE);
         String uname = preferences.getString("username", null);
         String ugroup = preferences.getString("groupName", null);
+        String utoken=preferences.getString("token",null);
         Log.d("auto-login", uname + " " + ugroup);
         if (uname != null && ugroup != null && !uname.equals("_null") && !ugroup.equals("_null")) {
             UserStatus.username = uname;
             UserStatus.groupName = ugroup;
+            UserStatus.token=utoken;
             UserStatus.hasLogin = true;
             UserStatus.inGroup = !UserStatus.groupName.equals("none");
         }
+        Log.d("CHAT-TOKEN",UserStatus.token);
+        if(UserStatus.token!=null&&!UserStatus.token.equals("")) {
+            RongIM.connect(UserStatus.token, new RongIMClient.ConnectCallback() {
+                @Override
+                public void onTokenIncorrect() {
 
-        RongIM.connect(deanToken, new RongIMClient.ConnectCallback() {
-            @Override
-            public void onTokenIncorrect() {
+                }
 
-            }
+                @Override
+                public void onSuccess(String s) {
 
-            @Override
-            public void onSuccess(String s) {
+                    Log.e("onSuccess", "onSuccess userid:" + s);
+                }
 
-                Log.e("onSuccess","onSuccess userid:"+s);
-            }
-
-            @Override
-            public void onError(RongIMClient.ErrorCode errorCode) {
-                Log.e("onError","onError userid:"+errorCode.getValue());
-            }
-        });
+                @Override
+                public void onError(RongIMClient.ErrorCode errorCode) {
+                    Log.e("onError", "onError userid:" + errorCode.getValue());
+                }
+            });
+        }
 
     }
 
@@ -213,6 +217,7 @@ public class HomeActivity extends AppCompatActivity
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putString("username", "_null");//clear the shared preference
                 editor.putString("groupName", "_null");
+                editor.putString("token","");
                 editor.commit();
                 UserStatus.hasChanged = true;
                 friFrag.setNewUserDataNotLoaded();
