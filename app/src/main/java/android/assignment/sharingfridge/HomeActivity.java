@@ -146,12 +146,11 @@ public class HomeActivity extends AppCompatActivity
             RongIM.connect(UserStatus.token, new RongIMClient.ConnectCallback() {
                 @Override
                 public void onTokenIncorrect() {
-
                 }
 
                 @Override
                 public void onSuccess(String s) {
-
+                    UserStatus.chatConnected = true;
                     Log.e("onSuccess", "onSuccess userid:" + s);
                 }
 

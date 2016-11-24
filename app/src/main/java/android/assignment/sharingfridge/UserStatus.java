@@ -15,11 +15,14 @@ public final class UserStatus {
     public static String token="";
     public static Location location;
     public static boolean needToUploadLoaction=false;
+    public static boolean chatConnected = false;
+
     public static void resetStatus(){
         username = "Click here to login";
         inGroup = false;
         groupName = "local";
         hasLogin = false;//do not reset location here
+        chatConnected = false;
         token="";
     }
 

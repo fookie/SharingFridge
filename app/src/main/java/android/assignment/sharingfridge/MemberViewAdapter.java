@@ -1,5 +1,6 @@
 package android.assignment.sharingfridge;
 
+import android.content.ContentProvider;
 import android.content.Context;
 
 import android.support.v7.widget.RecyclerView;
@@ -41,6 +42,8 @@ public class MemberViewAdapter extends RecyclerView.Adapter<MemberViewHolder> {
 
         name = memberItemList.get(position).getName();
         holder.name.setText(name);
+        String defaultHint = "";
+        defaultHint = homeContext.getString(R.string.login_hint);
         holder.activity.setText(memberItemList.get(position).getAct());
 //        holder.cell.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -49,7 +52,9 @@ public class MemberViewAdapter extends RecyclerView.Adapter<MemberViewHolder> {
 //                RongIM.getInstance().startPrivateChat(homeContext, name, "Talking to " + name);
 //            }
 //        });
-        holder.cell.setOnClickListener(new cellOnClickListener(name));
+        if (name!=""&&name!=defaultHint) {
+            holder.cell.setOnClickListener(new cellOnClickListener(name));
+        }
         //TODO change the placeholder and error later
         Glide.with(homeContext).load(picPath + memberItemList.get(position).getAvatarUrl())
                 .centerCrop()
