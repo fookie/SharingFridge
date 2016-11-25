@@ -82,4 +82,5 @@
     <string name="image_cache">delete image cache</string>
     <string name="local_db">delete local items in databse</string>
     <string name="cache">cache</string>
+    <string name="chat_err">can not  connect to chat server using UCD Wireless may cause this problem</string>
 </resources>

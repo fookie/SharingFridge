@@ -173,6 +173,7 @@ public class HomeActivity extends AppCompatActivity
                 @Override
                 public void onError(RongIMClient.ErrorCode errorCode) {
                     Log.e("onError", "onError userid:" + errorCode.getValue());
+                    Toast.makeText(getApplicationContext(),getString(R.string.chat_err),Toast.LENGTH_SHORT);
                 }
             });
         }

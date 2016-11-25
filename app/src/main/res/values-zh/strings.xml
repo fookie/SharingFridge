@@ -73,4 +73,5 @@
     <string name="image_cache">清除图片缓存</string>
     <string name="local_db">清除数据库内本机物品</string>
     <string name="cache">缓存</string>
+    <string name="chat_err">无法连接到聊天服务器，UCD Wireless 不好使</string>
 </resources>
