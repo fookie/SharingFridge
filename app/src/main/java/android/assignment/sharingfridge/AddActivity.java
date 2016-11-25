@@ -77,7 +77,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
     private Button addButton;
 
     private static final String[] CATEGORYS = new String[]{"Fruit", "Vegetable", "Pork", "Chicken", "Beef", "Fish", "Others"};
-    private static final String[] CATEGORYS_CHINESE = new String[] {"水果", "蔬菜", "猪肉", "鸡肉", "牛肉", "鱼肉", "其他"};
+    private static final String[] CATEGORYS_CHINESE = new String[]{"水果", "蔬菜", "猪肉", "鸡肉", "牛肉", "鱼肉", "其他"};
 
 
     private String imageRelativePath, imageAbsolutePath, filename;
@@ -175,11 +175,10 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                         wv.setOffset(2);
                         Locale locale = getResources().getConfiguration().locale;
                         String language = locale.getLanguage();
-                        if (language.endsWith("zh")){
+                        if (language.endsWith("zh")) {
                             categoryEditText.setText("鸡肉");
                             wv.setItems(Arrays.asList(CATEGORYS_CHINESE));
-                        }
-                        else{
+                        } else {
                             categoryEditText.setText("Chicken");
                             wv.setItems(Arrays.asList(CATEGORYS));
                         }
@@ -189,7 +188,15 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                             public void onSelected(int selectedIndex, String cate) {
                                 categoryEditText.setText(cate);
                                 int i = selectedIndex;
-                                selectedCategory = CATEGORYS[i];
+                                try {
+                                    selectedCategory = CATEGORYS[i];
+                                } catch (ArrayIndexOutOfBoundsException e) {
+                                    if (i > 6) {
+                                        selectedCategory = CATEGORYS[6];
+                                    } else {
+                                        selectedCategory = CATEGORYS[0];
+                                    }
+                                }
 //                                selectedCategory = cate;
                             }
                         });
@@ -375,7 +382,12 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                 Uri photoURI = FileProvider.getUriForFile(this, "com.example.android.fileprovider", photoFile);
                 imageUri = photoURI;
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, CAMERA_CODE);
+                try {
+                    startActivityForResult(takePictureIntent, CAMERA_CODE);
+                } catch (SecurityException e) {
+                    cameraButton.setText(getString(R.string.no_permission));
+                    cameraButton.setError("");
+                }
             }
         }
     }
@@ -538,7 +550,6 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
     public void onCancelled(UploadInfo uploadInfo) {
 
     }
-
 
 
     private class SendRequestTask extends AsyncTask<String, Void, String> {

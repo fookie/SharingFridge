@@ -58,6 +58,7 @@
     <string name="image_syncing">Picture synchronizing</string>
     <string name="image_sync_error">Error in synchronizing</string>
     <string name="image_sync_completed">Synchronization completed in [[ELAPSED_TIME]]</string>
+    <string name="no_permission">Permission Denial,check the settings on the phone</string>
     <string-array name="categories">
         <item>Fruit</item>
         <item>Vegetable</item>
@@ -69,4 +70,6 @@
     </string-array>
     <string name="logout">log out</string>
     <string name="settings">settings</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>
