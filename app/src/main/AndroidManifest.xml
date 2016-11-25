@@ -34,6 +34,7 @@
             android:name=".HomeActivity"
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait"
+            android:configChanges="locale"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -98,6 +99,8 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/fridge_widget_info" />
         </receiver>
+        <activity android:name=".SettingActivity"
+            android:configChanges="locale"></activity>
     </application>
 
 </manifest>

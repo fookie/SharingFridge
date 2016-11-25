@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
@@ -21,6 +23,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,6 +46,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import io.rong.imkit.RongIM;
 import io.rong.imlib.RongIMClient;
@@ -76,6 +80,18 @@ public class HomeActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+//        Resources resources = getResources();
+//        Configuration config = resources.getConfiguration();
+//        DisplayMetrics dm = resources.getDisplayMetrics();
+//        int i=0;
+//        SharedPreferences userSettings= getSharedPreferences("setting", 0);
+//        int ID = userSettings.getInt("language",i);
+//        if(ID==1)
+//            config.locale = Locale.ENGLISH;
+//        if(ID==2)
+//            config.locale = Locale.SIMPLIFIED_CHINESE;
+//        resources.updateConfiguration(config, dm);
 
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -209,7 +225,8 @@ public class HomeActivity extends AppCompatActivity
             Intent groupIntent = new Intent(HomeActivity.this, GroupActivity.class);
             startActivity(groupIntent);
         } else if (id == R.id.nav_about) {
-
+            Intent settingIntent = new Intent(HomeActivity.this, SettingActivity.class);
+            startActivity(settingIntent);
         } else if (id == R.id.nav_logout) {
             if (UserStatus.hasLogin) {
                 UserStatus.resetStatus();

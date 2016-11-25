@@ -58,4 +58,6 @@
     <string name="navigation_drawer_open">打开抽屉</string>
     <string name="settings">设置</string>
     <string name="no_permission">没有权限，请检查手机设置</string>
+    <string name="set_language">语言:</string>
+    <string name="default_language">与系统同步</string>
 </resources>

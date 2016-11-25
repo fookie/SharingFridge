@@ -72,4 +72,6 @@
     <string name="settings">settings</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="set_language">Language:</string>
+    <string name="default_language">Auto</string>
 </resources>
