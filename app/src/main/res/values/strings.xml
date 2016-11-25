@@ -69,4 +69,6 @@
     </string-array>
     <string name="logout">log out</string>
     <string name="settings">settings</string>
+    <string name="set_language">Language:</string>
+    <string name="default_language">Auto</string>
 </resources>

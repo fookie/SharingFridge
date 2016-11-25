@@ -3,7 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/IMKitWithVoIP/IMKitWithVoIP.iml" filepath="$PROJECT_DIR$/IMKitWithVoIP/IMKitWithVoIP.iml" />
+      <module fileurl="file://$PROJECT_DIR$/IMKitWithVoIP/IMKitWithVoIP.iml" filepath="$PROJECT_DIR$/IMKitWithVoIP/IMKitWithVoIP.iml" />
       <module fileurl="file://$PROJECT_DIR$/SharingFridge.iml" filepath="$PROJECT_DIR$/SharingFridge.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SharingFridge.iml" filepath="$PROJECT_DIR$/SharingFridge.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
