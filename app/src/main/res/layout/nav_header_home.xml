@@ -13,11 +13,12 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <ImageView
+    <com.pkmmte.view.CircularImageView
         android:id="@+id/gravatarView"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="@dimen/sidebar_avatar_size"
+        android:layout_height="@dimen/sidebar_avatar_size"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
+        app:border="true"
         app:srcCompat="@android:drawable/sym_def_app_icon" />
 
     <TextView
@@ -30,7 +31,6 @@
     <TextView
         android:id="@+id/groupname_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-         />
+        android:layout_height="match_parent" />
 
 </LinearLayout>

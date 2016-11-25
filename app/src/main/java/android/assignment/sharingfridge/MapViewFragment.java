@@ -2,15 +2,9 @@ package android.assignment.sharingfridge;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.database.SQLException;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -41,7 +35,6 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
@@ -114,7 +107,7 @@ public class MapViewFragment extends Fragment {
     private class SendRequestTask extends AsyncTask<String, Void, String> {
         private String urlString = "http://178.62.93.103/SharingFridge/location.php";
 
-        public SendRequestTask() {
+        SendRequestTask() {
 
         }
 
@@ -122,7 +115,7 @@ public class MapViewFragment extends Fragment {
             return performPostCall();
         }
 
-        public String performPostCall() {
+        String performPostCall() {
             Log.d("send post-loc-", "performPostCall");
             String response = "";
             try {
@@ -231,9 +224,7 @@ public class MapViewFragment extends Fragment {
                         asBitmap().
                         into(64, 64).
                         get();
-            } catch (final ExecutionException e) {
-                Log.e("MAP bitmap", e.getMessage());
-            } catch (final InterruptedException e) {
+            } catch (final ExecutionException | InterruptedException e) {
                 Log.e("MAP bitmap", e.getMessage());
             }
             return null;

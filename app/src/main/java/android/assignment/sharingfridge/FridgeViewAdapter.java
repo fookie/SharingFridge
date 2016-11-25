@@ -36,7 +36,7 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
     private EditText reductionAmount;
     private SendRequestTask mAuthTask;
 
-    SQLiteDatabase db;
+    private SQLiteDatabase db;
 
     FridgeViewAdapter(Context context, List<FridgeItem> fil, String serverPath) {
         homeContext = context;
@@ -48,8 +48,7 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
     @Override
     public FridgeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View eachView = LayoutInflater.from(parent.getContext()).inflate(R.layout.fridge_item, null);
-        FridgeViewHolder fvh = new FridgeViewHolder(eachView);
-        return fvh;
+        return new FridgeViewHolder(eachView);
     }
 
     @Override
@@ -72,8 +71,8 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
             @Override
             public void onClick(View v) {
                 reductionAmount = holder.reductionAmount;
-                if (reductionAmount.getText().equals("")) {
-                    reductionAmount.setText(1 + "");
+                if (reductionAmount.getText().toString().equals("")) {
+                    reductionAmount.setText(String.valueOf(1));
                 }
                 if (reductionAmount.getVisibility() == View.GONE) {
                     if (fridgeItemsList.get(position).getAmount() - 1 <= 0) {
@@ -181,7 +180,7 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
         private String owner, item;
         private int amount;
 
-        public SendRequestTask(String owner, String item, int amount) {
+        SendRequestTask(String owner, String item, int amount) {
             this.owner = owner;
             this.item = item;
             this.amount = amount;
@@ -191,7 +190,7 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
             return performPostCall();
         }
 
-        public String performPostCall() {
+        String performPostCall() {
             Log.d("send post", "performPostCall");
             String response = "";
             try {
@@ -231,7 +230,7 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
             return response;
         }
 
-        public String convertInputStreamToString(InputStream stream, int length) throws IOException {
+        String convertInputStreamToString(InputStream stream, int length) throws IOException {
             Reader reader = null;
             reader = new InputStreamReader(stream, "UTF-8");
             char[] buffer = new char[length];

@@ -1,50 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/memberWhole"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/memberWhole">
+    android:layout_height="match_parent">
 
+    <RelativeLayout
+        android:id="@+id/memberItemContainer"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <com.pkmmte.view.CircularImageView
-        android:id="@+id/memberAvatar"
-        android:layout_width="@dimen/list_item_height"
-        android:layout_height="@dimen/list_item_height"
-        android:layout_gravity="center"
-        android:layout_marginEnd="@dimen/list_item_margin"
-        android:contentDescription="@string/member_avatar"
-        android:scaleType="center"
-        app:border="false" />
+        <com.pkmmte.view.CircularImageView
+            android:id="@+id/memberAvatar"
+            android:layout_width="@dimen/list_item_height"
+            android:layout_height="@dimen/list_item_height"
+            android:layout_gravity="center"
+            android:layout_marginEnd="@dimen/list_item_margin"
+            android:contentDescription="@string/member_avatar"
+            android:scaleType="center"
+            app:border="false" />
 
-    <TextView
-        android:id="@+id/memberName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/memberAvatar"
-        android:text="@string/member_name"
-        android:textColor="@android:color/black"
-        android:textSize="@dimen/list_text_first_line" />
+        <TextView
+            android:id="@+id/memberName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/memberAvatar"
+            android:text="@string/member_name"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/list_text_first_line" />
 
-    <TextView
-        android:id="@+id/memberAct"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/memberAvatar"
-        android:layout_alignStart="@id/memberName"
-        android:layout_below="@+id/memberName"
-        android:layout_toEndOf="@+id/memberAvatar"
-        android:gravity="center_vertical"
-        android:text="@string/member_activity"
-        android:textSize="@dimen/list_text_second_line" />
+        <TextView
+            android:id="@+id/memberAct"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/memberAvatar"
+            android:layout_alignStart="@id/memberName"
+            android:layout_below="@+id/memberName"
+            android:layout_toEndOf="@+id/memberAvatar"
+            android:gravity="center_vertical"
+            android:text="@string/member_activity"
+            android:textSize="@dimen/list_text_second_line" />
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/memberItemDivider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/list_divider_height"
         android:layout_alignParentEnd="true"
-        android:layout_alignStart="@+id/memberAct"
-        android:layout_below="@+id/memberAct"
+        android:layout_alignStart="@+id/memberItemContainer"
+        android:layout_below="@+id/memberItemContainer"
         android:layout_marginBottom="@dimen/list_divider_margin_topbottom"
         android:layout_marginTop="@dimen/list_divider_margin_topbottom"
         android:background="@color/cardview_shadow_start_color" />

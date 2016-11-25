@@ -5,7 +5,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * Created by Paulay on 2016/10/25 0025.
@@ -30,6 +29,6 @@ public class MemberViewHolder extends RecyclerView.ViewHolder {
         name = (TextView) itemView.findViewById(R.id.memberName);
         activity = (TextView) itemView.findViewById(R.id.memberAct);
         divider= (TextView) itemView.findViewById(R.id.memberItemDivider);
-        cell = (RelativeLayout) itemView.findViewById(R.id.memberWhole);
+        cell = (RelativeLayout) itemView.findViewById(R.id.memberItemContainer);
     }
 }

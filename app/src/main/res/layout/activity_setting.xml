@@ -9,60 +9,63 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="android.assignment.sharingfridge.SettingActivity"
-    android:weightSum="1">
+    android:weightSum="1"
+    tools:context="android.assignment.sharingfridge.SettingActivity">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="40dp"
+        android:gravity="center"
         android:text="@string/set_language"
-        android:textSize="9pt"/>
+        android:textSize="9pt" />
 
     <RadioGroup
         android:id="@+id/radioGroup"
-        android:contentDescription="language"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:contentDescription="Language">
+
         <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/language_default"
-            android:text="@string/default_language"
-            android:checked="true"/>
-
-        <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/default_language" />
+
+        <RadioButton
             android:id="@+id/language_english"
-            android:text="English"/>
-
-        <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="English" />
+
+        <RadioButton
             android:id="@+id/language_chinese"
-            android:text="中文"/>
-        </RadioGroup>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="中文" />
+    </RadioGroup>
 
     <TextView
+        android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
+        android:gravity="center"
         android:text="@string/cache"
-        android:id="@+id/textView3"
+        android:textAlignment="center"
         android:textSize="18sp" />
 
     <Button
-        android:text="@string/image_cache"
+        android:id="@+id/clean_cache_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/clean_cache_button"
-        />
+        android:text="@string/image_cache" />
 
     <Button
-        android:text="@string/local_db"
+        android:id="@+id/clean_db_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/clean_db_button"
-        android:background="@android:color/holo_red_dark"
+        android:backgroundTint="@android:color/holo_red_dark"
+        android:text="@string/local_db"
         android:textColor="@android:color/white" />
 
 </LinearLayout>

@@ -1,8 +1,6 @@
 package android.assignment.sharingfridge;
 
-import android.content.ContentProvider;
 import android.content.Context;
-
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,7 +53,6 @@ public class MemberViewAdapter extends RecyclerView.Adapter<MemberViewHolder> {
         if (name!=""&&name!=defaultHint) {
             holder.cell.setOnClickListener(new cellOnClickListener(name));
         }
-        //TODO change the placeholder and error later
         Glide.with(homeContext).load(picPath + memberItemList.get(position).getAvatarUrl())
                 .centerCrop()
                 .placeholder(R.drawable.image_loading)

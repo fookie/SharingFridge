@@ -29,7 +29,7 @@
     <string name="amount">数量：</string>
     <string name="ex_date">到期时间</string>
     <string name="take_photo">照相</string>
-    <string name="type_name_hint">在此输入物品名称...</string>
+    <string name="type_name_hint">在此输入物品名称…</string>
     <string name="quantity">有多少？</string>
     <string name="choose_date">选择日期</string>
     <string name="choose_category">选择类别</string>
@@ -48,7 +48,7 @@
     <string name="set_frg">统计</string>
     <string name="wrong_date">日期不正确</string>
     <string name="Unknown">未知</string>
-    <string name="refreshing">刷新中...</string>
+    <string name="refreshing">刷新中…</string>
     <string name="need_group_name">请输入组名</string>
     <string name="success">成功</string>
     <string name="faild">失败</string>
@@ -61,7 +61,7 @@
     <string name="set_language">语言:</string>
     <string name="default_language">与系统同步</string>
     <string name="add_widget">添加小组件</string>
-    <string name="appwidget_text"></string>
+    <string name="appwidget_text" />
     <string name="day">天</string>
     <string name="image_sync_error">同步错误</string>
     <string name="image_synced">图片已同步</string>
@@ -74,4 +74,5 @@
     <string name="local_db">清除数据库内本机物品</string>
     <string name="cache">缓存</string>
     <string name="chat_err">无法连接到聊天服务器，UCD Wireless 不好使</string>
+    <string name="image_sync_completed">同步完成，用时[[ELAPSED_TIME]]</string>
 </resources>
