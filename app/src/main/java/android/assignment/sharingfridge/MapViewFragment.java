@@ -187,7 +187,7 @@ public class MapViewFragment extends Fragment {
                         while (it.hasNext()) {
                             Map.Entry entry = (Map.Entry) it.next();
                             //  addMarker((LatLng) entry.getValue(), (String) entry.getKey(), false);
-                            new SetMarkerTask((LatLng) entry.getValue(), (String) entry.getKey(), false).execute();
+                            new SetMarkerTask((LatLng) entry.getValue(), (String) entry.getKey(), !it.hasNext()).execute();
                         }
 //                addMarker(new LatLng(53.318994, -6.213717), "Tesco", "supermarket", false);
 //                addMarker(new LatLng(53.335628, -6.243302), "Tesco Metro", "supermarket", false);

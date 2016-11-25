@@ -74,4 +74,12 @@
     <string name="add_widget">Add widget</string>
     <string name="set_language">Language:</string>
     <string name="default_language">Auto</string>
+    <string name="today">today</string>
+    <string name="tomorrow">tomorrow</string>
+    <string name="day">days</string>
+    <string name="quantities">Quantities</string>
+    <string name="insights">Insights</string>
+    <string name="image_cache">delete image cache</string>
+    <string name="local_db">delete local items in databse</string>
+    <string name="cache">cache</string>
 </resources>

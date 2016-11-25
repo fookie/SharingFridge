@@ -1,16 +1,28 @@
 package android.assignment.sharingfridge;
 
+import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.cache.InternalCacheDiskCacheFactory;
+
+import java.io.File;
 import java.util.Locale;
 
 public class SettingActivity extends AppCompatActivity {
@@ -18,7 +30,8 @@ public class SettingActivity extends AppCompatActivity {
     RadioButton english;
     RadioButton chinese;
     RadioButton systemDefault;
-
+    Button cleancache;
+    Button cleandb;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +40,8 @@ public class SettingActivity extends AppCompatActivity {
         english = (RadioButton)findViewById(R.id.language_english);
         chinese = (RadioButton)findViewById(R.id.language_chinese);
         systemDefault = (RadioButton)findViewById(R.id.language_default);
+        cleancache=(Button)findViewById(R.id.clean_cache_button);
+        cleandb=(Button)findViewById(R.id.clean_db_button);
         RadioGroup language = (RadioGroup)findViewById(R.id.radioGroup);
 
         int i=0;
@@ -50,6 +65,32 @@ public class SettingActivity extends AppCompatActivity {
 //                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+            }
+        });
+        cleancache.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AsyncTask<Void,Void,Void>(){
+                    @Override
+                    protected Void doInBackground(Void... params) {
+                        Glide.get(getApplicationContext()).clearDiskCache();
+                        return null;
+                    }
+                }.execute();
+                Glide.get(getApplicationContext()).clearMemory();
+                Toast.makeText(getApplicationContext(), getString(R.string.success), Toast.LENGTH_SHORT).show();
+            }
+        });
+        cleandb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SQLiteDatabase taskDB;
+                taskDB = SQLiteDatabase.openOrCreateDatabase(getApplicationContext().getFilesDir().getAbsolutePath().replace("files", "databases") + "fridge.db", null);
+                taskDB.execSQL("CREATE TABLE IF NOT EXISTS items(item char(255),category char(64),amount int,addtime char(255),expiretime char(255),imageurl char(255),owner char(255),groupname char(255))");
+                String sql="delete from items";
+                taskDB.execSQL(sql);
+                Toast.makeText(getApplicationContext(), getString(R.string.success), Toast.LENGTH_SHORT).show();
+                taskDB.close();
             }
         });
     }
@@ -80,6 +121,7 @@ public class SettingActivity extends AppCompatActivity {
         editor.putInt("language", i);
         editor.commit();
     }
+
 
 
 }

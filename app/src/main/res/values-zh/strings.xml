@@ -60,4 +60,17 @@
     <string name="no_permission">没有权限，请检查手机设置</string>
     <string name="set_language">语言:</string>
     <string name="default_language">与系统同步</string>
+    <string name="add_widget">添加小组件</string>
+    <string name="appwidget_text"></string>
+    <string name="day">天</string>
+    <string name="image_sync_error">同步错误</string>
+    <string name="image_synced">图片已同步</string>
+    <string name="image_syncing">图片同步中</string>
+    <string name="insights">统计</string>
+    <string name="quantities">数量</string>
+    <string name="today">今日</string>
+    <string name="tomorrow">明天</string>
+    <string name="image_cache">清除图片缓存</string>
+    <string name="local_db">清除数据库内本机物品</string>
+    <string name="cache">缓存</string>
 </resources>

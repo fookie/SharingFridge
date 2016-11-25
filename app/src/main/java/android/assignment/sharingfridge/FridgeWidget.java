@@ -14,7 +14,8 @@ public class FridgeWidget extends AppWidgetProvider {
     private static SQLiteDatabase taskDB;
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
-
+        taskDB = SQLiteDatabase.openOrCreateDatabase(context.getFilesDir().getAbsolutePath().replace("files", "databases") + "fridge.db", null);
+        taskDB.execSQL("CREATE TABLE IF NOT EXISTS items(item char(255),category char(64),amount int,addtime char(255),expiretime char(255),imageurl char(255),owner char(255),groupname char(255))");
         String sql="select count(*) from items";
         Cursor c = taskDB.rawQuery(sql, null);
         String todisplay = null;

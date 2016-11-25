@@ -173,14 +173,10 @@ public class MemberFragment extends Fragment {
             memberItems.add(new MemberItem(getString(R.string.login_hint), getString(R.string.nousr_group_hint),"noimg"));
             return memberItems;
         }
-       // String sql = "select items.owner,count(*),sum(items.amount) from items left join dummy on items.owner=dummy.owner ";
-        String sql="select owner from dummy";
+        String sql="select owner from dummy where owner!='"+UserStatus.username+"'";
         Cursor c = mainDB.rawQuery(sql, null);
         while (c.moveToNext()) {
             String owner = c.getString(0);
-//            int count = c.getInt(1);
-//            int amount = c.getInt(2);
-//            memberItems.add(new MemberItem(owner, count + getContext().getResources().getString(R.string.group_sta_hint) + amount, owner + ".png"));
             memberItems.add(new MemberItem(owner,"",owner+".png"));
         }
 

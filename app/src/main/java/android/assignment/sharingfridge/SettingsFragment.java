@@ -205,23 +205,23 @@ public class SettingsFragment extends Fragment {
                 List<AxisValue> unit = new ArrayList<AxisValue>();
 
                 AxisValue today = new AxisValue(0);
-                unit.add(today.setLabel("Today"));
+                unit.add(today.setLabel(getString(R.string.today)));
                 AxisValue tomorrow = new AxisValue(1);
-                unit.add(tomorrow.setLabel("Tomorrow"));
+                unit.add(tomorrow.setLabel(getString(R.string.tomorrow)));
                 AxisValue dayAfterTomw = new AxisValue(2);
-                unit.add(dayAfterTomw.setLabel("2 day"));
+                unit.add(dayAfterTomw.setLabel("2"+getString(R.string.day)));
                 AxisValue threeDay = new AxisValue(3);
-                unit.add(threeDay.setLabel("3 day"));
+                unit.add(threeDay.setLabel("3 "+getString(R.string.day)));
                 AxisValue fourDay = new AxisValue(4);
-                unit.add(fourDay.setLabel("4 day"));
+                unit.add(fourDay.setLabel("4 "+getString(R.string.day)));
                 AxisValue fiveDay = new AxisValue(5);
-                unit.add(fiveDay.setLabel("5 day"));
+                unit.add(fiveDay.setLabel("5"+getString(R.string.day)));
                 AxisValue sixDay = new AxisValue(6);
-                unit.add(sixDay.setLabel("6 day"));
+                unit.add(sixDay.setLabel("6 "+getString(R.string.day)));
 
                 axisX.setValues(unit);
 
-                axisY.setName("Quantities");
+                axisY.setName(getString(R.string.quantities));
             }
             lineData.setAxisXBottom(axisX);
             lineData.setAxisYLeft(axisY);
@@ -265,7 +265,7 @@ public class SettingsFragment extends Fragment {
         }
 
         if (hasCenterText1) {
-            pieData.setCenterText1("Insights");
+            pieData.setCenterText1(getString(R.string.insights));
             pieData.setCenterText1FontSize(ChartUtils.px2sp(getResources().getDisplayMetrics().scaledDensity,
                     (int) getResources().getDimension(R.dimen.pie_chart_text1_size)));
         }
