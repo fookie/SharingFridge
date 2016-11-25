@@ -81,17 +81,18 @@ public class HomeActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        Resources resources = getResources();
-//        Configuration config = resources.getConfiguration();
-//        DisplayMetrics dm = resources.getDisplayMetrics();
-//        int i=0;
-//        SharedPreferences userSettings= getSharedPreferences("setting", 0);
-//        int ID = userSettings.getInt("language",i);
-//        if(ID==1)
-//            config.locale = Locale.ENGLISH;
-//        if(ID==2)
-//            config.locale = Locale.SIMPLIFIED_CHINESE;
-//        resources.updateConfiguration(config, dm);
+        Resources resources = getResources();
+        Configuration config = resources.getConfiguration();
+        DisplayMetrics dm = resources.getDisplayMetrics();
+        int i=0;
+        SharedPreferences userSettings= getSharedPreferences("setting", 0);
+        int ID = userSettings.getInt("language",i);
+        if(ID==1)
+            config.locale = Locale.ENGLISH;
+        if(ID==2)
+            config.locale = Locale.SIMPLIFIED_CHINESE;
+        setTitle(getString(R.string.settings));
+        resources.updateConfiguration(config, dm);
 
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
