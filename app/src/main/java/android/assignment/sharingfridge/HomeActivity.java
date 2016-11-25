@@ -91,7 +91,7 @@ public class HomeActivity extends AppCompatActivity
             config.locale = Locale.ENGLISH;
         if(ID==2)
             config.locale = Locale.SIMPLIFIED_CHINESE;
-        setTitle(getString(R.string.settings));
+        setTitle(getString(R.string.title_activity_home));
         resources.updateConfiguration(config, dm);
 
         setContentView(R.layout.activity_home);
