@@ -7,6 +7,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.widget.RemoteViews;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
 /**
  * Implementation of App Widget functionality.
  */
@@ -15,18 +24,47 @@ public class FridgeWidget extends AppWidgetProvider {
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
+        String widgetTitle = "Sharing Fridge";
+
         String sql="select count(*) from items";
         Cursor c = taskDB.rawQuery(sql, null);
         String todisplay = null;
         while (c.moveToNext()) {
             int count = c.getInt(0);
-            todisplay="total: "+count;
+            todisplay="Total: "+count+" items";
         }
 
-        CharSequence widgetText = context.getString(R.string.appwidget_text);
+        Cursor cursor = taskDB.rawQuery("SELECT * from items", null);
+        String expday = "Unknown";
+        long i=100;
+        String itemName = null;
+        String itemQuantity = null;
+        String widgetQuantity = null;
+        while (cursor.moveToNext()) {
+            Calendar cal = Calendar.getInstance();
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+            try {
+
+                Date nd = cal.getTime();
+                Date ed = df.parse(cursor.getString(cursor.getColumnIndex("expiretime")));
+                long days = (ed.getTime() - nd.getTime()) / (1000 * 60 * 60 * 24);
+                if (days<i){
+                    i = days;
+                    itemName = cursor.getString(cursor.getColumnIndex("item"));
+                    itemQuantity = cursor.getString(cursor.getColumnIndex("amount"));
+                }
+                expday = i + 1 + ((i + 1 <= 1) ? "day left" : "days left");//+1 ensure expire today shows 0 days
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }}
+        widgetQuantity = "Still "+itemQuantity+" left!";
+        CharSequence widgetText = "Remind "+itemName+": "+expday;
+
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.fridge_widget);
+        views.setTextViewText(R.id.appwidget_title, widgetTitle);
         views.setTextViewText(R.id.appwidget_text, widgetText);
+        views.setTextViewText(R.id.appwidget_quantity, widgetQuantity);
         views.setTextViewText(R.id.appwidget_text_detail, todisplay);
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
