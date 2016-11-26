@@ -19,12 +19,6 @@ public class MemberViewHolder extends RecyclerView.ViewHolder {
 
     public MemberViewHolder(View itemView) {
         super(itemView);
-//        itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Toast.makeText(v.getContext(), "Member Clicked", Toast.LENGTH_SHORT).show();
-//            }
-//        });
         avatar = (ImageView) itemView.findViewById(R.id.memberAvatar);
         name = (TextView) itemView.findViewById(R.id.memberName);
         activity = (TextView) itemView.findViewById(R.id.memberAct);

@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -223,7 +222,7 @@ public class LoginActivity extends AppCompatActivity {
                 outputStreamWriter.flush();
                 outputStreamWriter.close();
 
-                int responseCode = conn.getResponseCode();
+                conn.getResponseCode();
 
                 InputStream inputStream = conn.getInputStream();
 

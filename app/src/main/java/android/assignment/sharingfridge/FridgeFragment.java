@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -26,7 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DateFormat;
@@ -34,7 +32,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -47,19 +44,8 @@ import static android.widget.Toast.LENGTH_SHORT;
  * Activities that contain this fragment must implement the
  * {@link FridgeFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link FridgeFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
 public class FridgeFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    private static final int JSON_MAX_SIZE = 50000;
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     private SendRequestTask mAuthTask = null;
     private RecyclerView fridgeView;
     private List<FridgeItem> fridgeItemList;
@@ -76,33 +62,15 @@ public class FridgeFragment extends Fragment {
         // Required empty public constructor
     }
 
-    // TODO: Rename and change types and number of parameters
-    public static FridgeFragment newInstance(String param1, String param2) {
-        FridgeFragment fragment = new FridgeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        fridgeItemList = refreshFridgeList();
-//        Log.i("fktest","Create?");
-//        gridLayoutManager = new GridLayoutManager(getContext(), 2);
-//        fridgeViewAdapter = new FridgeViewAdapter(getContext(), fridgeItemList, ((SharingFridgeApplication) getContext().getApplicationContext()).getServerAddr());
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_fridge, container, false);
 
@@ -110,7 +78,6 @@ public class FridgeFragment extends Fragment {
         gridLayoutManager = new GridLayoutManager(getContext(), 1);
         fridgeView.setHasFixedSize(true);
         fridgeView.setLayoutManager(gridLayoutManager);
-//        fridgeView.setAdapter(fridgeViewAdapter);
         mainDB = SQLiteDatabase.openOrCreateDatabase(getContext().getFilesDir().getAbsolutePath().replace("files", "databases") + "fridge.db", null);
         mainDB.execSQL("CREATE TABLE IF NOT EXISTS items(item char(255),category char(64),amount int,addtime char(255),expiretime char(255),imageurl char(255),owner char(255),groupname char(255))");
         Log.d("database", "create table if not exist");
@@ -131,7 +98,6 @@ public class FridgeFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
-            //Here might need a listener for UI update(referring to TimelineFragment)
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -168,16 +134,6 @@ public class FridgeFragment extends Fragment {
         Log.i("FridgeResume", "resume and refreshed");
     }
 
-    public boolean userHasChanged() {
-        if (UserStatus.hasChanged) {
-            UserStatus.hasChanged = false;
-            isDataLoaded = false;
-            Log.d("user", "userHasChanged");
-            return true;
-        }
-        return false;
-    }
-
     public String language(String a) {
         int index = 3;
         for(int i=0;i<CATEGORYS.length;i++){
@@ -206,7 +162,6 @@ public class FridgeFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 
@@ -306,26 +261,14 @@ public class FridgeFragment extends Fragment {
                 outputStreamWriter.write("refresh=" + tosend);
                 outputStreamWriter.flush();
                 outputStreamWriter.close();
-
-                //int responseCode = conn.getResponseCode();
-
                 InputStream inputStream = conn.getInputStream();
-
                 // Convert the InputStream into a string
-//                int length = JSON_MAX_SIZE;
                 String contentAsString = getLongStringFromInputStream(inputStream);
                 return contentAsString;
             } catch (Exception e) {
                 e.printStackTrace();
             }
             return response;
-        }
-
-        public String convertInputStreamToString(InputStream stream, int length) throws IOException {
-            Reader reader = new InputStreamReader(stream, "UTF-8");
-            char[] buffer = new char[length];
-            reader.read(buffer);
-            return new String(buffer);
         }
 
         public String getLongStringFromInputStream(InputStream stream) throws IOException {
@@ -353,7 +296,7 @@ public class FridgeFragment extends Fragment {
                             taskDB.execSQL("INSERT INTO dummy ('item' ,'category' ,'amount' ,'addtime' ,'expiretime' ,'imageurl' ,'owner' ,'groupname' )VALUES ('" + jo.getString("item") + "', '" + jo.getString("category") + "', '" + jo.getString("amount") + "', '" + jo.getString("addtime") + "', '" + jo.getString("expiretime") + "', '" + jo.getString("imageurl") + "', '" + jo.getString("owner") + "', '" + jo.getString("groupname") + "')");
                         }else {
                             taskDB.execSQL("INSERT INTO items ('item' ,'category' ,'amount' ,'addtime' ,'expiretime' ,'imageurl' ,'owner' ,'groupname' )VALUES ('" + jo.getString("item") + "', '" + jo.getString("category") + "', '" + jo.getString("amount") + "', '" + jo.getString("addtime") + "', '" + jo.getString("expiretime") + "', '" + jo.getString("imageurl") + "', '" + jo.getString("owner") + "', '" + jo.getString("groupname") + "')");
-                        }//Log.d("database","inserting: "+jo.getString("item"));
+                        }
                     } catch (SQLException e) {
                         Log.d("database", "error:" + e.toString());
                     }
@@ -364,7 +307,6 @@ public class FridgeFragment extends Fragment {
                 updateFridgeList();
 
             } catch (Exception je) {
-                //je.printStackTrace();
                 Log.d("database", "Problem when updating :" + je);
                 isDataLoaded = false;
             }

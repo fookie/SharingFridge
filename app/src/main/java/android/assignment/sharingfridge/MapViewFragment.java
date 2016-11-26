@@ -139,7 +139,7 @@ public class MapViewFragment extends Fragment {
                 outputStreamWriter.flush();
                 outputStreamWriter.close();
 
-                int responseCode = conn.getResponseCode();
+                conn.getResponseCode();
                 InputStream inputStream = conn.getInputStream();
                 // Convert the InputStream into a string
                 int length = 500;

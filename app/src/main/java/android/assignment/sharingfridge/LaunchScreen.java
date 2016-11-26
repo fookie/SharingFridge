@@ -10,7 +10,7 @@ import com.viksaa.sssplash.lib.model.ConfigSplash;
 public class LaunchScreen extends AwesomeSplash {
     @Override
     public void initSplash(ConfigSplash configSplash) {
-        configSplash.setBackgroundColor(R.color.orange);
+        configSplash.setBackgroundColor(R.color.colorPrimary);
         configSplash.setAnimCircularRevealDuration(500);
         configSplash.setRevealFlagX(Flags.REVEAL_RIGHT);  //or Flags.REVEAL_LEFT
         configSplash.setRevealFlagY(Flags.REVEAL_BOTTOM); //or Flags.REVEAL_TOP

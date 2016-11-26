@@ -43,13 +43,6 @@ public class MemberViewAdapter extends RecyclerView.Adapter<MemberViewHolder> {
         String defaultHint = "";
         defaultHint = homeContext.getString(R.string.login_hint);
         holder.activity.setText(memberItemList.get(position).getAct());
-//        holder.cell.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.d("chat","Name: " + name);
-//                RongIM.getInstance().startPrivateChat(homeContext, name, "Talking to " + name);
-//            }
-//        });
         if (name!=""&&name!=defaultHint) {
             holder.cell.setOnClickListener(new cellOnClickListener(name));
         }

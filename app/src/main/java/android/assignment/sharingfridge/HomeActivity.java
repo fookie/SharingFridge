@@ -75,8 +75,6 @@ public class HomeActivity extends AppCompatActivity
 
     LocationManager locationManager;
 
-    private String deanToken = "vFYnLXrKzFpkaj/j+dHS/CQkWiv5kCN44VOVakTuZH9/OFCy8PGMCqAQM3thz6RaFu9POdG0hXt1iOWklJrI7w==";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -372,7 +370,6 @@ public class HomeActivity extends AppCompatActivity
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         LocationListener locationListener = new MyLocationListener();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
             String permissions[] = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};

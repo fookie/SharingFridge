@@ -249,7 +249,7 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
                 outputStreamWriter.flush();
                 outputStreamWriter.close();
 
-                int responseCode = conn.getResponseCode();
+                conn.getResponseCode();
 
                 InputStream inputStream = conn.getInputStream();
 

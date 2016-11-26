@@ -43,10 +43,6 @@ public class FridgeItem implements Comparable<FridgeItem>{
         return expanded = !expanded;
     }
 
-    public void setButtonsExpanded(boolean expanded) {
-        this.expanded = expanded;
-    }
-
     public boolean isReductionBox() {
         return reductionBox;
     }
@@ -79,24 +75,12 @@ public class FridgeItem implements Comparable<FridgeItem>{
         this.category = category;
     }
 
-    public void setOwner(String owner) {
-        this.owner = owner;
-    }
-
     public void setName(String n) {
         this.name = n;
     }
 
     public void minus(int sub) {
         amount -= sub;
-    }
-
-    public void setDate(int d) {
-        this.date = d;
-    }
-
-    public void setPhotoURL(String p) {
-        this.photoURL = p;
     }
 
     @Override

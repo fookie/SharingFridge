@@ -66,7 +66,8 @@
                 android:text="@string/auto_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/autologin" />
+                android:id="@+id/autologin"
+                android:checked="true" />
 
             <Button
                 android:id="@+id/sign_in_button"

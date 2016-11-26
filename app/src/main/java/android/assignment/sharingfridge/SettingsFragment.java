@@ -42,10 +42,6 @@ import lecho.lib.hellocharts.view.PieChartView;
  * create an instance of this fragment.
  */
 public class SettingsFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
     public SQLiteDatabase mainDB;
     private String formattedDate, dayOfWeek;
@@ -85,16 +81,6 @@ public class SettingsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    // TODO: Rename and change types and number of parameters
-    public static SettingsFragment newInstance(String param1, String param2) {
-        SettingsFragment fragment = new SettingsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,12 +114,6 @@ public class SettingsFragment extends Fragment {
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -158,7 +138,6 @@ public class SettingsFragment extends Fragment {
         int weekLength = dayNumOfWeek(dayOfWeek);
         while(dayIndex<=6){
             String dayToCheck = getDateString(formattedDate, dayIndex);
-//            Cursor cursor = mainDB.rawQuery("SELECT * FROM items WHERE groupname = '" + UserStatus.groupName + "'", null);
             Cursor cursor = mainDB.rawQuery("SELECT * FROM items WHERE groupname = '" + UserStatus.groupName + "' AND expiretime = '" + dayToCheck + "'", null);
             int count = cursor.getCount();
             while(cursor.moveToNext()){
@@ -237,14 +216,8 @@ public class SettingsFragment extends Fragment {
 
     public void getDataForPieChart(){
         List<SliceValue> values = new ArrayList<SliceValue>();
-//        for (int i = 0; i < numValues; ++i) {
-//            SliceValue sliceValue = new SliceValue((float) Math.random() * 30 + 15, ChartUtils.pickColor());
-//            values.add(sliceValue);
-//        }
-
         mainDB = SQLiteDatabase.openOrCreateDatabase(this.getContext().getFilesDir().getAbsolutePath().replace("files", "databases") + "fridge.db", null);
         Cursor defaultCursor = mainDB.rawQuery("SELECT SUM(amount), owner FROM items where groupname = '" + UserStatus.groupName + "' GROUP BY owner", null);
-//        Cursor transportCursor = mainDB.rawQuery("SELECT SUM(amount) FROM spendings WHERE category = \" default \"  ",null);
         while(defaultCursor.moveToNext()){
             float eachCategoryTotal = defaultCursor.getFloat(0);
             String categoryName = defaultCursor.getString(1);
@@ -327,7 +300,6 @@ public class SettingsFragment extends Fragment {
 
         @Override
         public void onValueDeselected() {
-            // TODO Auto-generated method stub
 
         }
     }
@@ -341,14 +313,12 @@ public class SettingsFragment extends Fragment {
 
         @Override
         public void onValueDeselected() {
-            // TODO Auto-generated method stub
 
         }
 
     }
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }

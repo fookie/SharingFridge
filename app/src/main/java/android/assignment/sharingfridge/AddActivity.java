@@ -24,10 +24,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.ActionMode;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -36,7 +33,6 @@ import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.ServerResponse;
@@ -80,8 +76,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
     private static final String[] CATEGORYS_CHINESE = new String[]{"水果", "蔬菜", "猪肉", "鸡肉", "牛肉", "鱼肉", "其他"};
 
 
-    private String imageRelativePath, imageAbsolutePath, filename;
-    private Uri imageUri;
+    private String imageAbsolutePath, filename;
     private SendRequestTask mAuthTask = null;
 
     int currentYear, currentMonth, currentDay;
@@ -107,7 +102,6 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
 
     private SQLiteDatabase mainDB;
 
-    private static final int REQUEST_CODE = 0;
     static final String[] PERMISSION = new String[]{
             permission_read,
             permission_write,
@@ -361,7 +355,6 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
         );
 
         // Save a file: path for use with ACTION_VIEW intents
-        imageRelativePath = "file:" + image.getAbsolutePath();
         imageAbsolutePath = image.getAbsolutePath();
         return image;
     }
@@ -380,7 +373,6 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
             // Continue only if the File was successfully created
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(this, "com.example.android.fileprovider", photoFile);
-                imageUri = photoURI;
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 try {
                     startActivityForResult(takePictureIntent, CAMERA_CODE);

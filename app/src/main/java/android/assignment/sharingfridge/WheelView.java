@@ -56,10 +56,6 @@ public class WheelView extends ScrollView {
 
     List<String> items;
 
-    private List<String> getItems() {
-        return items;
-    }
-
     public void setItems(List<String> list) {
         if (null == items) {
             items = new ArrayList<String>();
@@ -195,6 +191,7 @@ public class WheelView extends ScrollView {
         super.onScrollChanged(l, t, oldl, oldt);
         refreshItemView(t);
 
+        int scrollDirection = -1;
         if (t > oldt) {
             scrollDirection = SCROLL_DIRECTION_DOWN;
         } else {
@@ -245,7 +242,6 @@ public class WheelView extends ScrollView {
     }
 
 
-    private int scrollDirection = -1;
     private static final int SCROLL_DIRECTION_UP = 0;
     private static final int SCROLL_DIRECTION_DOWN = 1;
 

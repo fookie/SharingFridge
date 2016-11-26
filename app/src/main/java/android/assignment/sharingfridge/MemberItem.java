@@ -31,11 +31,4 @@ public class MemberItem {
         name = n;
     }
 
-    public void setAct(String a) {
-        act = a;
-    }
-
-    public void setAvatarUrl(String a) {
-        avatarUrl = a;
-    }
 }
