@@ -3,6 +3,7 @@ package android.assignment.sharingfridge;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,8 +22,9 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Collections;
 import java.util.List;
+
+import jp.wasabeef.glide.transformations.GrayscaleTransformation;
 
 
 /**
@@ -64,17 +66,28 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
             }
         });
         holder.nameView.setText(fridgeItemsList.get(position).getName());
-        int d=fridgeItemsList.get(position).getDate();
+        int d = fridgeItemsList.get(position).getDate();
 
-        holder.dateView.setText(d<0?(-d<2?(String.format(homeContext.getString(R.string.bad_day),-d+"")):(String.format(homeContext.getString(R.string.bad_days),-d+""))):(d<2?(d+""+homeContext.getString(R.string.left_day)):(d+""+homeContext.getString(R.string.left_days))));
-        if(d<=0){
-            holder.dateView.setTextColor(homeContext.getResources().getColor(R.color.red));
-        }
-        else if(d<=2){
-            holder.dateView.setTextColor(homeContext.getResources().getColor(R.color.orange));
-        }
-        else {
-            holder.dateView.setTextColor(homeContext.getResources().getColor(R.color.green));
+        holder.dateView.setText(d < 0 ? (-d < 2 ? (String.format(homeContext.getString(R.string.bad_day), -d + "")) : (String.format(homeContext.getString(R.string.bad_days), -d + ""))) : (d < 2 ? (d + " " + homeContext.getString(R.string.left_day)) : (d + " " + homeContext.getString(R.string.left_days))));
+        if (d <= 0) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                holder.dateView.setTextColor(homeContext.getResources().getColor(R.color.red, homeContext.getTheme()));
+            } else {
+                holder.dateView.setTextColor(homeContext.getResources().getColor(R.color.red));
+            }
+        } else if (d <= 2) {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                holder.dateView.setTextColor(homeContext.getResources().getColor(R.color.orange, homeContext.getTheme()));
+            } else {
+                holder.dateView.setTextColor(homeContext.getResources().getColor(R.color.orange));
+            }
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                holder.dateView.setTextColor(homeContext.getResources().getColor(R.color.green, homeContext.getTheme()));
+            } else {
+                holder.dateView.setTextColor(homeContext.getResources().getColor(R.color.green));
+            }
         }
         holder.categoryView.setText(fridgeItemsList.get(position).getCategory());
         holder.amountView.setText(String.valueOf(fridgeItemsList.get(position).getAmount()));
@@ -125,12 +138,21 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
                 notifyDataSetChanged();
             }
         });
-        Glide.with(homeContext).load(((fridgeItemsList.get(position).getOwner().equals("local user")) ? "" : serverPicsPath) + fridgeItemsList.get(position).getPhotoURL())
-                .centerCrop()
-                .placeholder(R.drawable.image_loading)
-                .error(R.drawable.image_corrupt)
-                .dontAnimate()
-                .into(holder.photoView);
+        if (d <= 0) {
+            Glide.with(homeContext).load(((fridgeItemsList.get(position).getOwner().equals("local user")) ? "" : serverPicsPath) + fridgeItemsList.get(position).getPhotoURL())
+                    .centerCrop()
+                    .placeholder(R.drawable.image_loading)
+                    .error(R.drawable.image_corrupt)
+                    .dontAnimate().bitmapTransform(new GrayscaleTransformation(homeContext))
+                    .into(holder.photoView);
+        } else {
+            Glide.with(homeContext).load(((fridgeItemsList.get(position).getOwner().equals("local user")) ? "" : serverPicsPath) + fridgeItemsList.get(position).getPhotoURL())
+                    .centerCrop()
+                    .placeholder(R.drawable.image_loading)
+                    .error(R.drawable.image_corrupt)
+                    .dontAnimate()
+                    .into(holder.photoView);
+        }
 
     }
 

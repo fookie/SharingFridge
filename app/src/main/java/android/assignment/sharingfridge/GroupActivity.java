@@ -1,8 +1,8 @@
 package android.assignment.sharingfridge;
 
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -10,8 +10,6 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.maps.UiSettings;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,7 +42,7 @@ public class GroupActivity extends AppCompatActivity {
 
     protected void onResume(){
         if(!UserStatus.hasLogin){
-            hint.setText(getString(R.string.nousr_group_hint));
+            hint.setText(getString(R.string.no_group_hint));
         }
         if(UserStatus.inGroup){
             hint.setText(String.format(getString(R.string.in_group_hint), UserStatus.groupName));
@@ -142,12 +140,12 @@ public class GroupActivity extends AppCompatActivity {
                     UserStatus.groupName=groupname;
                 }else {
                     Log.d("GROUP",action+ "FAILED");
-                    Toast.makeText(getApplicationContext(), getString(R.string.faild), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.failed), Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException je) {
                 je.printStackTrace();
                 Log.d("GROUP",action+ "FAILED");
-                Toast.makeText(getApplicationContext(), getString(R.string.faild), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.failed), Toast.LENGTH_SHORT).show();
             }
         }
     }

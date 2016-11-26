@@ -152,7 +152,7 @@ public class MemberFragment extends Fragment {
     public List<MemberItem> initMemberList() {
         List<MemberItem> memberItems = new LinkedList<>();
         if (!UserStatus.hasLogin) {
-            memberItems.add(new MemberItem(getString(R.string.login_hint), getString(R.string.nousr_group_hint),"noimg"));
+            memberItems.add(new MemberItem(getString(R.string.login_hint), getString(R.string.no_group_hint),"noimg"));
             return memberItems;
         }
         String sql="select owner from dummy where owner!='"+UserStatus.username+"'";

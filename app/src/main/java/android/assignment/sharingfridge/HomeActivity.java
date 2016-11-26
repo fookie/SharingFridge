@@ -132,7 +132,7 @@ public class HomeActivity extends AppCompatActivity
                     // Load the Avatar for the user just logged in
 
                 } else {
-                    Toast.makeText(HomeActivity.this, getString(R.string.loged_in_as) + UserStatus.username, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(HomeActivity.this, getString(R.string.logged_in_as) + UserStatus.username, Toast.LENGTH_SHORT).show();
                 }
             }
         });

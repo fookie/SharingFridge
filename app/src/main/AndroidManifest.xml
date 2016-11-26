@@ -32,16 +32,10 @@
 
         <activity
             android:name=".HomeActivity"
+            android:configChanges="locale"
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait"
-            android:configChanges="locale"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
@@ -99,8 +93,19 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/fridge_widget_info" />
         </receiver>
-        <activity android:name=".SettingActivity"
-            android:configChanges="locale"></activity>
+
+        <activity
+            android:name=".SettingActivity"
+            android:configChanges="locale" />
+        <activity
+            android:name=".LaunchScreen"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
