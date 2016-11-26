@@ -40,6 +40,8 @@
     <string name="Unknown">Unkonwn</string>
     <string name="left_day">Day left</string>
     <string name="left_days">Days left</string>
+    <string name="bad_day">best before %1$s Days ago</string>
+    <string name="bad_days">best before %1$s Days ago</string>
     <string name="need_name">Need a item name</string>
     <string name="need_group_name">Please enter a group name</string>
     <string name="need_amount">Need an amount</string>

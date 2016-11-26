@@ -21,6 +21,7 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -63,7 +64,18 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
             }
         });
         holder.nameView.setText(fridgeItemsList.get(position).getName());
-        holder.dateView.setText(fridgeItemsList.get(position).getDate());
+        int d=fridgeItemsList.get(position).getDate();
+
+        holder.dateView.setText(d<0?(-d<2?(String.format(homeContext.getString(R.string.bad_day),-d+"")):(String.format(homeContext.getString(R.string.bad_days),-d+""))):(d<2?(d+""+homeContext.getString(R.string.left_day)):(d+""+homeContext.getString(R.string.left_days))));
+        if(d<=0){
+            holder.dateView.setTextColor(homeContext.getResources().getColor(R.color.red));
+        }
+        else if(d<=2){
+            holder.dateView.setTextColor(homeContext.getResources().getColor(R.color.orange));
+        }
+        else {
+            holder.dateView.setTextColor(homeContext.getResources().getColor(R.color.green));
+        }
         holder.categoryView.setText(fridgeItemsList.get(position).getCategory());
         holder.amountView.setText(String.valueOf(fridgeItemsList.get(position).getAmount()));
         holder.ownerView.setText(fridgeItemsList.get(position).getOwner());

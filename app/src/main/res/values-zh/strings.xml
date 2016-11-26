@@ -75,4 +75,6 @@
     <string name="cache">缓存</string>
     <string name="chat_err">无法连接到聊天服务器，UCD Wireless 不好使</string>
     <string name="image_sync_completed">同步完成，用时[[ELAPSED_TIME]]</string>
+    <string name="bad_day">已经过期 %1$s 天</string>
+    <string name="bad_days">已经过期 %1$s 天</string>
 </resources>

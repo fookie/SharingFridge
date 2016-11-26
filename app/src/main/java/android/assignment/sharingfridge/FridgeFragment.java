@@ -34,6 +34,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -221,14 +222,14 @@ public class FridgeFragment extends Fragment {
         List<FridgeItem> itemsList = new ArrayList<>();
         Cursor cursor = mainDB.rawQuery("SELECT * from items where groupname = '" + UserStatus.groupName + "'", null);
         while (cursor.moveToNext()) {
-            String expday = getString(R.string.Unknown);
+            int expday = 0;
             Calendar cal = Calendar.getInstance();
             DateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
             try {
                 Date nd = cal.getTime();
                 Date ed = df.parse(cursor.getString(cursor.getColumnIndex("expiretime")));
                 long days = (ed.getTime() - nd.getTime()) / (1000 * 60 * 60 * 24);
-                expday = days + 1 + ((days + 1 <= 1) ? getString(R.string.left_days) : getString(R.string.left_day));//+1 ensure expire today shows 0 days
+                expday = (int) (days + 1);//+1 ensure expire today shows 0 days
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -375,14 +376,14 @@ public class FridgeFragment extends Fragment {
         List<FridgeItem> itemsList = new ArrayList<>();
         Cursor cursor = mainDB.rawQuery("SELECT * from items where groupname = '" + UserStatus.groupName + "'", null);
         while (cursor.moveToNext()) {
-            String expday = getString(R.string.Unknown);
+            int expday = 0;
             Calendar cal = Calendar.getInstance();
             DateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
             try {
                 Date nd = cal.getTime();
                 Date ed = df.parse(cursor.getString(cursor.getColumnIndex("expiretime")));
                 long days = (ed.getTime() - nd.getTime()) / (1000 * 60 * 60 * 24);
-                expday = days + 1 + ((days + 1 <= 1) ? getString(R.string.left_days) : getString(R.string.left_day));//+1 ensure expire today shows 0 days
+                expday = (int) (days + 1);//+1 ensure expire today shows 0 days
             } catch (ParseException e) {
                 e.printStackTrace();
             }
