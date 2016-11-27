@@ -8,4 +8,5 @@
     <color name="orange">#FF9800</color>
     <color name="green">#4caf50</color>
     <color name="green_50">#E8F5E9</color>
+    <color name="grey_600">#757575</color>
 </resources>

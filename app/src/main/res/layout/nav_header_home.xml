@@ -13,19 +13,32 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <com.pkmmte.view.CircularImageView
-        android:id="@+id/gravatarView"
-        android:layout_width="@dimen/sidebar_avatar_size"
-        android:layout_height="@dimen/sidebar_avatar_size"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        app:border="true"
-        app:srcCompat="@android:drawable/sym_def_app_icon" />
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/nav_header_vertical_spacing">
+
+        <com.pkmmte.view.CircularImageView
+            android:id="@+id/gravatarView"
+            android:layout_width="@dimen/sidebar_avatar_size"
+            android:layout_height="@dimen/sidebar_avatar_size"
+            app:border="true"
+            app:srcCompat="@android:drawable/sym_def_app_icon" />
+
+        <com.wang.avi.AVLoadingIndicatorView
+            android:id="@+id/sideBarProgress"
+            android:layout_width="21dp"
+            android:layout_height="21dp"
+            android:layout_centerInParent="true"
+            app:indicatorColor="@color/grey_600"
+            app:indicatorName="PacmanIndicator" />
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/username_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
+        android:layout_marginTop="@dimen/nav_header_vertical_spacing"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView

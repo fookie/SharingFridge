@@ -7,28 +7,42 @@
 
     <RelativeLayout
         android:id="@+id/memberItemContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="true"
-        android:foreground="?android:attr/selectableItemBackground"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:foreground="?android:attr/selectableItemBackground">
 
-        <com.pkmmte.view.CircularImageView
-            android:id="@+id/memberAvatar"
-            android:layout_width="@dimen/list_item_height"
-            android:layout_height="@dimen/list_item_height"
-            android:layout_gravity="center"
-            android:layout_marginEnd="@dimen/list_item_margin"
-            android:contentDescription="@string/member_avatar"
-            android:scaleType="center"
-            app:border="false" />
+        <RelativeLayout
+            android:id="@+id/memberItemAvatarContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/list_item_margin">
+
+            <com.pkmmte.view.CircularImageView
+                android:id="@+id/memberAvatar"
+                android:layout_width="@dimen/list_item_height"
+                android:layout_height="@dimen/list_item_height"
+                android:layout_gravity="center"
+                android:contentDescription="@string/member_avatar"
+                android:scaleType="center"
+                app:border="false" />
+
+            <com.wang.avi.AVLoadingIndicatorView
+                android:id="@+id/avatarProgress"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_centerInParent="true"
+                app:indicatorColor="@color/grey_600"
+                app:indicatorName="PacmanIndicator" />
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/memberName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/memberAvatar"
+            android:layout_toEndOf="@+id/memberItemAvatarContainer"
             android:text="@string/member_name"
             android:textColor="@android:color/black"
             android:textSize="@dimen/list_text_first_line" />
@@ -37,10 +51,10 @@
             android:id="@+id/memberAct"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/memberAvatar"
+            android:layout_alignBottom="@+id/memberItemAvatarContainer"
             android:layout_alignStart="@id/memberName"
             android:layout_below="@+id/memberName"
-            android:layout_toEndOf="@+id/memberAvatar"
+            android:layout_toEndOf="@+id/memberItemAvatarContainer"
             android:gravity="center_vertical"
             android:text="@string/member_activity"
             android:textSize="@dimen/list_text_second_line" />

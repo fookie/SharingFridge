@@ -12,6 +12,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import org.json.JSONObject;
 
@@ -69,7 +72,7 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
         int d = fridgeItemsList.get(position).getDate();
 
         holder.dateView.setText(d < 0 ? (-d < 2 ? (String.format(homeContext.getString(R.string.bad_day), -d + "")) : (String.format(homeContext.getString(R.string.bad_days), -d + ""))) : (d < 2 ? (d + " " + homeContext.getString(R.string.left_day)) : (d + " " + homeContext.getString(R.string.left_days))));
-        if (d <= 0) {
+        if (d < 0) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 holder.dateView.setTextColor(homeContext.getResources().getColor(R.color.red, homeContext.getTheme()));
             } else {
@@ -138,17 +141,43 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
                 notifyDataSetChanged();
             }
         });
-        if (d <= 0) {
+        if (d < 0) {
             Glide.with(homeContext).load(((fridgeItemsList.get(position).getOwner().equals("local user")) ? "" : serverPicsPath) + fridgeItemsList.get(position).getPhotoURL())
                     .centerCrop()
-                    .placeholder(R.drawable.image_loading)
+                    .listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            if (!e.getMessage().equals("Request failed 404: Not Found")) {
+                                holder.progressBar.setVisibility(View.VISIBLE);
+                            }
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            holder.progressBar.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
                     .error(R.drawable.image_corrupt)
                     .dontAnimate().bitmapTransform(new GrayscaleTransformation(homeContext))
                     .into(holder.photoView);
         } else {
             Glide.with(homeContext).load(((fridgeItemsList.get(position).getOwner().equals("local user")) ? "" : serverPicsPath) + fridgeItemsList.get(position).getPhotoURL())
                     .centerCrop()
-                    .placeholder(R.drawable.image_loading)
+                    .listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            holder.progressBar.setVisibility(View.GONE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            holder.progressBar.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
                     .error(R.drawable.image_corrupt)
                     .dontAnimate()
                     .into(holder.photoView);
@@ -265,7 +294,7 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
         }
 
         String convertInputStreamToString(InputStream stream, int length) throws IOException {
-            Reader reader = null;
+            Reader reader;
             reader = new InputStreamReader(stream, "UTF-8");
             char[] buffer = new char[length];
             reader.read(buffer);

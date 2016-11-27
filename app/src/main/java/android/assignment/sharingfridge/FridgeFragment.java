@@ -32,6 +32,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -56,7 +58,7 @@ public class FridgeFragment extends Fragment {
     private boolean isDataLoaded = false;
 
     private static final String[] CATEGORYS = new String[]{"Fruit", "Vegetable", "Pork", "Chicken", "Beef", "Fish", "Others"};
-    private static final String[] CATEGORYS_CHINESE = new String[] {"水果", "蔬菜", "猪肉", "鸡肉", "牛肉", "鱼肉", "其他"};
+    private static final String[] CATEGORYS_CHINESE = new String[]{"水果", "蔬菜", "猪肉", "鸡肉", "牛肉", "鱼肉", "其他"};
 
     public FridgeFragment() {
         // Required empty public constructor
@@ -136,8 +138,8 @@ public class FridgeFragment extends Fragment {
 
     public String language(String a) {
         int index = 3;
-        for(int i=0;i<CATEGORYS.length;i++){
-            if(a.equals(CATEGORYS[i]) || a.equals(CATEGORYS_CHINESE[i])) {
+        for (int i = 0; i < CATEGORYS.length; i++) {
+            if (a.equals(CATEGORYS[i]) || a.equals(CATEGORYS_CHINESE[i])) {
                 index = i;
                 break;
             }
@@ -292,9 +294,9 @@ public class FridgeFragment extends Fragment {
                 for (int i = 0; i < jr.length(); i++) {
                     JSONObject jo = jr.getJSONObject(i);
                     try {//remove all the data except local group data
-                        if(jo.getString("item").equals("__dummy")){
+                        if (jo.getString("item").equals("__dummy")) {
                             taskDB.execSQL("INSERT INTO dummy ('item' ,'category' ,'amount' ,'addtime' ,'expiretime' ,'imageurl' ,'owner' ,'groupname' )VALUES ('" + jo.getString("item") + "', '" + jo.getString("category") + "', '" + jo.getString("amount") + "', '" + jo.getString("addtime") + "', '" + jo.getString("expiretime") + "', '" + jo.getString("imageurl") + "', '" + jo.getString("owner") + "', '" + jo.getString("groupname") + "')");
-                        }else {
+                        } else {
                             taskDB.execSQL("INSERT INTO items ('item' ,'category' ,'amount' ,'addtime' ,'expiretime' ,'imageurl' ,'owner' ,'groupname' )VALUES ('" + jo.getString("item") + "', '" + jo.getString("category") + "', '" + jo.getString("amount") + "', '" + jo.getString("addtime") + "', '" + jo.getString("expiretime") + "', '" + jo.getString("imageurl") + "', '" + jo.getString("owner") + "', '" + jo.getString("groupname") + "')");
                         }
                     } catch (SQLException e) {
@@ -318,14 +320,13 @@ public class FridgeFragment extends Fragment {
         List<FridgeItem> itemsList = new ArrayList<>();
         Cursor cursor = mainDB.rawQuery("SELECT * from items where groupname = '" + UserStatus.groupName + "'", null);
         while (cursor.moveToNext()) {
-            int expday = 0;
+            long expday = 0;
             Calendar cal = Calendar.getInstance();
             DateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
             try {
                 Date nd = cal.getTime();
                 Date ed = df.parse(cursor.getString(cursor.getColumnIndex("expiretime")));
-                long days = (ed.getTime() - nd.getTime()) / (1000 * 60 * 60 * 24);
-                expday = (int) (days + 1);//+1 ensure expire today shows 0 days
+                expday = (ed.getTime() - nd.getTime()) / (1000 * 60 * 60 * 24);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -336,8 +337,17 @@ public class FridgeFragment extends Fragment {
         }
         cursor.close();
         fridgeItemList = itemsList;
+        Collections.sort(itemsList, new expdayComparator());
         fridgeViewAdapter = new FridgeViewAdapter(getContext(), fridgeItemList, ((SharingFridgeApplication) getContext().getApplicationContext()).getServerAddr());
         fridgeView.setAdapter(fridgeViewAdapter);
         fridgeViewAdapter.notifyDataSetChanged();
+    }
+
+    public class expdayComparator implements Comparator<FridgeItem> {
+
+        @Override
+        public int compare(FridgeItem lhs, FridgeItem rhs) {
+            return lhs.compareTo(rhs);
+        }
     }
 }

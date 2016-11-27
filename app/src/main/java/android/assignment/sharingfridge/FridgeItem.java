@@ -4,9 +4,9 @@ package android.assignment.sharingfridge;
  * Created by EveLIn3 on 2016/10/16.
  */
 
-public class FridgeItem implements Comparable<FridgeItem>{
+public class FridgeItem implements Comparable<FridgeItem> {
     private String name;
-    private int date;
+    private long date;
     private String photoURL;
     private String owner;
     private String category;
@@ -14,7 +14,7 @@ public class FridgeItem implements Comparable<FridgeItem>{
     private boolean expanded = false;
     private boolean reductionBox = false;
 
-    public FridgeItem(String n, int d, String imgURL, String o, String c, int a) {
+    public FridgeItem(String n, long d, String imgURL, String o, String c, int a) {
         this.name = n;
         this.date = d;
         this.photoURL = imgURL;
@@ -28,7 +28,7 @@ public class FridgeItem implements Comparable<FridgeItem>{
     }
 
     public int getDate() {
-        return date;
+        return (int) date;
     }
 
     public String getPhotoURL() {
@@ -85,6 +85,6 @@ public class FridgeItem implements Comparable<FridgeItem>{
 
     @Override
     public int compareTo(FridgeItem another) {
-        return this.date>another.date?-1:1;
+        return this.date < another.date ? -1 : 1;
     }
 }

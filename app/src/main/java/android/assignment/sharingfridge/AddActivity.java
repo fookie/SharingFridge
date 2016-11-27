@@ -314,10 +314,10 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
             rotationMatrix.postRotate(rotation);
             Bitmap rotationBitmap = null;
             try {
-                rotationBitmap = Bitmap.createBitmap(photo, 0, 0, photo.getWidth(), photo.getHeight(), rotationMatrix, true);
+                rotationBitmap = Bitmap.createBitmap(photo, 0, 0, photo != null ? photo.getWidth() : 0, photo != null ? photo.getHeight() : 0, rotationMatrix, true);
             } catch (OutOfMemoryError e) {
             }
-            if (rotationBitmap != photo)
+            if (rotationBitmap != photo && photo != null)
                 photo.recycle();
             if (rotationBitmap == null)
                 rotationBitmap = photo;
@@ -327,8 +327,8 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
 //            int height = wm.getDefaultDisplay().getHeight();
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = false;
-            int bitmapWidth = rotationBitmap.getWidth();
-            int bitmapHeight = rotationBitmap.getHeight();
+            int bitmapWidth = rotationBitmap != null ? rotationBitmap.getWidth() : 0;
+            int bitmapHeight = rotationBitmap != null ? rotationBitmap.getHeight() : 0;
 //            float proportionOfWL = (float) bitmapHeight/bitmapWidth;
             Matrix matrix = new Matrix();
             float scaleWidth = (float) width / (bitmapWidth * 2);
@@ -336,7 +336,9 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
 
             matrix.postScale(scaleWidth, scaleHeight);
             Bitmap newBitmap = Bitmap.createBitmap(rotationBitmap, 0, 0, bitmapWidth, bitmapHeight, matrix, true);
-            rotationBitmap.recycle();
+            if (rotationBitmap != null) {
+                rotationBitmap.recycle();
+            }
             itemDisplay.setImageBitmap(newBitmap);
 //            itemDisplay.setImageBitmap(photo);
         }
@@ -439,7 +441,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
         String calId = "";
         Cursor userCursor = getContentResolver().query(Uri.parse(calendarURL), null,
                 null, null, null);
-        if (userCursor.getCount() > 0) {
+        if (userCursor != null && userCursor.getCount() > 0) {
             userCursor.moveToFirst();
             calId = userCursor.getString(userCursor.getColumnIndex("_id"));
 
@@ -447,9 +449,6 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
 
         String title = "" + name;
         String des = "amount:" + amount;
-        int day = addday;
-        int month = addmonth;
-        int year = addyear;
 
         ContentValues event = new ContentValues();
         event.put("title", title);
@@ -457,9 +456,9 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
         event.put("calendar_id", calId);
 
         Calendar mCalendar = Calendar.getInstance();
-        mCalendar.set(Calendar.DAY_OF_MONTH, day);
-        mCalendar.set(Calendar.MONTH, month);
-        mCalendar.set(Calendar.YEAR, year);
+        mCalendar.set(Calendar.DAY_OF_MONTH, addday);
+        mCalendar.set(Calendar.MONTH, addmonth);
+        mCalendar.set(Calendar.YEAR, addyear);
         mCalendar.set(Calendar.HOUR_OF_DAY, 10);
         mCalendar.set(Calendar.MINUTE, 0);
         long start = mCalendar.getTime().getTime();
@@ -472,7 +471,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
 
         event.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().getID());
         Uri newEvent = getContentResolver().insert(Uri.parse(calanderEventURL), event);
-        long id = Long.parseLong(newEvent.getLastPathSegment());
+        long id = Long.parseLong(newEvent != null ? newEvent.getLastPathSegment() : null);
         ContentValues values = new ContentValues();
         values.put("event_id", id);
         values.put("minutes", 10);
@@ -597,15 +596,14 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
 
                 // Convert the InputStream into a string
                 int length = 500;
-                String contentAsString = convertInputStreamToString(inputStream, length);
-                return contentAsString;
+                return convertInputStreamToString(inputStream, length);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             return response;
         }
 
-        public String convertInputStreamToString(InputStream stream, int length) throws IOException {
+        String convertInputStreamToString(InputStream stream, int length) throws IOException {
             Reader reader = null;
             reader = new InputStreamReader(stream, "UTF-8");
             char[] buffer = new char[length];

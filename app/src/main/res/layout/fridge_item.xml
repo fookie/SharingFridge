@@ -15,14 +15,30 @@
         android:layout_width="match_parent"
         android:layout_height="171dp">
 
-        <ImageView
-            android:id="@+id/photoView"
+        <RelativeLayout
+            android:id="@+id/imageContainer"
             android:layout_width="100dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:background="@color/cardview_shadow_start_color"
-            android:scaleType="center"
-            app:srcCompat="@android:drawable/ic_menu_report_image" />
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true">
+
+            <ImageView
+                android:id="@+id/photoView"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:background="@color/cardview_shadow_start_color"
+                android:scaleType="center"
+                app:srcCompat="@android:drawable/ic_menu_report_image" />
+
+            <com.wang.avi.AVLoadingIndicatorView
+                android:id="@+id/imageProgress"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerInParent="true"
+                app:indicatorColor="@color/grey_600"
+                app:indicatorName="PacmanIndicator" />
+        </RelativeLayout>
+
 
         <TextView
             android:id="@+id/nameView"
@@ -95,7 +111,7 @@
             android:layout_marginBottom="@dimen/list_divider_margin_topbottom"
             android:layout_marginStart="@dimen/list_divider_margin_topbottom"
             android:layout_marginTop="@dimen/list_divider_margin_topbottom"
-            android:layout_toStartOf="@id/photoView"
+            android:layout_toStartOf="@id/imageContainer"
             android:background="@color/cardview_shadow_start_color" />
 
         <android.support.design.widget.FloatingActionButton
@@ -105,7 +121,7 @@
             android:layout_below="@+id/fridgeCardDivider"
             android:layout_marginBottom="@dimen/list_divider_margin_topbottom"
             android:layout_marginEnd="8dp"
-            android:layout_toStartOf="@+id/photoView"
+            android:layout_toStartOf="@+id/imageContainer"
             android:clickable="true"
             android:src="@drawable/ic_delete_white"
             android:tint="@android:color/white"
@@ -140,6 +156,7 @@
             android:text="1"
             android:textAlignment="center"
             android:visibility="gone" />
+
 
     </RelativeLayout>
 

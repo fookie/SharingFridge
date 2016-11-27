@@ -7,6 +7,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.wang.avi.AVLoadingIndicatorView;
+
 /**
  * Created by EveLIn3 on 2016/10/16.
  */
@@ -23,6 +25,7 @@ class FridgeViewHolder extends RecyclerView.ViewHolder {
     FloatingActionButton minusButton;
     FloatingActionButton deleteButton;
     EditText reductionAmount;
+    AVLoadingIndicatorView progressBar;
 
     FridgeViewHolder(final View itemView) {
         super(itemView);
@@ -36,6 +39,7 @@ class FridgeViewHolder extends RecyclerView.ViewHolder {
         minusButton = (FloatingActionButton) itemView.findViewById(R.id.minusButton);
         deleteButton = (FloatingActionButton) itemView.findViewById(R.id.deleteButton);
         reductionAmount = (EditText) itemView.findViewById(R.id.reductionAmount);
+        progressBar = (AVLoadingIndicatorView) itemView.findViewById(R.id.imageProgress);
         minusButton.setTag(holder);
         deleteButton.setTag(holder);
         reductionAmount.setTag(holder);

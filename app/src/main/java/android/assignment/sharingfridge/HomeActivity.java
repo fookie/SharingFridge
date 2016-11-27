@@ -34,6 +34,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONObject;
 
@@ -72,7 +76,7 @@ public class HomeActivity extends AppCompatActivity
     MemberFragment memFrag;
     MapViewFragment mapFrag;
     SettingsFragment setFrag;
-
+    AVLoadingIndicatorView avatarProgress;
     LocationManager locationManager;
 
     @Override
@@ -82,12 +86,12 @@ public class HomeActivity extends AppCompatActivity
         Resources resources = getResources();
         Configuration config = resources.getConfiguration();
         DisplayMetrics dm = resources.getDisplayMetrics();
-        int i=0;
-        SharedPreferences userSettings= getSharedPreferences("setting", 0);
-        int ID = userSettings.getInt("language",i);
-        if(ID==1)
+        int i = 0;
+        SharedPreferences userSettings = getSharedPreferences("setting", 0);
+        int ID = userSettings.getInt("language", i);
+        if (ID == 1)
             config.locale = Locale.ENGLISH;
-        if(ID==2)
+        if (ID == 2)
             config.locale = Locale.SIMPLIFIED_CHINESE;
         setTitle(getString(R.string.title_activity_home));
         resources.updateConfiguration(config, dm);
@@ -98,13 +102,6 @@ public class HomeActivity extends AppCompatActivity
 
         this.initLocation();
 
-        (new Thread(new Runnable() {
-            @Override
-            public void run() {
-//                Glide.get(getApplicationContext()).clearDiskCache(); //clear image cache
-            }
-        })).start();
-
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -113,6 +110,7 @@ public class HomeActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
+        avatarProgress = (AVLoadingIndicatorView) headerView.findViewById(R.id.sideBarProgress);
         usernameView = (TextView) headerView.findViewById(R.id.username_view);
         groupnameView = (TextView) headerView.findViewById(R.id.groupname_view);
         avatarView = (ImageView) headerView.findViewById(R.id.gravatarView);
@@ -144,17 +142,17 @@ public class HomeActivity extends AppCompatActivity
         SharedPreferences preferences = getSharedPreferences("user-status", Context.MODE_PRIVATE);
         String uname = preferences.getString("username", null);
         String ugroup = preferences.getString("groupName", null);
-        String utoken=preferences.getString("token",null);
+        String utoken = preferences.getString("token", null);
         Log.d("auto-login", uname + " " + ugroup);
         if (uname != null && ugroup != null && !uname.equals("_null") && !ugroup.equals("_null")) {
             UserStatus.username = uname;
             UserStatus.groupName = ugroup;
-            UserStatus.token=utoken;
+            UserStatus.token = utoken;
             UserStatus.hasLogin = true;
             UserStatus.inGroup = !UserStatus.groupName.equals("none");
         }
 //        Log.d("CHAT-TOKEN",UserStatus.token);
-        if(UserStatus.token!=null&&!UserStatus.token.equals("")) {
+        if (UserStatus.token != null && !UserStatus.token.equals("")) {
             RongIM.getInstance().setCurrentUserInfo(findUserById(UserStatus.username));
             RongIM.getInstance().setMessageAttachedUserInfo(true);
             RongIM.connect(UserStatus.token, new RongIMClient.ConnectCallback() {
@@ -171,7 +169,7 @@ public class HomeActivity extends AppCompatActivity
                 @Override
                 public void onError(RongIMClient.ErrorCode errorCode) {
                     Log.e("onError", "onError userid:" + errorCode.getValue());
-                    Toast.makeText(getApplicationContext(),getString(R.string.chat_err),Toast.LENGTH_SHORT);
+                    Toast.makeText(getApplicationContext(), getString(R.string.chat_err), Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -235,15 +233,15 @@ public class HomeActivity extends AppCompatActivity
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putString("username", "_null");//clear the shared preference
                 editor.putString("groupName", "_null");
-                editor.putString("token","");
-                editor.commit();
+                editor.putString("token", "");
+                editor.apply();
                 UserStatus.hasChanged = true;
                 friFrag.setNewUserDataNotLoaded();
-                Toast.makeText(getApplicationContext(), "You have successfully logged out", Toast.LENGTH_SHORT);
+                Toast.makeText(getApplicationContext(), "You have successfully logged out", Toast.LENGTH_SHORT).show();
                 friFrag.updateUI();
                 memFrag.updateUI();
             } else {
-                Toast.makeText(getApplicationContext(), "You are already logged out!", Toast.LENGTH_SHORT);
+                Toast.makeText(getApplicationContext(), "You are already logged out!", Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -352,16 +350,29 @@ public class HomeActivity extends AppCompatActivity
     public void refreshUserStatus() {
         usernameView.setText(UserStatus.username);
         groupnameView.setText(UserStatus.groupName);
-        if (UserStatus.username != "Click here to login") {
+        if (!UserStatus.username.equals("Click here to login")) {
             // set avatar!
             Glide.with(this).load("http://178.62.93.103/SharingFridge/avatars/" + UserStatus.username + ".png")
                     .centerCrop()
-                    .placeholder(R.drawable.image_loading)
+                    .listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            avatarProgress.setVisibility(View.GONE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            avatarProgress.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
                     .error(R.drawable.image_corrupt)
                     .dontAnimate()
                     .into(avatarView);
         } else {
-            Drawable icon = getResources().getDrawable(R.drawable.ic_default);
+            avatarProgress.setVisibility(View.GONE);
+            Drawable icon = getResources().getDrawable(R.drawable.ic_default, getTheme());
             avatarView.setImageDrawable(icon);
         }
     }
@@ -380,15 +391,14 @@ public class HomeActivity extends AppCompatActivity
         } else {
             try {
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 10, locationListener);
-            }catch (IllegalArgumentException e){
-                Log.d("LOCATION","Does not support network_provider");
+            } catch (IllegalArgumentException e) {
+                Log.d("LOCATION", "Does not support network_provider");
             }
-            }
+        }
     }
 
-    public UserInfo findUserById(String uid){
-        UserInfo uInfo = new UserInfo(uid, uid, Uri.parse("http://178.62.93.103/SharingFridge/avatars/"+uid+".png"));
-        return  uInfo;
+    public UserInfo findUserById(String uid) {
+        return new UserInfo(uid, uid, Uri.parse("http://178.62.93.103/SharingFridge/avatars/" + uid + ".png"));
     }
 
     private class MyLocationListener implements LocationListener {
@@ -440,7 +450,7 @@ public class HomeActivity extends AppCompatActivity
         private String urlString = "http://178.62.93.103/SharingFridge/location.php";
         private Double Longitude, Latitude;
 
-        public SendRequestTask(Location location) {
+        SendRequestTask(Location location) {
             this.Latitude = location.getLatitude();
             this.Longitude = location.getLongitude();
         }
@@ -449,7 +459,7 @@ public class HomeActivity extends AppCompatActivity
             return performPostCall();
         }
 
-        public String performPostCall() {
+        String performPostCall() {
             Log.d("send post-location", "performPostCall");
             String response = "";
             try {
@@ -488,8 +498,8 @@ public class HomeActivity extends AppCompatActivity
             return response;
         }
 
-        public String convertInputStreamToString(InputStream stream, int length) throws IOException {
-            Reader reader = null;
+        String convertInputStreamToString(InputStream stream, int length) throws IOException {
+            Reader reader;
             reader = new InputStreamReader(stream, "UTF-8");
             char[] buffer = new char[length];
             reader.read(buffer);

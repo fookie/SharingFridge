@@ -11,9 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.RadioButton;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -123,7 +120,7 @@ public class MemberFragment extends Fragment {
     public List<MemberItem> initMemberList() {
         List<MemberItem> memberItems = new LinkedList<>();
         if (!UserStatus.hasLogin) {
-            memberItems.add(new MemberItem(getString(R.string.login_hint), getString(R.string.no_group_hint),"noimg"));
+            memberItems.add(new MemberItem(getString(R.string.login_hint), getString(R.string.no_group_hint),"noimg.png"));
             return memberItems;
         }
         String sql="select owner from dummy where owner!='"+UserStatus.username+"'";
