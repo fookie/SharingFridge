@@ -214,7 +214,7 @@ public class FridgeFragment extends Fragment {
     }
 
     private void updateFromServer() {
-        if (!UserStatus.groupName.equals("local")) {
+        if (!UserStatus.groupName.equals("Offline Mode")) {
             mAuthTask = new SendRequestTask(UserStatus.groupName);
             mAuthTask.execute("");
         } else {
