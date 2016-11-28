@@ -56,6 +56,10 @@ public class MapViewFragment extends Fragment {
         mMapView.onResume(); // needed to get the map to display immediately
         mAuthTask = new SendRequestTask();
         mAuthTask.execute();
+//                        addMarker(new LatLng(53.318994, -6.213717), "Tesco", "supermarket", false);
+//                addMarker(new LatLng(53.335628, -6.243302), "Tesco Metro", "supermarket", false);
+//                addMarker(new LatLng(53.325329, -6.254133), "Lidl", "discount supermarket", false);
+//                addMarker(new LatLng(53.307358, -6.215584), "Molloys Centra", "Store in UCD", false);
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
         } catch (Exception e) {
@@ -104,6 +108,9 @@ public class MapViewFragment extends Fragment {
         mMapView.onLowMemory();
     }
 
+    /**
+     * the AsyncTask to download the list to display
+     */
     private class SendRequestTask extends AsyncTask<String, Void, String> {
         private String urlString = "http://178.62.93.103/SharingFridge/location.php";
 
@@ -162,7 +169,6 @@ public class MapViewFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String result) {
-            Log.d("send post-loc-", "exx");
             mAuthTask = null;
             try {
                 JSONArray jr = new JSONArray(result);
@@ -179,13 +185,8 @@ public class MapViewFragment extends Fragment {
                         Iterator it = markers.entrySet().iterator();
                         while (it.hasNext()) {
                             Map.Entry entry = (Map.Entry) it.next();
-                            //  addMarker((LatLng) entry.getValue(), (String) entry.getKey(), false);
                             new SetMarkerTask((LatLng) entry.getValue(), (String) entry.getKey(), !it.hasNext()).execute();
                         }
-//                addMarker(new LatLng(53.318994, -6.213717), "Tesco", "supermarket", false);
-//                addMarker(new LatLng(53.335628, -6.243302), "Tesco Metro", "supermarket", false);
-//                addMarker(new LatLng(53.325329, -6.254133), "Lidl", "discount supermarket", false);
-//                addMarker(new LatLng(53.307358, -6.215584), "Molloys Centra", "Store in UCD", false);
                         // For showing a move to my location button
                         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                             Log.d("GMAP", "NO PERMISSION");
@@ -202,6 +203,9 @@ public class MapViewFragment extends Fragment {
         }
     }
 
+    /**
+     *the marker use user avatar , so we should use a AsyncTask to download it
+     */
     private class SetMarkerTask extends AsyncTask<Void, Void, Void> {
         private Bitmap theBitmap;
         private LatLng ll;

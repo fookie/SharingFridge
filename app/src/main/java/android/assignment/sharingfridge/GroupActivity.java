@@ -68,6 +68,10 @@ public class GroupActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * send join/add group request to server
+     *
+     */
     private class SendRequestTask extends AsyncTask<String, Void, String> {
         private String urlString = "http://178.62.93.103/SharingFridge/group.php";
         private String action,groupname;

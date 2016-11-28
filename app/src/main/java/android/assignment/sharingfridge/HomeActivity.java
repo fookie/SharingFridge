@@ -255,7 +255,6 @@ public class HomeActivity extends AppCompatActivity
 
         friFrag = new FridgeFragment();
         memFrag = new MemberFragment();
-        //mapFrag = MapFragment.newInstance("Map", "para2");
         mapFrag = new MapViewFragment();
         setFrag = new SettingsFragment();
 
@@ -265,7 +264,6 @@ public class HomeActivity extends AppCompatActivity
         myFragments.add(setFrag);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        // transaction.setCustomAnimations(R.anim.push_up_in,R.anim.push_up_out);
         transaction.add(R.id.fragment_container_home, myFragments.get(0));
         transaction.commit();
     }
@@ -275,7 +273,6 @@ public class HomeActivity extends AppCompatActivity
         public void onSelected(int index, Object tag) {
             Log.i("tab", "onSelected:" + index + "   TAG: " + tag.toString());
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            //transaction.setCustomAnimations(R.anim.push_up_in,R.anim.push_up_out);
             transaction.replace(R.id.fragment_container_home, myFragments.get(index));
             transaction.commit();
         }
@@ -285,16 +282,6 @@ public class HomeActivity extends AppCompatActivity
             Log.i("tab", "onRepeatClick:" + index + "   TAG: " + tag.toString());
         }
     };
-
-    //A way of setting arguments for fragments
-//    private Fragment initSingleFragment(String id){
-//        TestFragment fragment = new TestFragment();
-//        Bundle bundle = new Bundle();
-//        bundle.putString("id", id);
-//        fragment.setArguments(bundle);
-//
-//        return fragment;
-//    }
 
     private void initNavBar() {
         PagerBottomTabLayout pagerBottomTabLayout = (PagerBottomTabLayout) findViewById(R.id.tab);
@@ -313,9 +300,6 @@ public class HomeActivity extends AppCompatActivity
                 .addTabItem(R.drawable.ic_member, getString(R.string.mem_frg), tabColors[1])
                 .addTabItem(R.drawable.ic_map, getString(R.string.map_frg), tabColors[2])
                 .addTabItem(R.drawable.ic_statistics, getString(R.string.set_frg), tabColors[3])
-//                .setMode(TabLayoutMode.HIDE_TEXT)
-//                .setMode(TabLayoutMode.CHANGE_BACKGROUND_COLOR)
-//                .setMode(TabLayoutMode.HIDE_TEXT| TabLayoutMode.CHANGE_BACKGROUND_COLOR)
                 .build();
 
         tabController.addTabItemClickListener(tabListener);
@@ -330,11 +314,9 @@ public class HomeActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         refreshUserStatus();
-//        friFrag.updateUI();
         memFrag.updateUI();
         if (UserStatus.hasChanged && UserStatus.hasLogin) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            //transaction.setCustomAnimations(R.anim.push_up_in,R.anim.push_up_out);
             transaction.replace(R.id.fragment_container_home, myFragments.get(0));
             transaction.commit();
             tabController.setSelect(0);
@@ -378,17 +360,16 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
+    /**
+     *
+     * initiate the location lisetener, permission is required
+     */
     public void initLocation() {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         LocationListener locationListener = new MyLocationListener();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
             String permissions[] = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
             ActivityCompat.requestPermissions(HomeActivity.this, permissions, 5230);
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-
         } else {
             try {
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 10, locationListener);
@@ -402,10 +383,12 @@ public class HomeActivity extends AppCompatActivity
         return new UserInfo(uid, uid, Uri.parse("http://178.62.93.103/SharingFridge/avatars/" + uid + ".png"));
     }
 
+    /**
+     * LocationListener that listen to the locatoin change, upload the loadtion to server if the location changed a lot
+     */
     private class MyLocationListener implements LocationListener {
         @Override
         public void onLocationChanged(Location location) {
-            // Toast.makeText(getBaseContext(), "Location changed: Lat: " + location.getLatitude() + " Lng: " + location.getLongitude(), Toast.LENGTH_SHORT).show();
             String longitude = "Longitude: " + location.getLongitude();
             Log.v("LOCATION", longitude);
             String latitude = "Latitude: " + location.getLatitude();

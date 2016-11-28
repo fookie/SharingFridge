@@ -136,6 +136,12 @@ public class FridgeFragment extends Fragment {
         Log.i("FridgeResume", "resume and refreshed");
     }
 
+    /**
+     *
+     *
+     * @param a
+     * @return
+     */
     public String language(String a) {
         int index = 3;
         for (int i = 0; i < CATEGORYS.length; i++) {
@@ -153,16 +159,6 @@ public class FridgeFragment extends Fragment {
         return a;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
     }
@@ -193,7 +189,6 @@ public class FridgeFragment extends Fragment {
 
             String cat = language(cursor.getString(cursor.getColumnIndex("category")));
             FridgeItem tempfi = new FridgeItem(cursor.getString(cursor.getColumnIndex("item")), expday, cursor.getString(cursor.getColumnIndex("imageurl")), cursor.getString(cursor.getColumnIndex("owner")), cat, cursor.getInt(cursor.getColumnIndex("amount")));
-//            FridgeItem tempfi = new FridgeItem(cursor.getString(cursor.getColumnIndex("item")), expday, cursor.getString(cursor.getColumnIndex("imageurl")), cursor.getString(cursor.getColumnIndex("owner")), cursor.getString(cursor.getColumnIndex("category")), cursor.getInt(cursor.getColumnIndex("amount")));
             itemsList.add(tempfi);
             Log.i("usertest", cursor.getString(cursor.getColumnIndex("item")) + " at " + cursor.getString(cursor.getColumnIndex("expiretime")));
         }
@@ -225,6 +220,7 @@ public class FridgeFragment extends Fragment {
     public void setNewUserDataNotLoaded() {
         isDataLoaded = false;
     }
+
 
     private class SendRequestTask extends AsyncTask<String, Void, String> {
         private String urlString = "http://178.62.93.103/SharingFridge/refresh.php";
@@ -316,6 +312,10 @@ public class FridgeFragment extends Fragment {
         }
     }
 
+    /**
+     * load the fridge list from database
+     *
+     */
     public void updateFridgeList() {
         List<FridgeItem> itemsList = new ArrayList<>();
         Cursor cursor = mainDB.rawQuery("SELECT * from items where groupname = '" + UserStatus.groupName + "'", null);

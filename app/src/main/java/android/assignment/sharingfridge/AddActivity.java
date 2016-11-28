@@ -238,6 +238,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                 amount = amountEditText.getText().toString();
                 name = nameEditText.getText().toString();
                 cat = categoryEditText.getText().toString();
+                //check if there is any empty or invalid field in the form first
                 if (name.isEmpty()) {
                     nameEditText.setError(getString(R.string.need_name));
                     return;
@@ -278,15 +279,12 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_CODE && resultCode == RESULT_OK) {
-//            Bitmap photo = (Bitmap) data.getExtras().get("data");
-            // itemDisplay.setMinimumHeight(100);
             File photoFile = new File(imageAbsolutePath);
             filename = photoFile.getName();
             Uri uri = Uri.fromFile(photoFile);
             Bitmap photo = null;
             try {
                 photo = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                //   photo.compress(Bitmap.CompressFormat.JPEG, 100, null);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -324,12 +322,10 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
 
             WindowManager wm = this.getWindowManager();
             int width = wm.getDefaultDisplay().getWidth();
-//            int height = wm.getDefaultDisplay().getHeight();
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = false;
             int bitmapWidth = rotationBitmap != null ? rotationBitmap.getWidth() : 0;
             int bitmapHeight = rotationBitmap != null ? rotationBitmap.getHeight() : 0;
-//            float proportionOfWL = (float) bitmapHeight/bitmapWidth;
             Matrix matrix = new Matrix();
             float scaleWidth = (float) width / (bitmapWidth * 2);
             float scaleHeight = scaleWidth * bitmapWidth / bitmapHeight;
@@ -340,7 +336,6 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                 rotationBitmap.recycle();
             }
             itemDisplay.setImageBitmap(newBitmap);
-//            itemDisplay.setImageBitmap(photo);
         }
     }
 
@@ -386,10 +381,12 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
         }
     }
 
-
-    /*Author: geotv
-    * reference from: https://github.com/gotev/android-upload-service
-    * */
+    /**
+     * upload the photo to the server
+     *
+     * Author: geotv
+     * reference from: https://github.com/gotev/android-upload-service
+     */
     public void uploadInBackgroundService() {
         try {
             Log.v("picPath", imageAbsolutePath);
@@ -409,24 +406,20 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
             String uploadId = req.setDelegate(new UploadStatusDelegate() {
                 @Override
                 public void onProgress(UploadInfo uploadInfo) {
-//                    Toast.makeText(AddActivity.this, "InProgress", Toast.LENGTH_SHORT).show();
                     Log.v("=network=", uploadInfo.getUploadRateString());
                 }
 
                 @Override
                 public void onError(UploadInfo uploadInfo, Exception exception) {
-//                    Toast.makeText(AddActivity.this, "Error", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onCompleted(UploadInfo uploadInfo, ServerResponse serverResponse) {
-//                    Toast.makeText(AddActivity.this, "Completed", Toast.LENGTH_SHORT).show();
                     Log.v("=network=", serverResponse.getBodyAsString());
                 }
 
                 @Override
                 public void onCancelled(UploadInfo uploadInfo) {
-//                    Toast.makeText(AddActivity.this, "Cancelled", Toast.LENGTH_SHORT).show();
                 }
             }).startUpload();
 
@@ -436,7 +429,15 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
         }
     }
 
-
+    /**
+     * add to calender
+     *
+     * @param addday
+     * @param addmonth
+     * @param addyear
+     * @param name     the event name
+     * @param amount
+     */
     public void addCan(int addday, int addmonth, int addyear, String name, String amount) {
         String calId = "";
         Cursor userCursor = getContentResolver().query(Uri.parse(calendarURL), null,

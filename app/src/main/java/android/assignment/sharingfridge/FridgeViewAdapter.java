@@ -190,7 +190,6 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
     }
 
     private void hideIfNot(View v) {
-        //TODO Animation
         if (v.getVisibility() == View.VISIBLE) {
             v.setVisibility(View.GONE);
         }
@@ -238,6 +237,10 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
         return fridgeItemsList.size();
     }
 
+    /**
+     * send delete request to the server
+     *
+     */
     private class SendRequestTask extends AsyncTask<String, Void, String> {
         private String urlString = "http://178.62.93.103/SharingFridge/delete.php";
         private String owner, item;

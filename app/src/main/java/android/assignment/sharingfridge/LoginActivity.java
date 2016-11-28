@@ -262,6 +262,7 @@ public class LoginActivity extends AppCompatActivity {
                     UserStatus.groupName = groupName;
                     UserStatus.token = token;
                     Log.d("LOGIN", "SUCCESS");
+                    //use SharedPreferences to implement auto login
                     SharedPreferences preferences = getSharedPreferences("user-status", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();
                     if(auto_login.isChecked()) {
@@ -271,7 +272,7 @@ public class LoginActivity extends AppCompatActivity {
                         editor.commit();
                     }
                     else{
-                        editor.putString("username","_null");//clear the shared preference
+                        editor.putString("username","_null");//clear the SharedPreferences if login faild
                         editor.putString("groupName","_null");
                         editor.putString("token","");
                         editor.commit();
@@ -300,7 +301,6 @@ public class LoginActivity extends AppCompatActivity {
                         });
                     }
 
-//                    RongIM.getInstance().refreshUserInfoCache(new UserInfo(UserStatus.username, UserStatus.username, Uri.parse("http://178.62.93.103/SharingFridge/avatars/"+UserStatus.username+".png")));
                     finish();
                 }
             } catch (JSONException je) {
