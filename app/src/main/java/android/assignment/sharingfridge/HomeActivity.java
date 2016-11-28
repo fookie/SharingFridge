@@ -354,6 +354,7 @@ public class HomeActivity extends AppCompatActivity
             // set avatar!
             Glide.with(this).load("http://178.62.93.103/SharingFridge/avatars/" + UserStatus.username + ".png")
                     .centerCrop()
+                    .placeholder(R.drawable.image_loading)//don't know why, placeholder is necessary or the app will crash. Probably just a minor bug of Glide.
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
