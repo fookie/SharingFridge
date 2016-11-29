@@ -2,15 +2,14 @@ package android.assignment.sharingfridge;
 
 import android.app.Application;
 
-
-import net.gotev.uploadservice.*;
 import net.gotev.uploadservice.BuildConfig;
+import net.gotev.uploadservice.UploadService;
 
 import io.rong.imkit.RongIM;
 
 
 /**
- * Created by Paulay on 2016/10/25 0025.
+ * Store some global variables and initiate some in-app service
  */
 
 public class SharingFridgeApplication extends Application {

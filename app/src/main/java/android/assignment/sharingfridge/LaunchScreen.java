@@ -9,6 +9,10 @@ import com.viksaa.sssplash.lib.model.ConfigSplash;
 
 /**
  * This activity is used to show a launch screen with animated elements
+ *<br/>
+ *<br/>
+ * Used external library: AwesomeSplash
+ * @see <a href="https://github.com/ViksaaSkool/AwesomeSplash">AwesomeSplash</a>
  */
 public class LaunchScreen extends AwesomeSplash {
     @Override
@@ -38,7 +42,7 @@ public class LaunchScreen extends AwesomeSplash {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        int pid = android.os.Process.myPid();//Totally exit the app. Prevent starting HomeActivity. Not a recommended practice though.
+        int pid = android.os.Process.myPid(); //Totally exit the app. Prevent starting HomeActivity. Not a recommended practice though. ref: http://stackoverflow.com/a/2034238/5351002
         android.os.Process.killProcess(pid);
         System.exit(0);
     }

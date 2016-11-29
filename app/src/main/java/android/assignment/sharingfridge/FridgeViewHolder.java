@@ -10,7 +10,9 @@ import android.widget.TextView;
 import com.wang.avi.AVLoadingIndicatorView;
 
 /**
- * Created by EveLIn3 on 2016/10/16.
+ * Used external library: AVLoadingIndicatorView
+ *
+ * @see <a href="https://github.com/81813780/AVLoadingIndicatorView">AVLoadingIndicatorView</a>
  */
 
 class FridgeViewHolder extends RecyclerView.ViewHolder {
@@ -40,7 +42,7 @@ class FridgeViewHolder extends RecyclerView.ViewHolder {
         deleteButton = (FloatingActionButton) itemView.findViewById(R.id.deleteButton);
         reductionAmount = (EditText) itemView.findViewById(R.id.reductionAmount);
         progressBar = (AVLoadingIndicatorView) itemView.findViewById(R.id.imageProgress);
-        minusButton.setTag(holder);
+        minusButton.setTag(holder);//Used for elements to find their parents
         deleteButton.setTag(holder);
         reductionAmount.setTag(holder);
     }

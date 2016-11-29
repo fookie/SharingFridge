@@ -31,7 +31,11 @@ import jp.wasabeef.glide.transformations.GrayscaleTransformation;
 
 
 /**
- * Created by EveLIn3 on 2016/10/16.
+ * Adapter for displayed in {@link FridgeFragment}
+ * <br/>
+ * Used external libraries: Glide, Glide transformations
+ * @see <a href="https://github.com/bumptech/glide">Glide</a>, <a href="https://github.com/wasabeef/glide-transformations">Glide transformations</a>
+ *
  */
 
 class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {

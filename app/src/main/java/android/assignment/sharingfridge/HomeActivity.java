@@ -60,6 +60,13 @@ import me.majiajie.pagerbottomtabstrip.PagerBottomTabLayout;
 import me.majiajie.pagerbottomtabstrip.TabItemBuilder;
 import me.majiajie.pagerbottomtabstrip.listener.OnTabItemSelectListener;
 
+/**
+ * Main activity<br/><br/>
+ * Used external libraries: Glide, AVLoadingIndicatorView, CircularImageView
+ *
+ * @see <a href="https://github.com/bumptech/glide">Glide</a>, <a href="https://github.com/81813780/AVLoadingIndicatorView">AVLoadingIndicatorView</a>, <a href="https://github.com/Pkmmte/CircularImageView">CircularImageView</a>
+ */
+
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         FridgeFragment.OnFragmentInteractionListener,
@@ -359,8 +366,9 @@ public class HomeActivity extends AppCompatActivity
      * initiate the location lisetener, permission is required
      * there are two paramiters that decided the upload interval and the minimum upload distance
      */
-    private final int LOCATION_INTERVAL=5000;
-    private final int LOCATION_MIN_DISTANCE=10;
+    private final int LOCATION_INTERVAL = 5000;
+    private final int LOCATION_MIN_DISTANCE = 10;
+
     public void initLocation() {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         LocationListener locationListener = new MyLocationListener();

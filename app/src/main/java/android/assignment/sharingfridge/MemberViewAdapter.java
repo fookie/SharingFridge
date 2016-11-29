@@ -17,9 +17,10 @@ import java.util.Objects;
 import io.rong.imkit.RongIM;
 
 /**
- * Created by Paulay on 2016/10/25 0025.
+ * Used external library: Glide, CircularImageView
+ *
+ * @see <a href="https://github.com/bumptech/glide">Glide</a>, <a href="https://github.com/Pkmmte/CircularImageView">CircularImageView</a>
  */
-
 public class MemberViewAdapter extends RecyclerView.Adapter<MemberViewHolder> {
     private Context homeContext;
     private List<MemberItem> memberItemList;
