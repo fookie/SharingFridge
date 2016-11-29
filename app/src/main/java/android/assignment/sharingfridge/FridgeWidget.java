@@ -23,15 +23,17 @@ public class FridgeWidget extends AppWidgetProvider {
                                 int appWidgetId) {
 
         String widgetTitle = "Sharing Fridge";
-
+        //select attributes from database
         String sql="select count(*) from items";
         Cursor c = taskDB.rawQuery(sql, null);
         String todisplay = null;
+        //display the total number of items user owned
         while (c.moveToNext()) {
             int count = c.getInt(0);
             todisplay="Total: "+count+" items";
         }
 
+        //get the item nearest to the expire date and display to the user
         Cursor cursor = taskDB.rawQuery("SELECT * from items", null);
         String expday = "Unknown";
         long i=100;

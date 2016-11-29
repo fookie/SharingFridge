@@ -39,7 +39,7 @@ public class SettingActivity extends AppCompatActivity {
         cleandb=(Button)findViewById(R.id.clean_db_button);
         RadioGroup language = (RadioGroup)findViewById(R.id.radioGroup);
 
-        //check language user selected
+        //check language user selected and stored
         SharedPreferences userSettings= getSharedPreferences("setting", 0);
         int ID = userSettings.getInt("language",0);
         if(ID==1)
@@ -102,16 +102,19 @@ public class SettingActivity extends AppCompatActivity {
         Resources resources = getResources();
         Configuration config = resources.getConfiguration();
         DisplayMetrics dm = resources.getDisplayMetrics();
+        //change language to english
         if(i==english.getId()){
             config.locale = Locale.ENGLISH;
             english.setChecked(true);
             setSharedPreference(1);
         }
+        //change language to chinese
         else if(i==chinese.getId()) {
             config.locale = Locale.SIMPLIFIED_CHINESE;
             chinese.setChecked(true);
             setSharedPreference(2);
         }
+        //use system default language
         else
                 config.locale = Locale.getDefault();
 
