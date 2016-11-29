@@ -3,7 +3,7 @@ package android.assignment.sharingfridge;
 import android.location.Location;
 
 /**
- * Created by mahon on 2016/10/19.
+ * the class that stores all the globe values of use's status
  */
 
 public final class UserStatus {

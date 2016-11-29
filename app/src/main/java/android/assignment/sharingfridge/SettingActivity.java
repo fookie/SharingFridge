@@ -38,9 +38,8 @@ public class SettingActivity extends AppCompatActivity {
         cleandb=(Button)findViewById(R.id.clean_db_button);
         RadioGroup language = (RadioGroup)findViewById(R.id.radioGroup);
 
-        int i=0;
         SharedPreferences userSettings= getSharedPreferences("setting", 0);
-        int ID = userSettings.getInt("language",i);
+        int ID = userSettings.getInt("language",0);
         if(ID==1)
             english.setChecked(true);
         else if(ID==2)

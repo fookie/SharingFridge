@@ -118,15 +118,10 @@ public class HomeActivity extends AppCompatActivity
         headerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(HomeActivity.this, "Header Clicked", Toast.LENGTH_SHORT).show();
-                //drawer.closeDrawer(GravityCompat.START);
                 if (!UserStatus.hasLogin) {
                     Intent loginIntent = new Intent(HomeActivity.this, LoginActivity.class);
                     startActivity(loginIntent);
                     drawer.closeDrawer(GravityCompat.START);
-
-                    // Load the Avatar for the user just logged in
-
                 } else {
                     Toast.makeText(HomeActivity.this, getString(R.string.logged_in_as) + UserStatus.username, Toast.LENGTH_SHORT).show();
                 }
@@ -139,19 +134,19 @@ public class HomeActivity extends AppCompatActivity
         // initialize the bottom navigation bar
         initNavBar();
 
+        //check the status of auto login
         SharedPreferences preferences = getSharedPreferences("user-status", Context.MODE_PRIVATE);
         String uname = preferences.getString("username", null);
         String ugroup = preferences.getString("groupName", null);
         String utoken = preferences.getString("token", null);
         Log.d("auto-login", uname + " " + ugroup);
         if (uname != null && ugroup != null && !uname.equals("_null") && !ugroup.equals("_null")) {
-            UserStatus.username = uname;
+            UserStatus.username = uname;//auto login
             UserStatus.groupName = ugroup;
             UserStatus.token = utoken;
             UserStatus.hasLogin = true;
             UserStatus.inGroup = !UserStatus.groupName.equals("none");
         }
-//        Log.d("CHAT-TOKEN",UserStatus.token);
         if (UserStatus.token != null && !UserStatus.token.equals("")) {
             RongIM.getInstance().setCurrentUserInfo(findUserById(UserStatus.username));
             RongIM.getInstance().setMessageAttachedUserInfo(true);
@@ -361,9 +356,11 @@ public class HomeActivity extends AppCompatActivity
     }
 
     /**
-     *
      * initiate the location lisetener, permission is required
+     * there are two paramiters that decided the upload interval and the minimum upload distance
      */
+    private final int LOCATION_INTERVAL=5000;
+    private final int LOCATION_MIN_DISTANCE=10;
     public void initLocation() {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         LocationListener locationListener = new MyLocationListener();
@@ -372,7 +369,7 @@ public class HomeActivity extends AppCompatActivity
             ActivityCompat.requestPermissions(HomeActivity.this, permissions, 5230);
         } else {
             try {
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 10, locationListener);
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_MIN_DISTANCE, locationListener);
             } catch (IllegalArgumentException e) {
                 Log.d("LOCATION", "Does not support network_provider");
             }
@@ -426,7 +423,7 @@ public class HomeActivity extends AppCompatActivity
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
         } else {
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 10, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_MIN_DISTANCE, locationListener);
         }
     }
 
@@ -454,7 +451,6 @@ public class HomeActivity extends AppCompatActivity
                 conn.setConnectTimeout(15000);/* milliseconds */
                 conn.setDoInput(true);
                 conn.setDoOutput(true);
-                //conn.setRequestProperty("Content-Type", "application/json");
                 //make json object
                 JSONObject jo = new JSONObject();
                 jo.put("action", "upload");

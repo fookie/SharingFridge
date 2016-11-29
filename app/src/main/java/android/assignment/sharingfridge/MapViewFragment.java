@@ -40,13 +40,15 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-
+/**
+ * fragment that contains google map to display the location of group member
+ */
 public class MapViewFragment extends Fragment {
 
     MapView mMapView;
     private GoogleMap googleMap;
     SendRequestTask mAuthTask;
-    Hashtable<String, LatLng> markers = new Hashtable<>();
+    Hashtable<String, LatLng> markers = new Hashtable<>();//the Hashtable to store the keypair of name and location
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

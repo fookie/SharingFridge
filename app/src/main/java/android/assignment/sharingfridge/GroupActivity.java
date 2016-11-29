@@ -41,7 +41,7 @@ public class GroupActivity extends AppCompatActivity {
     }
 
     protected void onResume(){
-        if(!UserStatus.hasLogin){
+        if(!UserStatus.hasLogin){//check if user has login
             hint.setText(getString(R.string.no_group_hint));
         }
         if(UserStatus.inGroup){
@@ -142,6 +142,7 @@ public class GroupActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), getString(R.string.success), Toast.LENGTH_SHORT).show();
                     UserStatus.inGroup=true;
                     UserStatus.groupName=groupname;
+                    finish();
                 }else {
                     Log.d("GROUP",action+ "FAILED");
                     Toast.makeText(getApplicationContext(), getString(R.string.failed), Toast.LENGTH_SHORT).show();
