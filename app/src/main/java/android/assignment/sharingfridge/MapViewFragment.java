@@ -58,10 +58,7 @@ public class MapViewFragment extends Fragment {
         mMapView.onResume(); // needed to get the map to display immediately
         mAuthTask = new SendRequestTask();
         mAuthTask.execute();
-//                        addMarker(new LatLng(53.318994, -6.213717), "Tesco", "supermarket", false);
-//                addMarker(new LatLng(53.335628, -6.243302), "Tesco Metro", "supermarket", false);
-//                addMarker(new LatLng(53.325329, -6.254133), "Lidl", "discount supermarket", false);
-//                addMarker(new LatLng(53.307358, -6.215584), "Molloys Centra", "Store in UCD", false);
+
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
         } catch (Exception e) {
@@ -74,8 +71,9 @@ public class MapViewFragment extends Fragment {
 
     /**
      * @param ll           LatLng position
-     * @param title        the titile of mark
-     * @param switchcamera if switch camera to this Mark
+     * @param title        the titile of marker
+     * @param switchcamera if switch camera to this Marker
+     * @param theBitmap bitmap to load
      */
     private void addMarker(LatLng ll, String title, boolean switchcamera, Bitmap theBitmap) {
         BitmapDescriptor bitmap = BitmapDescriptorFactory.fromBitmap(theBitmap);
@@ -84,6 +82,28 @@ public class MapViewFragment extends Fragment {
             CameraPosition cameraPosition = new CameraPosition.Builder().target(ll).zoom(12).build();
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         }
+    }
+
+    /**
+     * add marker without bitmap
+     *
+     * @param ll   LatLng position
+     * @param title the titile of marker
+     * @param detail the detail of marker
+     * @param switchcamera if switch camera to this Marker
+     */
+    private void addMarker(LatLng ll, String title, String detail, boolean switchcamera) {
+
+        googleMap.addMarker(new MarkerOptions().position(ll).title(title).snippet(detail));
+
+        if (switchcamera) {
+
+            CameraPosition cameraPosition = new CameraPosition.Builder().target(ll).zoom(12).build();
+
+            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+        }
+
     }
 
     @Override
@@ -189,6 +209,10 @@ public class MapViewFragment extends Fragment {
                             Map.Entry entry = (Map.Entry) it.next();
                             new SetMarkerTask((LatLng) entry.getValue(), (String) entry.getKey(), !it.hasNext()).execute();
                         }
+                        addMarker(new LatLng(53.3022988,-6.2517437), "Tesco", "supermarket", false);
+                        addMarker(new LatLng(53.3079405,-6.2589535), "Tesco Metro", "supermarket", false);
+                        addMarker(new LatLng(53.3080328,-6.2589535), "Lidl", "discount supermarket", false);
+                        addMarker(new LatLng(53.303889, -6.217265), "Molloys Centra", "Store in UCD", false);
                         // For showing a move to my location button
                         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                             Log.d("GMAP", "NO PERMISSION");
@@ -232,6 +256,8 @@ public class MapViewFragment extends Fragment {
                         get();
             } catch (final ExecutionException | InterruptedException e) {
                 Log.e("MAP bitmap", e.getMessage());
+            }catch (IllegalArgumentException e){
+
             }
             return null;
         }
