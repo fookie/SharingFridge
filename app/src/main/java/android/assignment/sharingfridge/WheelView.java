@@ -22,7 +22,13 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-//a wheel view for selection based on scroll view
+/**
+ * This activity is a wheel view component for selection based on scroll view
+ *<br/>
+ *<br/>
+ * Used external library: WheelView
+ * @see <a href="https://github.com/wangjiegulu/WheelView">WheelView</a>
+ */
 public class WheelView extends ScrollView {
     public static final String TAG = WheelView.class.getSimpleName();
 

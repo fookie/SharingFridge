@@ -443,7 +443,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
     }
 
     /**
-     * add to calender
+     * add remind event to system calender
      *
      * @param addday
      * @param addmonth
@@ -480,11 +480,13 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
         mCalendar.set(Calendar.HOUR_OF_DAY, 11);
         long end = mCalendar.getTime().getTime();
 
+        //put start and end time to system calendar
         event.put("dtstart", start);
         event.put("dtend", end);
         //open alert alarm
         event.put("hasAlarm", 1);
 
+        //use current timezone for the event
         event.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().getID());
         Uri newEvent = getContentResolver().insert(Uri.parse(calanderEventURL), event);
         long id = Long.parseLong(newEvent != null ? newEvent.getLastPathSegment() : null);
