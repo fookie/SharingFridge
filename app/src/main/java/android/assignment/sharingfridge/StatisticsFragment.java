@@ -36,12 +36,12 @@ import lecho.lib.hellocharts.view.PieChartView;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link SettingsFragment.OnFragmentInteractionListener} interface
+ * {@link StatisticsFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link SettingsFragment#newInstance} factory method to
+ * Use the {@link StatisticsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SettingsFragment extends Fragment {
+public class StatisticsFragment extends Fragment {
 
     public SQLiteDatabase mainDB;
     private String formattedDate, dayOfWeek;
@@ -77,7 +77,7 @@ public class SettingsFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public SettingsFragment() {
+    public StatisticsFragment() {
         // Required empty public constructor
     }
 

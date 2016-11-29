@@ -70,7 +70,7 @@ import me.majiajie.pagerbottomtabstrip.listener.OnTabItemSelectListener;
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         FridgeFragment.OnFragmentInteractionListener,
-        SettingsFragment.OnFragmentInteractionListener {
+        StatisticsFragment.OnFragmentInteractionListener {
 
     int[] tabColors = {0xFFB71C1C, 0xFFF57F17, 0xFF0D47A1, 0xFF9C27B0, 0xFFF57C00};
     Controller tabController;
@@ -82,7 +82,7 @@ public class HomeActivity extends AppCompatActivity
     FridgeFragment friFrag;
     MemberFragment memFrag;
     MapViewFragment mapFrag;
-    SettingsFragment setFrag;
+    StatisticsFragment setFrag;
     AVLoadingIndicatorView avatarProgress;
     LocationManager locationManager;
 
@@ -258,7 +258,7 @@ public class HomeActivity extends AppCompatActivity
         friFrag = new FridgeFragment();
         memFrag = new MemberFragment();
         mapFrag = new MapViewFragment();
-        setFrag = new SettingsFragment();
+        setFrag = new StatisticsFragment();
 
         myFragments.add(friFrag);
         myFragments.add(memFrag);
