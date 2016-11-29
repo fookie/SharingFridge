@@ -7,6 +7,9 @@ import com.viksaa.sssplash.lib.activity.AwesomeSplash;
 import com.viksaa.sssplash.lib.cnst.Flags;
 import com.viksaa.sssplash.lib.model.ConfigSplash;
 
+/**
+ * This activity is used to show a launch screen with animated elements
+ */
 public class LaunchScreen extends AwesomeSplash {
     @Override
     public void initSplash(ConfigSplash configSplash) {
@@ -29,6 +32,14 @@ public class LaunchScreen extends AwesomeSplash {
     @Override
     public void animationsFinished() {
         startActivity(new Intent(LaunchScreen.this, HomeActivity.class));
-        finish();
+        finishAfterTransition();//Make sure the launch screen only showed once.
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        int pid = android.os.Process.myPid();//Totally exit the app. Prevent starting HomeActivity. Not a recommended practice though.
+        android.os.Process.killProcess(pid);
+        System.exit(0);
     }
 }
