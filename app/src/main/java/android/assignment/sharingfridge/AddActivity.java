@@ -112,6 +112,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
 
+        //Some dangerous permission need to be special granted if target API > 6.0
         int MyVersion = Build.VERSION.SDK_INT;
         if (MyVersion > Build.VERSION_CODES.LOLLIPOP_MR1) {
             if (!checkIfAlreadyhavePermission()) {
@@ -131,10 +132,10 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
         mainDB = SQLiteDatabase.openOrCreateDatabase(this.getFilesDir().getAbsolutePath().replace("files", "databases") + "fridge.db", null);
         mainDB.execSQL("CREATE TABLE IF NOT EXISTS items(item char(255),category char(64),amount int,addtime char(255),expiretime char(255),imageurl char(255),owner char(255),groupname char(255))");
 
+        //show date selection window in a DatePickerDialog and save data in the format "dd-mm-yyyy"
         dateEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                new DatePickerDialog1().show(getFragmentManager(), "expdate");
                 calender = Calendar.getInstance();
                 currentYear = calender.get(Calendar.YEAR);
                 currentMonth = calender.get(Calendar.MONTH);
@@ -155,9 +156,10 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                 datePickerDialog.show();
             }
         });
-
+        //forbid the paste function  by long click the edittext
         dateEditText.setLongClickable(false);
 
+        //using a wheel view inside a dialog to select category
         categoryEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -165,8 +167,9 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                     case R.id.categoryEditText:
                         View outerView = LayoutInflater.from(AddActivity.this).inflate(R.layout.wheel_view, null);
                         WheelView wv = (WheelView) outerView.findViewById(R.id.wheel_v);
-
+                        //set initial point
                         wv.setOffset(2);
+                        //language localization
                         Locale locale = getResources().getConfiguration().locale;
                         String language = locale.getLanguage();
                         if (language.endsWith("zh")) {
@@ -182,6 +185,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                             public void onSelected(int selectedIndex, String cate) {
                                 categoryEditText.setText(cate);
                                 int i = selectedIndex;
+                                //catch out of bound exception for the selected index
                                 try {
                                     selectedCategory = CATEGORYS[i];
                                 } catch (ArrayIndexOutOfBoundsException e) {
@@ -191,10 +195,10 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                                         selectedCategory = CATEGORYS[0];
                                     }
                                 }
-//                                selectedCategory = cate;
                             }
                         });
 
+                        //dialog interface
                         new AlertDialog.Builder(AddActivity.this)
                                 .setTitle(getString(R.string.choose_category))
                                 .setView(outerView)
@@ -209,6 +213,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
 
         categoryEditText.setLongClickable(false);
 
+        //take picture for the new item
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -228,6 +233,8 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
             }
         });
 
+        //check the condition of each attribute before adding into database
+        //missing information and invalid expire date will be reminded
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -256,17 +263,20 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                     dateEditText.setError(getString(R.string.wrong_date));
                     return;
                 }
+                //send information to calender
                 if (checkCondition) {
                     addCan(canDay, canMonth, canYear, name, amount);
                 }
                 currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new java.util.Date());
                 String imgUrl = "image/" + filename;
+                //check the login status, only upload to the server when user has login
                 if (UserStatus.hasLogin) {
                     mainDB.execSQL("INSERT INTO items ('item' ,'category' ,'amount' ,'addtime' ,'expiretime' ,'imageurl' ,'owner' ,'groupname' )VALUES ('" + name + "', '" + selectedCategory + "', '" + amount + "', '" + currentDate + "', '" + selectedDate + "','" + imgUrl + "','" + UserStatus.username + "', '" + UserStatus.groupName + "')");
                     mAuthTask = new SendRequestTask(name, selectedCategory, amount, currentDate, selectedDate, imgUrl);
                     mAuthTask.execute();
                     uploadInBackgroundService();
-                } else {//do not upload when did not login also set the user name as "local user"
+                } else {
+                    //set the user name as "local user" and no upload
                     mainDB.execSQL("INSERT INTO items ('item' ,'category' ,'amount' ,'addtime' ,'expiretime' ,'imageurl' ,'owner' ,'groupname' )VALUES ('" + name + "', '" + selectedCategory + "', '" + amount + "', '" + currentDate + "', '" + selectedDate + "','" + imageAbsolutePath + "','" + "local user" + "', '" + UserStatus.groupName + "')");
                 }
                 finish();
@@ -275,6 +285,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
 
     }
 
+    //some operations for the photo, deal with the auto rotation and change size for  preview
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_CODE && resultCode == RESULT_OK) {
             File photoFile = new File(imageAbsolutePath);
@@ -287,6 +298,8 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                 e.printStackTrace();
             }
 
+            //some devices have rotation info saving together with the photo,which will make preview in wrong direction
+            //check the direction first and adjust when it has been rotated.
             int rotation = 0;
             try {
                 ExifInterface exifInterface = new ExifInterface(photoFile.getPath());
@@ -318,6 +331,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
             if (rotationBitmap == null)
                 rotationBitmap = photo;
 
+            //change photo size based on the resolution of display device
             WindowManager wm = this.getWindowManager();
             int width = wm.getDefaultDisplay().getWidth();
             BitmapFactory.Options options = new BitmapFactory.Options();
@@ -329,6 +343,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
             float scaleHeight = scaleWidth * bitmapWidth / bitmapHeight;
 
             matrix.postScale(scaleWidth, scaleHeight);
+            //change size by multiply a given matrix
             Bitmap newBitmap = Bitmap.createBitmap(rotationBitmap, 0, 0, bitmapWidth, bitmapHeight, matrix, true);
             if (rotationBitmap != null) {
                 rotationBitmap.recycle();
@@ -458,6 +473,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
         mCalendar.set(Calendar.DAY_OF_MONTH, addday);
         mCalendar.set(Calendar.MONTH, addmonth);
         mCalendar.set(Calendar.YEAR, addyear);
+        //set alert time as 10 AM
         mCalendar.set(Calendar.HOUR_OF_DAY, 10);
         mCalendar.set(Calendar.MINUTE, 0);
         long start = mCalendar.getTime().getTime();
@@ -466,6 +482,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
 
         event.put("dtstart", start);
         event.put("dtend", end);
+        //open alert alarm
         event.put("hasAlarm", 1);
 
         event.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().getID());
@@ -477,6 +494,10 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
         getContentResolver().insert(Uri.parse(calanderRemiderURL), values);
     }
 
+    /***
+     * check permission every time enter the activity
+     * if permission is already granted, don't ask again
+     */
     private boolean checkIfAlreadyhavePermission() {
         int result = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR);
         if (result == PackageManager.PERMISSION_GRANTED) {
@@ -497,7 +518,9 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     //granted
                 } else {
-                    finish();//not granted
+                    //not granted
+                    finish();
+
                 }
                 break;
             default:
@@ -506,6 +529,10 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
 
     }
 
+    /***
+     * upload progress
+     * @param uploadInfo
+     */
     @Override
     public void onProgress(UploadInfo uploadInfo) {
         Log.i(TAG, String.format(Locale.getDefault(), "ID: %1$s (%2$d%%) at %3$.2f Kbit/s",

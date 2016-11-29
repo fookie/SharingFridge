@@ -22,10 +22,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by psere_000 on 2016/11/21.
- */
-
+//a wheel view for selection based on scroll view
 public class WheelView extends ScrollView {
     public static final String TAG = WheelView.class.getSimpleName();
 
@@ -72,7 +69,7 @@ public class WheelView extends ScrollView {
 
     }
 
-
+    //default offset, which means the initial position of the wheel
     public static final int OFF_SET_DEFAULT = 1;
     int offset = OFF_SET_DEFAULT;
 
@@ -89,7 +86,6 @@ public class WheelView extends ScrollView {
     private void init(Context context) {
         this.context = context;
 
-        Log.d(TAG, "parent: " + this.getParent());
         this.setVerticalScrollBarEnabled(false);
 
         views = new LinearLayout(context);
@@ -101,7 +97,8 @@ public class WheelView extends ScrollView {
             public void run() {
 
                 int newY = getScrollY();
-                if (initialY - newY == 0) { // stopped
+                // wheel stop and get select item index
+                if (initialY - newY == 0) {
                     final int remainder = initialY % itemHeight;
                     final int divided = initialY / itemHeight;
                     if (remainder == 0) {
@@ -109,6 +106,7 @@ public class WheelView extends ScrollView {
 
                         onSeletedCallBack();
                     } else {
+                        //if wheel stop between two items, select the closer one
                         if (remainder > itemHeight / 2) {
                             WheelView.this.post(new Runnable() {
                                 @Override
@@ -177,7 +175,6 @@ public class WheelView extends ScrollView {
         tv.setPadding(padding, padding, padding, padding);
         if (0 == itemHeight) {
             itemHeight = getViewMeasuredHeight(tv);
-            Log.d(TAG, "itemHeight: " + itemHeight);
             views.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, itemHeight * displayItemCount));
             LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) this.getLayoutParams();
             this.setLayoutParams(new LinearLayout.LayoutParams(lp.width, itemHeight * displayItemCount));
@@ -293,7 +290,6 @@ public class WheelView extends ScrollView {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        Log.d(TAG, "w: " + w + ", h: " + h + ", oldw: " + oldw + ", oldh: " + oldh);
         viewWidth = w;
         setBackgroundDrawable(null);
     }

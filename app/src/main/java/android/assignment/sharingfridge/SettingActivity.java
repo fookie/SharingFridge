@@ -26,6 +26,7 @@ public class SettingActivity extends AppCompatActivity {
     RadioButton systemDefault;
     Button cleancache;
     Button cleandb;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +39,7 @@ public class SettingActivity extends AppCompatActivity {
         cleandb=(Button)findViewById(R.id.clean_db_button);
         RadioGroup language = (RadioGroup)findViewById(R.id.radioGroup);
 
+        //check language user selected
         SharedPreferences userSettings= getSharedPreferences("setting", 0);
         int ID = userSettings.getInt("language",0);
         if(ID==1)
@@ -53,12 +55,15 @@ public class SettingActivity extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 int radioButtonId = group.getCheckedRadioButtonId();
                 ChangeLanguage(radioButtonId);
+                //finish current activity and restart home activity
                 finish();
                 Intent intent = new Intent(SettingActivity.this, HomeActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }
         });
+
+        //clean cache
         cleancache.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,6 +78,8 @@ public class SettingActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), getString(R.string.success), Toast.LENGTH_SHORT).show();
             }
         });
+
+        //clean local database
         cleandb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,6 +94,10 @@ public class SettingActivity extends AppCompatActivity {
         });
     }
 
+    /***
+     * change application language
+     * @param i language ID
+     */
     protected void ChangeLanguage(int i) {
         Resources resources = getResources();
         Configuration config = resources.getConfiguration();
