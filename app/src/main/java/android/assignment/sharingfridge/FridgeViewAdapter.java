@@ -45,7 +45,6 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
     private Context homeContext;
     private EditText reductionAmount;
     private SendRequestTask mAuthTask;
-
     private SQLiteDatabase db;
 
     FridgeViewAdapter(Context context, List<FridgeItem> fil, String serverPath) {
