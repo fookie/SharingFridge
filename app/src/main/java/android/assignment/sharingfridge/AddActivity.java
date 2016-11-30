@@ -388,12 +388,12 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(this, "com.example.android.fileprovider", photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                try {
-                    startActivityForResult(takePictureIntent, CAMERA_CODE);
-                } catch (SecurityException e) {
-                    cameraButton.setText(getString(R.string.no_permission));
-                    cameraButton.setError("");
-                }
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ) {
+                        String permissions[] = {Manifest.permission.CAMERA};
+                        ActivityCompat.requestPermissions(AddActivity.this, permissions, 5238);
+                    }else {
+                        startActivityForResult(takePictureIntent, CAMERA_CODE);
+                    }
             }
         }
     }
