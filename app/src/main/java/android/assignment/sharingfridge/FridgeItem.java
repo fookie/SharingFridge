@@ -84,6 +84,12 @@ public class FridgeItem implements Comparable<FridgeItem> {
         amount -= sub;
     }
 
+    /**
+     * override compare to so that we cloud compare to two fridge item by expire date
+     *
+     * @param another fridge item
+     * @return
+     */
     @Override
     public int compareTo(FridgeItem another) {
         return this.date < another.date ? -1 : 1;

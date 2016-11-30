@@ -107,7 +107,7 @@ public class HomeActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        this.initLocation();
+        initLocation();
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -331,6 +331,7 @@ public class HomeActivity extends AppCompatActivity
         Log.i("resume", "Activity resumed. Should've updated.");
     }
 
+    //refresh user information on the side navigate bar.
     public void refreshUserStatus() {
         usernameView.setText(UserStatus.username);
         groupnameView.setText(UserStatus.groupName);
@@ -369,6 +370,10 @@ public class HomeActivity extends AppCompatActivity
     private final int LOCATION_INTERVAL = 5000;
     private final int LOCATION_MIN_DISTANCE = 10;
 
+    /**
+     *
+     * request permission and initiate location upload
+     */
     public void initLocation() {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         LocationListener locationListener = new MyLocationListener();
@@ -398,11 +403,11 @@ public class HomeActivity extends AppCompatActivity
             Log.v("LOCATION", longitude);
             String latitude = "Latitude: " + location.getLatitude();
             Log.v("LOCATION", latitude);
-            if (UserStatus.hasLogin) {
+            if (UserStatus.hasLogin) {//upload the location when user has login
                 Log.v("LOCATION", "post");
                 mAuthTask = new SendRequestTask(location);
                 mAuthTask.execute();
-            } else {
+            } else {//cache the location and upload after login
                 Log.v("LOCATION", "wait");
                 UserStatus.location = location;
                 UserStatus.needToUploadLoaction = true;
@@ -426,6 +431,13 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * add location listener when get permission
+     *
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         LocationListener locationListener = new MyLocationListener();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -435,6 +447,10 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
+    /**
+     *
+     * the AsynTask to upload location, trigger by location listener
+     */
     private class SendRequestTask extends AsyncTask<String, Void, String> {
         private String urlString = "http://178.62.93.103/SharingFridge/location.php";
         private Double Longitude, Latitude;

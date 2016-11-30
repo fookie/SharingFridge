@@ -118,6 +118,7 @@ public class MemberFragment extends Fragment {
             memberItems.add(new MemberItem(getString(R.string.login_hint), getString(R.string.no_group_hint),"noimg.png"));
             return memberItems;
         }
+        //the dummy table stores dummy items of each group member in group , so find group member from it
         String sql="select owner from dummy where owner!='"+UserStatus.username+"'";
         Cursor c = mainDB.rawQuery(sql, null);
         while (c.moveToNext()) {

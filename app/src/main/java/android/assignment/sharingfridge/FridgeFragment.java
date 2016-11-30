@@ -54,6 +54,7 @@ public class FridgeFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private boolean isDataLoaded = false;
 
+
     private static final String[] CATEGORYS = new String[]{"Fruit", "Vegetable", "Pork", "Chicken", "Beef", "Fish", "Others"};
     private static final String[] CATEGORYS_CHINESE = new String[]{"水果", "蔬菜", "猪肉", "鸡肉", "牛肉", "鱼肉", "其他"};
 

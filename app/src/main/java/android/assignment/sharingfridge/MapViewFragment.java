@@ -264,7 +264,7 @@ public class MapViewFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void dummy) {
-            if (null != theBitmap) {
+            if (null != theBitmap) {//we got the avatar bitmap, add to map
                 addMarker(ll, title, switchcamera, theBitmap);
             }
         }

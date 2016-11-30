@@ -14,7 +14,7 @@ public final class UserStatus {
     public static String groupName ="Offline Mode";
     public static boolean hasChanged=false;
     public static String token="";
-    public static Location location;
+    public static Location location;//location are cached in this class if did not login, it will be upload after login
     public static boolean needToUploadLoaction=false;
     public static boolean chatConnected = false;
 
@@ -22,7 +22,7 @@ public final class UserStatus {
         username = "Click here to login";
         inGroup = false;
         groupName = "Offline Mode";
-        hasLogin = false;//do not reset location here
+        hasLogin = false;//keep cache location here
         chatConnected = false;
         token="";
     }
