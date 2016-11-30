@@ -59,6 +59,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
+/**
+ * The activity for adding an new item that can be accessed by the '+'.
+ *
+ */
 public class AddActivity extends AppCompatActivity implements UploadStatusDelegate {
 
     private final int CAMERA_CODE = 330;

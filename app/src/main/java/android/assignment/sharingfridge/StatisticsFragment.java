@@ -34,12 +34,9 @@ import lecho.lib.hellocharts.view.PieChartView;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link StatisticsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link StatisticsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * The fourth fragments showing Statistics of fridge items, e.g. how many items are going to expire
+ * in the next 7 days. What portion of items belong to a group member.
+ *
  */
 public class StatisticsFragment extends Fragment {
 

@@ -2,6 +2,7 @@ package android.assignment.sharingfridge;
 
 /**
  * Created by EveLIn3 on 2016/10/16.
+ * The class that defines the Item object in our application, with properties like name, expiredate, etc.
  */
 
 public class FridgeItem implements Comparable<FridgeItem> {
