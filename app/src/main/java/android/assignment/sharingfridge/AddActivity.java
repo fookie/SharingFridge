@@ -65,7 +65,7 @@ import java.util.TimeZone;
  */
 public class AddActivity extends AppCompatActivity implements UploadStatusDelegate {
 
-    private final int CAMERA_CODE = 330;
+    private final int CAMERA_CODE = 330; // just to identify camera intent, not meaningful
 
     private EditText nameEditText;
     private EditText amountEditText;
@@ -136,7 +136,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
         mainDB = SQLiteDatabase.openOrCreateDatabase(this.getFilesDir().getAbsolutePath().replace("files", "databases") + "fridge.db", null);
         mainDB.execSQL("CREATE TABLE IF NOT EXISTS items(item char(255),category char(64),amount int,addtime char(255),expiretime char(255),imageurl char(255),owner char(255),groupname char(255))");
 
-        //show date selection window in a DatePickerDialog and save data in the format "dd-mm-yyyy"
+        //show date selection dialog in a DatePickerDialog and save data in the format "dd-mm-yyyy"
         dateEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -356,7 +356,11 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
         }
     }
 
-
+    /**
+     * create an empty image file on the pictures directory in the phone
+     * @return
+     * @throws IOException
+     */
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(new Date());
@@ -373,6 +377,9 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
         return image;
     }
 
+    /**
+     * connect to the camera and capture an full-sized image
+     */
     private void takeFullSizePicture() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
@@ -399,8 +406,8 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
     }
 
     /**
-     * upload the photo to the server
-     *
+     * upload the photo to the server using android-upload-service.
+     * The server side needs a php to handle the file.
      * Author: geotv
      * reference from: https://github.com/gotev/android-upload-service
      */
@@ -447,12 +454,12 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
     }
 
     /**
-     * add remind event to system calender
+     * add an reminder event to the system's calender
      *
      * @param addday
      * @param addmonth
      * @param addyear
-     * @param name     the event name
+     * @param name    items that going to expire
      * @param amount
      */
     public void addCan(int addday, int addmonth, int addyear, String name, String amount) {
@@ -574,7 +581,9 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
 
     }
 
-
+    /**
+     *  Aysnctask subclass that send an adding item quest to server
+     */
     private class SendRequestTask extends AsyncTask<String, Void, String> {
         private String urlString = "http://178.62.93.103/SharingFridge/share.php";
         private String item, category, amount, addtime, expiretime, imageurl;

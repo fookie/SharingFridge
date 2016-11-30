@@ -16,6 +16,10 @@ import com.viksaa.sssplash.lib.model.ConfigSplash;
  * @see <a href="https://github.com/ViksaaSkool/AwesomeSplash">AwesomeSplash</a>
  */
 public class LaunchScreen extends AwesomeSplash {
+    /**
+     * initiate the launcher screen
+     * @param configSplash default var, no need to change it
+     */
     @Override
     public void initSplash(ConfigSplash configSplash) {
         configSplash.setBackgroundColor(R.color.colorPrimary);
@@ -42,9 +46,5 @@ public class LaunchScreen extends AwesomeSplash {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        int pid = android.os.Process.myPid(); //Totally exit the app. Prevent starting HomeActivity. Not a recommended practice though. ref: http://stackoverflow.com/a/2034238/5351002
-        android.os.Process.killProcess(pid);
-        System.exit(0);
     }
 }

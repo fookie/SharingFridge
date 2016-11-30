@@ -132,6 +132,7 @@ public class StatisticsFragment extends Fragment {
         mListener = null;
     }
 
+
     public void getDataForLineChart(){
         mainDB = SQLiteDatabase.openOrCreateDatabase(getContext().getFilesDir().getAbsolutePath().replace("files", "databases") + "fridge.db", null);
         int dayIndex = 0;
