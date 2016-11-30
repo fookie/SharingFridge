@@ -77,4 +77,6 @@
     <string name="image_sync_completed">同步完成，用时[[ELAPSED_TIME]]</string>
     <string name="bad_day">已经过期 %1$s 天</string>
     <string name="bad_days">已经过期 %1$s 天</string>
+    <string name="linechart">一周内将过期</string>
+    <string name="piechart">组内成员物品量</string>
 </resources>
