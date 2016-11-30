@@ -135,8 +135,8 @@ public class FridgeFragment extends Fragment {
     }
 
     /**
-     * @param a
-     * @return
+     * @param a "zh" for Simplified-Chinese, other for English
+     * @return index of categories
      */
     public String language(String a) {
         int index = 3;
@@ -159,7 +159,10 @@ public class FridgeFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-
+    /**
+     * Refresh the list
+     * @return refreshed list
+     */
     private List<FridgeItem> refreshFridgeList() {
         if (!isDataLoaded) {
             Log.d("database", "database updating..");

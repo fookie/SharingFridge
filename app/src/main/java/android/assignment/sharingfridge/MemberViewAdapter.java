@@ -54,7 +54,7 @@ public class MemberViewAdapter extends RecyclerView.Adapter<MemberViewHolder> {
         Glide.with(homeContext).load(picPath + memberItemList.get(position).getAvatarUrl())
                 .placeholder(R.drawable.image_loading)
                 .centerCrop()
-                .listener(new RequestListener<String, GlideDrawable>() {
+                .listener(new RequestListener<String, GlideDrawable>() {//hide the progress indicator if image loading completed or failed
                     @Override
                     public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
                         holder.avatarProgress.setVisibility(View.GONE);
