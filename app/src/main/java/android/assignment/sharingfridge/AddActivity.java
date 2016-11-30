@@ -183,12 +183,13 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                             categoryEditText.setText("Chicken");
                             wv.setItems(Arrays.asList(CATEGORYS));
                         }
+                        selectedCategory = CATEGORYS[3];
                         wv.setSeletion(3);
                         wv.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
                             @Override
                             public void onSelected(int selectedIndex, String cate) {
                                 categoryEditText.setText(cate);
-                                int i = selectedIndex;
+                                int i = selectedIndex-2;
                                 //catch out of bound exception for the selected index
                                 try {
                                     selectedCategory = CATEGORYS[i];
@@ -476,6 +477,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
         event.put("description", des);
         event.put("calendar_id", calId);
 
+        //set selected date to a new calendar event
         Calendar mCalendar = Calendar.getInstance();
         mCalendar.set(Calendar.DAY_OF_MONTH, addday);
         mCalendar.set(Calendar.MONTH, addmonth);
@@ -499,7 +501,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
         long id = Long.parseLong(newEvent != null ? newEvent.getLastPathSegment() : null);
         ContentValues values = new ContentValues();
         values.put("event_id", id);
-        values.put("minutes", 10);
+        values.put("minutes", 10); //remind event last 10 minutes long
         getContentResolver().insert(Uri.parse(calanderRemiderURL), values);
     }
 
