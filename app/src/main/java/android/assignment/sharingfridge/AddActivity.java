@@ -142,7 +142,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
             public void onClick(View v) {
                 calender = Calendar.getInstance();
                 currentYear = calender.get(Calendar.YEAR);
-                currentMonth = calender.get(Calendar.MONTH);
+                currentMonth = calender.get(Calendar.MONTH)+1;
                 currentDay = calender.get(Calendar.DAY_OF_MONTH);
                 DatePickerDialog datePickerDialog = new DatePickerDialog(AddActivity.this,
                         new DatePickerDialog.OnDateSetListener() {
@@ -150,12 +150,12 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                             public void onDateSet(DatePicker view, int year, int month, int day) {
                                 calender.set(year, month, day);
                                 canYear = year;
-                                canMonth = month;
+                                canMonth = month+1;
                                 canDay = day;
                                 selectedDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(calender.getTime());
                                 dateEditText.setText(selectedDate);
                             }
-                        }, currentYear, currentMonth, currentDay);
+                        }, currentYear, currentMonth-1, currentDay);
                 datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
                 datePickerDialog.show();
             }
@@ -247,6 +247,8 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                 amount = amountEditText.getText().toString();
                 name = nameEditText.getText().toString();
                 cat = categoryEditText.getText().toString();
+                int currentTime=currentYear*10000+currentMonth*100+currentDay;
+                int canTime=canYear*10000+canMonth*100+canDay;
                 //check if there is any empty or invalid field in the form first
                 if (name.isEmpty()) {
                     nameEditText.setError(getString(R.string.need_name));
@@ -257,13 +259,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                 } else if (cat.isEmpty()) {
                     categoryEditText.setError(getString(R.string.need_category));
                     return;
-                } else if (canYear < currentYear) {
-                    dateEditText.setError(getString(R.string.wrong_date));
-                    return;
-                } else if (canMonth < currentMonth) {
-                    dateEditText.setError(getString(R.string.wrong_date));
-                    return;
-                } else if (canDay < currentDay) {
+                } else if (canTime < currentTime) {
                     dateEditText.setError(getString(R.string.wrong_date));
                     return;
                 }
