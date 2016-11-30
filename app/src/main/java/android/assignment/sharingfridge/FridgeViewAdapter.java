@@ -35,8 +35,8 @@ import jp.wasabeef.glide.transformations.GrayscaleTransformation;
  * <br/>
  * Used external libraries: Glide, Glide transformations.
  * Author: Sam Judd. @samajudd on Twitter
- * @see <a href="https://github.com/bumptech/glide">Glide</a>, <a href="https://github.com/wasabeef/glide-transformations">Glide transformations</a>
  *
+ * @see <a href="https://github.com/bumptech/glide">Glide</a>, <a href="https://github.com/wasabeef/glide-transformations">Glide transformations</a>
  */
 
 class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
@@ -76,7 +76,7 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
         int d = fridgeItemsList.get(position).getDate();
 
         holder.dateView.setText(d < 0 ? (-d < 2 ? (String.format(homeContext.getString(R.string.bad_day), -d + "")) : (String.format(homeContext.getString(R.string.bad_days), -d + ""))) : (d < 2 ? (d + " " + homeContext.getString(R.string.left_day)) : (d + " " + homeContext.getString(R.string.left_days))));
-        if (d < 0) {
+        if (d < 0) {//change text color according to expiration date
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 holder.dateView.setTextColor(homeContext.getResources().getColor(R.color.red, homeContext.getTheme()));
             } else {
@@ -125,11 +125,12 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
                 notifyDataSetChanged();
             }
         });
+        //long click to show a text field which allow user to set its own value
         holder.minusButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 reductionAmount = holder.reductionAmount;
-                if (reductionAmount.getVisibility() == View.GONE) {//TODO Animation
+                if (reductionAmount.getVisibility() == View.GONE) {
                     reductionAmount.setVisibility(View.VISIBLE);
                 } else if (reductionAmount.getVisibility() == View.VISIBLE) {
                     reductionAmount.setVisibility(View.GONE);
@@ -138,6 +139,7 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
                 return true;
             }
         });
+        //delete item
         holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -165,13 +167,13 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
                         }
                     })
                     .error(R.drawable.image_corrupt)
-                    .dontAnimate().bitmapTransform(new GrayscaleTransformation(homeContext))
+                    .dontAnimate().bitmapTransform(new GrayscaleTransformation(homeContext))//turn the out-dated items images to grey
                     .into(holder.photoView);
         } else {
             Glide.with(homeContext).load(((fridgeItemsList.get(position).getOwner().equals("local user")) ? "" : serverPicsPath) + fridgeItemsList.get(position).getPhotoURL())
                     .centerCrop()
                     .placeholder(R.drawable.image_loading)//don't know why, placeholder is necessary or the app will crash. Probably just a minor bug of Glide.
-                    .listener(new RequestListener<String, GlideDrawable>() {
+                    .listener(new RequestListener<String, GlideDrawable>() {//hide the progress indicator if the loading is completed or failed
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
                             holder.progressBar.setVisibility(View.GONE);
@@ -191,39 +193,67 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
 
     }
 
+    /**
+     * Switch visibility of the buttons for a card between VISIBLE and GONE
+     *
+     * @param position Position in the list
+     */
     private void reverseVisibility(int position) {
         fridgeItemsList.get(position).reverseExpanded();
     }
 
+    /**
+     * Hide a button if it's not GONE
+     *
+     * @param v Button to be hid
+     */
     private void hideIfNot(View v) {
         if (v.getVisibility() == View.VISIBLE) {
             v.setVisibility(View.GONE);
         }
     }
 
+    /**
+     * Show a button if it's not VISIBLE
+     *
+     * @param v Button to be showed
+     */
     private void showIfNot(View v) {
         if (v.getVisibility() == View.GONE) {
             v.setVisibility(View.VISIBLE);
         }
     }
 
-    private void applyVisibility(FridgeViewHolder holder, int position) {
+    /**
+     * Apply the visibility setting to specific position
+     *
+     * @param card     Holder to be applied
+     * @param position Position of the item
+     */
+    private void applyVisibility(FridgeViewHolder card, int position) {
         if (fridgeItemsList.get(position).isButtonsExpanded()) {
-            showIfNot(holder.deleteButton);
-            showIfNot(holder.minusButton);
+            showIfNot(card.deleteButton);
+            showIfNot(card.minusButton);
         } else {
-            hideIfNot(holder.deleteButton);
-            holder.minusButton.setVisibility(View.GONE);
+            hideIfNot(card.deleteButton);
+            card.minusButton.setVisibility(View.GONE);
             fridgeItemsList.get(position).setReductionBox(false);
-            holder.reductionAmount.setVisibility(View.GONE);
+            card.reductionAmount.setVisibility(View.GONE);
         }
         if (fridgeItemsList.get(position).isReductionBox()) {
-            holder.reductionAmount.setVisibility(View.VISIBLE);
+            card.reductionAmount.setVisibility(View.VISIBLE);
         } else {
-            holder.reductionAmount.setVisibility(View.GONE);
+            card.reductionAmount.setVisibility(View.GONE);
         }
     }
 
+    /**
+     * Reduce the amount
+     * @param position position of the item in the list
+     * @param sub Amount to decreased
+     * @param name Name of the Item
+     * @param owner Owner of the item
+     */
     private void amountReduction(int position, int sub, String name, String owner) {
         fridgeItemsList.get(position).minus(sub);
         db.execSQL("UPDATE items SET amount = amount - " + sub + " WHERE item = '" + name + "';");
@@ -231,6 +261,12 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
         mAuthTask.execute();
     }
 
+    /**
+     * Delete an item
+     * @param position position of the item in the list
+     * @param name name of the item
+     * @param owner owner of the item
+     */
     private void deleteItem(int position, String name, String owner) {
         fridgeItemsList.remove(position);
         db.execSQL("DELETE FROM items WHERE item = '" + name + "';");
@@ -245,7 +281,6 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
 
     /**
      * send delete request to the server
-     *
      */
     private class SendRequestTask extends AsyncTask<String, Void, String> {
         private String urlString = "http://178.62.93.103/SharingFridge/delete.php";
