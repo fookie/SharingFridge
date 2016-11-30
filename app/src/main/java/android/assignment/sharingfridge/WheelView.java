@@ -60,6 +60,7 @@ public class WheelView extends ScrollView {
 
     List<String> items;
 
+    //set items' name from a list
     public void setItems(List<String> list) {
         if (null == items) {
             items = new ArrayList<String>();
@@ -89,7 +90,7 @@ public class WheelView extends ScrollView {
 
     int selectedIndex = 1;
 
-
+    //initialize the wheel
     private void init(Context context) {
         this.context = context;
 
@@ -159,6 +160,7 @@ public class WheelView extends ScrollView {
         this.postDelayed(scrollerTask, newCheck);
     }
 
+    //set default position and item name that display on the wheel
     private void initData() {
         displayItemCount = offset * 2 + 1;
 
@@ -171,6 +173,7 @@ public class WheelView extends ScrollView {
 
     int itemHeight = 0;
 
+    //the layout of each item
     private TextView createView(String item) {
         TextView tv = new TextView(context);
         tv.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -190,6 +193,7 @@ public class WheelView extends ScrollView {
     }
 
 
+    //listener of scroll view
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
@@ -206,6 +210,7 @@ public class WheelView extends ScrollView {
 
     }
 
+    //refresh wheel condition after rotating
     private void refreshItemView(int y) {
         int position = y / itemHeight + offset;
         int remainder = y % itemHeight;
@@ -236,6 +241,7 @@ public class WheelView extends ScrollView {
 
     int[] selectedAreaBorder;
 
+    //define the border of each item by height
     private int[] obtainSelectedAreaBorder() {
         if (null == selectedAreaBorder) {
             selectedAreaBorder = new int[2];
@@ -252,6 +258,7 @@ public class WheelView extends ScrollView {
     Paint paint;
     int viewWidth;
 
+    //view of the dialog. add separate line and set colors
     @Override
     public void setBackgroundDrawable(Drawable background) {
 
@@ -301,13 +308,13 @@ public class WheelView extends ScrollView {
         setBackgroundDrawable(null);
     }
 
+    //selection listener
     private void onSeletedCallBack() {
         if (null != onWheelViewListener) {
             onWheelViewListener.onSelected(selectedIndex, items.get(selectedIndex));
         }
 
     }
-
     public void setSeletion(int position) {
         final int p = position;
         selectedIndex = p + offset;
@@ -325,6 +332,7 @@ public class WheelView extends ScrollView {
         super.fling(velocityY / 3);
     }
 
+    //touch listener
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_UP) {
@@ -340,6 +348,7 @@ public class WheelView extends ScrollView {
         this.onWheelViewListener = onWheelViewListener;
     }
 
+    //get device density and change size of view
     private int dip2px(float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
