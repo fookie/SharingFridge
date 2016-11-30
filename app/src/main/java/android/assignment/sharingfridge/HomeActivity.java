@@ -178,7 +178,9 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
-
+    /**
+     * override onBackPressed to implement close drawer when back pressed
+     */
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -252,6 +254,9 @@ public class HomeActivity extends AppCompatActivity
         return true;
     }
 
+    /**
+     * initiate all the fragments in HomeActivity
+     */
     private void initFragments() {
         myFragments = new ArrayList<>();
 

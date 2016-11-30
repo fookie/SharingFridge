@@ -66,6 +66,7 @@ public class GroupActivity extends AppCompatActivity {
                 groupname.setError(getString(R.string.need_group_name));
                 return;
             }
+            //send the join/create group request
             mAuthTask = new SendRequestTask(joingroup.isChecked() ? "join" : "create", groupname.getText().toString());
             mAuthTask.execute();
 

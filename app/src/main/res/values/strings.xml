@@ -86,4 +86,5 @@
     <string name="chat_err">Cannot connect to chat server, using UCD Wireless may cause this problem</string>
     <string name="linechart">Expiring items in 7 days</string>
     <string name="piechart">Items portion of each group member</string>
+    <string name="appwidget_text">SharingFridge</string>
 </resources>

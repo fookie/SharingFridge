@@ -80,7 +80,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
     private static final String[] CATEGORYS_CHINESE = new String[]{"水果", "蔬菜", "猪肉", "鸡肉", "牛肉", "鱼肉", "其他"};
 
 
-    private String imageAbsolutePath, filename;
+    private String imageAbsolutePath, filename;//variable that save the photo information
     private SendRequestTask mAuthTask = null;
 
     int currentYear, currentMonth, currentDay;
@@ -554,6 +554,12 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
 
     }
 
+    /**
+     * trigger when complete upload image
+     *
+     * @param uploadInfo
+     * @param serverResponse
+     */
     @Override
     public void onCompleted(UploadInfo uploadInfo, ServerResponse serverResponse) {
         Log.i(TAG, String.format(Locale.getDefault(),

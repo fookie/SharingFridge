@@ -56,7 +56,7 @@ public class MapViewFragment extends Fragment {
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
         mMapView.onResume(); // needed to get the map to display immediately
-        mAuthTask = new SendRequestTask();
+        mAuthTask = new SendRequestTask();//start to update the group member
         mAuthTask.execute();
 
         try {

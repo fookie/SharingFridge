@@ -61,7 +61,7 @@
     <string name="set_language">语言:</string>
     <string name="default_language">与系统同步</string>
     <string name="add_widget">添加小组件</string>
-    <string name="appwidget_text" />
+    <string name="appwidget_text" >大家的冰箱</string>
     <string name="day">天</string>
     <string name="image_sync_error">同步错误</string>
     <string name="image_synced">图片已同步</string>

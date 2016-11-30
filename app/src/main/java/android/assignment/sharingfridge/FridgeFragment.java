@@ -308,6 +308,7 @@ public class FridgeFragment extends Fragment {
                 for (int i = 0; i < jr.length(); i++) {
                     JSONObject jo = jr.getJSONObject(i);
                     try {//remove all the data except local group data
+                        //put dummy item into dummy table for recoding group member,put normal data into items table
                         if (jo.getString("item").equals("__dummy")) {
                             taskDB.execSQL("INSERT INTO dummy ('item' ,'category' ,'amount' ,'addtime' ,'expiretime' ,'imageurl' ,'owner' ,'groupname' )VALUES ('" + jo.getString("item") + "', '" + jo.getString("category") + "', '" + jo.getString("amount") + "', '" + jo.getString("addtime") + "', '" + jo.getString("expiretime") + "', '" + jo.getString("imageurl") + "', '" + jo.getString("owner") + "', '" + jo.getString("groupname") + "')");
                         } else {
