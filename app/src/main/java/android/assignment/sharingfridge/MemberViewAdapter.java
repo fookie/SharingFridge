@@ -52,6 +52,7 @@ public class MemberViewAdapter extends RecyclerView.Adapter<MemberViewHolder> {
             holder.cell.setOnClickListener(new cellOnClickListener(name));
         }
         Glide.with(homeContext).load(picPath + memberItemList.get(position).getAvatarUrl())
+                .placeholder(R.drawable.image_loading)
                 .centerCrop()
                 .listener(new RequestListener<String, GlideDrawable>() {
                     @Override

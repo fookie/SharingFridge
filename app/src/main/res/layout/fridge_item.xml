@@ -13,7 +13,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="171dp">
+        android:layout_height="175dp">
 
         <RelativeLayout
             android:id="@+id/imageContainer"
