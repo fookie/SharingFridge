@@ -73,7 +73,7 @@ public class MapViewFragment extends Fragment {
      * @param ll           LatLng position
      * @param title        the titile of marker
      * @param switchcamera if switch camera to this Marker
-     * @param theBitmap bitmap to load
+     * @param theBitmap    bitmap to load
      */
     private void addMarker(LatLng ll, String title, boolean switchcamera, Bitmap theBitmap) {
         BitmapDescriptor bitmap = BitmapDescriptorFactory.fromBitmap(theBitmap);
@@ -87,9 +87,9 @@ public class MapViewFragment extends Fragment {
     /**
      * add marker without bitmap
      *
-     * @param ll   LatLng position
-     * @param title the titile of marker
-     * @param detail the detail of marker
+     * @param ll           LatLng position
+     * @param title        the titile of marker
+     * @param detail       the detail of marker
      * @param switchcamera if switch camera to this Marker
      */
     private void addMarker(LatLng ll, String title, String detail, boolean switchcamera) {
@@ -209,9 +209,9 @@ public class MapViewFragment extends Fragment {
                             Map.Entry entry = (Map.Entry) it.next();
                             new SetMarkerTask((LatLng) entry.getValue(), (String) entry.getKey(), !it.hasNext()).execute();
                         }
-                        addMarker(new LatLng(53.3022988,-6.2517437), "Tesco", "supermarket", false);
-                        addMarker(new LatLng(53.3079405,-6.2589535), "Tesco Metro", "supermarket", false);
-                        addMarker(new LatLng(53.3080328,-6.2589535), "Lidl", "discount supermarket", false);
+                        addMarker(new LatLng(53.3022988, -6.2517437), "Tesco", "supermarket", false);
+                        addMarker(new LatLng(53.3079405, -6.2589535), "Tesco Metro", "supermarket", false);
+                        addMarker(new LatLng(53.3080328, -6.2589535), "Lidl", "discount supermarket", false);
                         addMarker(new LatLng(53.303889, -6.217265), "Molloys Centra", "Store in UCD", false);
                         // For showing a move to my location button
                         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -230,7 +230,7 @@ public class MapViewFragment extends Fragment {
     }
 
     /**
-     *the marker use user avatar , so we should use a AsyncTask to download it
+     * the marker use user avatar , so we should use a AsyncTask to download it
      */
     private class SetMarkerTask extends AsyncTask<Void, Void, Void> {
         private Bitmap theBitmap;
@@ -249,14 +249,15 @@ public class MapViewFragment extends Fragment {
 //            Looper.prepare();
             try {
                 theBitmap = Glide.
-                        with(MapViewFragment.this).
-                        load("http://178.62.93.103/SharingFridge/avatars/" + title + ".png").
-                        asBitmap().
-                        into(64, 64).
-                        get();
+                        with(MapViewFragment.this)
+                        .load("http://178.62.93.103/SharingFridge/avatars/" + title + ".png")
+                        .asBitmap()
+                        .placeholder(R.drawable.image_loading)//don't know why, placeholder is necessary or the app will crash. Probably just a minor bug of Glide.
+                        .into(64, 64)
+                        .get();
             } catch (final ExecutionException | InterruptedException e) {
                 Log.e("MAP bitmap", e.getMessage());
-            }catch (IllegalArgumentException e){
+            } catch (IllegalArgumentException e) {
 
             }
             return null;

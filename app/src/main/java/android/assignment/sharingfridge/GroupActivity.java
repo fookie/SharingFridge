@@ -27,60 +27,61 @@ import java.net.URL;
  */
 public class GroupActivity extends AppCompatActivity {
 
-    private Button submit=null;
+    private Button submit = null;
     private EditText groupname;
     private RadioButton joingroup;
     private TextView hint;
     private SendRequestTask mAuthTask = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.join_group_layout);
-        submit=(Button)findViewById(R.id.join_group_submit);
-        groupname=(EditText)findViewById(R.id.groupname_edittext);
-        joingroup=(RadioButton)findViewById(R.id.join_group_radio);
-        hint=(TextView)findViewById(R.id.in_group_hint);
+        submit = (Button) findViewById(R.id.join_group_submit);
+        groupname = (EditText) findViewById(R.id.groupname_edittext);
+        joingroup = (RadioButton) findViewById(R.id.join_group_radio);
+        hint = (TextView) findViewById(R.id.in_group_hint);
         submit.setOnClickListener(new submitClick());
     }
 
-    protected void onResume(){
-        if(!UserStatus.hasLogin){//check if user has login
+    protected void onResume() {
+        if (!UserStatus.hasLogin) {//check if user has login
             hint.setText(getString(R.string.no_group_hint));
         }
-        if(UserStatus.inGroup){
+        if (UserStatus.inGroup) {
             hint.setText(String.format(getString(R.string.in_group_hint), UserStatus.groupName));
         }
 
         super.onResume();
     }
 
-    private class submitClick implements View.OnClickListener{
+    private class submitClick implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
-            if(!UserStatus.hasLogin){
+            if (!UserStatus.hasLogin) {
                 return;
             }
-            if(groupname.getText().toString().equals("")){
+            if (groupname.getText().toString().equals("")) {
                 groupname.setError(getString(R.string.need_group_name));
                 return;
-            } 
-                mAuthTask = new SendRequestTask(joingroup.isChecked() ? "join" : "create", groupname.getText().toString());
-                mAuthTask.execute();
+            }
+            mAuthTask = new SendRequestTask(joingroup.isChecked() ? "join" : "create", groupname.getText().toString());
+            mAuthTask.execute();
 
         }
     }
 
     /**
      * send join/add group request to server
-     *
      */
     private class SendRequestTask extends AsyncTask<String, Void, String> {
         private String urlString = "http://178.62.93.103/SharingFridge/group.php";
-        private String action,groupname;
+        private String action, groupname;
+
         public SendRequestTask(String _action, String _groupname) {
-            action=_action;
-            groupname=_groupname;
+            action = _action;
+            groupname = _groupname;
         }
 
         protected String doInBackground(String... params) {
@@ -102,7 +103,7 @@ public class GroupActivity extends AppCompatActivity {
                 JSONObject jo = new JSONObject();
                 jo.put("action", action);
                 jo.put("username", UserStatus.username);
-                jo.put("groupname",groupname);
+                jo.put("groupname", groupname);
                 String tosend = jo.toString();
                 Log.d("JSON", tosend);
 
@@ -141,18 +142,18 @@ public class GroupActivity extends AppCompatActivity {
                 JSONObject confirm = new JSONObject(result);
                 permission = confirm.get("permission").toString();
                 if (permission.equals("granted")) {
-                    Log.d("GROUP", action+" SUCCESS");
+                    Log.d("GROUP", action + " SUCCESS");
                     Toast.makeText(getApplicationContext(), getString(R.string.success), Toast.LENGTH_SHORT).show();
-                    UserStatus.inGroup=true;
-                    UserStatus.groupName=groupname;
+                    UserStatus.inGroup = true;
+                    UserStatus.groupName = groupname;
                     finish();
-                }else {
-                    Log.d("GROUP",action+ "FAILED");
+                } else {
+                    Log.d("GROUP", action + "FAILED");
                     Toast.makeText(getApplicationContext(), getString(R.string.failed), Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException je) {
                 je.printStackTrace();
-                Log.d("GROUP",action+ "FAILED");
+                Log.d("GROUP", action + "FAILED");
                 Toast.makeText(getApplicationContext(), getString(R.string.failed), Toast.LENGTH_SHORT).show();
             }
         }

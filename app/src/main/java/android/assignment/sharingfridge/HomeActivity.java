@@ -515,4 +515,9 @@ public class HomeActivity extends AppCompatActivity
             mAuthTask = null;
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

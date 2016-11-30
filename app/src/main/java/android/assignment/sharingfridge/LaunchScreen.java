@@ -40,11 +40,11 @@ public class LaunchScreen extends AwesomeSplash {
         finishAfterTransition();//Make sure the launch screen only showed once.
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        int pid = android.os.Process.myPid(); //Totally exit the app. Prevent starting HomeActivity. Not a recommended practice though. ref: http://stackoverflow.com/a/2034238/5351002
-        android.os.Process.killProcess(pid);
-        System.exit(0);
-    }
+//    @Override
+//    public void onBackPressed() {
+//        super.onBackPressed();
+//        int pid = android.os.Process.myPid(); //Totally exit the app. Prevent starting HomeActivity. Not a recommended practice though. ref: http://stackoverflow.com/a/2034238/5351002
+//        android.os.Process.killProcess(pid);
+//        System.exit(0);
+//    }
 }
