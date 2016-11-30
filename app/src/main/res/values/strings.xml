@@ -84,4 +84,6 @@
     <string name="local_db">Delete local items in database</string>
     <string name="cache">Cache: </string>
     <string name="chat_err">Cannot connect to chat server, using UCD Wireless may cause this problem</string>
+    <string name="linechart">Items that expire in a week</string>
+    <string name="piechart">Amount of each group member</string>
 </resources>
