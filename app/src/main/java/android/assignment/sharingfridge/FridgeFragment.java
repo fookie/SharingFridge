@@ -135,8 +135,6 @@ public class FridgeFragment extends Fragment {
     }
 
     /**
-     *
-     *
      * @param a
      * @return
      */
@@ -173,14 +171,13 @@ public class FridgeFragment extends Fragment {
         List<FridgeItem> itemsList = new ArrayList<>();
         Cursor cursor = mainDB.rawQuery("SELECT * from items where groupname = '" + UserStatus.groupName + "'", null);
         while (cursor.moveToNext()) {
-            int expday = 0;
+            long expday = 0;
             Calendar cal = Calendar.getInstance();
             DateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
             try {
                 Date nd = cal.getTime();
                 Date ed = df.parse(cursor.getString(cursor.getColumnIndex("expiretime")));
-                long days = (ed.getTime() - nd.getTime()) / (1000 * 60 * 60 * 24);
-                expday = (int) (days + 1);//+1 ensure expire today shows 0 days
+                expday = (ed.getTime() - nd.getTime()) / (1000 * 60 * 60 * 24);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -188,6 +185,7 @@ public class FridgeFragment extends Fragment {
             String cat = language(cursor.getString(cursor.getColumnIndex("category")));
             FridgeItem tempfi = new FridgeItem(cursor.getString(cursor.getColumnIndex("item")), expday, cursor.getString(cursor.getColumnIndex("imageurl")), cursor.getString(cursor.getColumnIndex("owner")), cat, cursor.getInt(cursor.getColumnIndex("amount")));
             itemsList.add(tempfi);
+            Collections.sort(itemsList, new expdayComparator());
             Log.i("usertest", cursor.getString(cursor.getColumnIndex("item")) + " at " + cursor.getString(cursor.getColumnIndex("expiretime")));
         }
         cursor.close();
@@ -195,7 +193,7 @@ public class FridgeFragment extends Fragment {
     }
 
     /**
-     * update the UI display by refreshing RecylerView
+     * update the UI display by refreshing RecyclerView
      */
     public void updateUI() {
         if (isAdded()) {
@@ -281,6 +279,7 @@ public class FridgeFragment extends Fragment {
 
         /**
          * to get the result string that usually has a large length
+         *
          * @param stream the inputstream used in receiving data from server
          * @return the result string
          * @throws IOException
