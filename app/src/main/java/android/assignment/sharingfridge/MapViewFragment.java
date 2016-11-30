@@ -41,7 +41,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 /**
- * fragment that contains google map to display the location of group member
+ * Fragment that uses Google Map APIs to display the locations of the group members with avatars
  */
 public class MapViewFragment extends Fragment {
 

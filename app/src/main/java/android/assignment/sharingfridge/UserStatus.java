@@ -3,7 +3,8 @@ package android.assignment.sharingfridge;
 import android.location.Location;
 
 /**
- * the class that stores all the globe values of use's status
+ * This class stores all the global properties of current users' status
+ * By default the user is considered as not logged in and offline.
  */
 
 public final class UserStatus {

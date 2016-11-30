@@ -33,7 +33,8 @@ import jp.wasabeef.glide.transformations.GrayscaleTransformation;
 /**
  * Adapter for the main Fridge RecyclerView in {@link FridgeFragment}
  * <br/>
- * Used external libraries: Glide, Glide transformations. Author: Sam Judd. @samajudd on Twitter
+ * Used external libraries: Glide, Glide transformations.
+ * Author: Sam Judd. @samajudd on Twitter
  * @see <a href="https://github.com/bumptech/glide">Glide</a>, <a href="https://github.com/wasabeef/glide-transformations">Glide transformations</a>
  *
  */

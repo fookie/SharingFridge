@@ -60,7 +60,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 /**
- * The activity for adding an new item that can be accessed by the '+'.
+ * The activity for adding an new item that can be accessed by the '+' button on top right.
  *
  */
 public class AddActivity extends AppCompatActivity implements UploadStatusDelegate {

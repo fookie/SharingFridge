@@ -42,10 +42,7 @@ import static android.widget.Toast.LENGTH_SHORT;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link FridgeFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
+ * The fragment class for the main fridge items displaying
  */
 public class FridgeFragment extends Fragment {
     private SendRequestTask mAuthTask = null;
@@ -196,6 +193,9 @@ public class FridgeFragment extends Fragment {
         return itemsList;
     }
 
+    /**
+     * update the UI display by refreshing RecylerView
+     */
     public void updateUI() {
         if (isAdded()) {
             fridgeItemList = refreshFridgeList();
@@ -208,6 +208,9 @@ public class FridgeFragment extends Fragment {
 
     }
 
+    /**
+     * update the local data from server
+     */
     private void updateFromServer() {
         if (!UserStatus.groupName.equals("Offline Mode")) {
             mAuthTask = new SendRequestTask(UserStatus.groupName);
@@ -217,11 +220,17 @@ public class FridgeFragment extends Fragment {
         }
     }
 
+    /**
+     * tell the app the new signed in user need to download data from server
+     */
     public void setNewUserDataNotLoaded() {
         isDataLoaded = false;
     }
 
 
+    /**
+     * The asynctask with HTTP requests to upload items data from our server.
+     */
     private class SendRequestTask extends AsyncTask<String, Void, String> {
         private String urlString = "http://178.62.93.103/SharingFridge/refresh.php";
         private String groupname;
@@ -269,6 +278,12 @@ public class FridgeFragment extends Fragment {
             return response;
         }
 
+        /**
+         * to get the result string that usually has a large length
+         * @param stream the inputstream used in receiving data from server
+         * @return the result string
+         * @throws IOException
+         */
         public String getLongStringFromInputStream(InputStream stream) throws IOException {
             StringBuilder strBuilder = new StringBuilder();
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
@@ -313,8 +328,7 @@ public class FridgeFragment extends Fragment {
     }
 
     /**
-     * load the fridge list from database
-     *
+     * load the fridge list from local database
      */
     public void updateFridgeList() {
         List<FridgeItem> itemsList = new ArrayList<>();
@@ -343,6 +357,9 @@ public class FridgeFragment extends Fragment {
         fridgeViewAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * a helper class that compare two items so that we can sort them in the list
+     */
     public class expdayComparator implements Comparator<FridgeItem> {
 
         @Override

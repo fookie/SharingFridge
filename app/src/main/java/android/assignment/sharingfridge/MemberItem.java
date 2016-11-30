@@ -2,6 +2,7 @@ package android.assignment.sharingfridge;
 
 /**
  * Created by Paulay on 2016/10/24.
+ * The class that defines each member object stored in the lists, with name and avatarURL.
  */
 
 public class MemberItem {

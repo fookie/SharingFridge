@@ -17,8 +17,9 @@ import java.util.Objects;
 import io.rong.imkit.RongIM;
 
 /**
+ * The adapter for member recycler view
  * Used external library: Glide, CircularImageView
- *
+ * Authors: Glide-Sam Judd. @samajudd on Twitter; CircularImageView-jack wang
  * @see <a href="https://github.com/bumptech/glide">Glide</a>, <a href="https://github.com/Pkmmte/CircularImageView">CircularImageView</a>
  */
 public class MemberViewAdapter extends RecyclerView.Adapter<MemberViewHolder> {

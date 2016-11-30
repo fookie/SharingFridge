@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * Implementation of App Widget functionality.
+ * Implementation of App Widget functionality that will create a widget on the dashboard.
  */
 public class FridgeWidget extends AppWidgetProvider {
     private static SQLiteDatabase taskDB;

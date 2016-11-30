@@ -15,9 +15,10 @@ import android.view.ViewGroup;
 import java.util.LinkedList;
 import java.util.List;
 
-
+/**
+ * The Fragment class for displaying a list of the group members
+ */
 public class MemberFragment extends Fragment {
-
 
     private List<MemberItem> memberItemList;
     private MemberViewAdapter memberViewAdapter;
@@ -86,12 +87,6 @@ public class MemberFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        if (context instanceof OnLoginStatusListener) {
-//            loginRefreshListener = (OnLoginStatusListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnLoginStatusListener");
-//        }
     }
 
     @Override

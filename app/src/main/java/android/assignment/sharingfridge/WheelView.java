@@ -27,6 +27,7 @@ import java.util.List;
  *<br/>
  *<br/>
  * Used external library: WheelView
+ * Copyright 2014 Wang Jie
  * @see <a href="https://github.com/wangjiegulu/WheelView">WheelView</a>
  */
 public class WheelView extends ScrollView {

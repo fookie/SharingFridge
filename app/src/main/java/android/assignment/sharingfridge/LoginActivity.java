@@ -38,7 +38,7 @@ import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.UserInfo;
 
 /**
- * A login screen that offers login via email/password.
+ * A login activity that offers login interface via username and password.
  */
 public class LoginActivity extends AppCompatActivity {
     /**

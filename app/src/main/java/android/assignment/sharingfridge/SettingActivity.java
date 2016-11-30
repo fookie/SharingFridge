@@ -19,6 +19,9 @@ import com.bumptech.glide.Glide;
 
 import java.util.Locale;
 
+/**
+ * The activity class for settings in this application.
+ */
 public class SettingActivity extends AppCompatActivity {
 
     RadioButton english;

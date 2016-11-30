@@ -36,6 +36,9 @@ import lecho.lib.hellocharts.view.PieChartView;
 /**
  * The fourth fragments showing Statistics of fridge items, e.g. how many items are going to expire
  * in the next 7 days. What portion of items belong to a group member.
+ * Used external library: HelloCharts.
+ * Copyright 2014 Leszek Wach.
+ * @see <a href="https://github.com/lecho/hellocharts-android">HelloCharts</a>
  *
  */
 public class StatisticsFragment extends Fragment {

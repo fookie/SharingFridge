@@ -10,6 +10,7 @@ import com.wang.avi.AVLoadingIndicatorView;
 
 /**
  * Created by Paulay on 2016/10/25 0025.
+ * The viewholder class for member RecyclerView
  */
 
 public class MemberViewHolder extends RecyclerView.ViewHolder {

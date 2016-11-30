@@ -10,8 +10,9 @@ import android.widget.TextView;
 import com.wang.avi.AVLoadingIndicatorView;
 
 /**
- * Used external library: AVLoadingIndicatorView
- *
+ * The ViewHolder class for Fridge RecyclerView
+ * Used external library: AVLoadingIndicatorView Author: jack wang
+ * Copyright 2015 jack wang
  * @see <a href="https://github.com/81813780/AVLoadingIndicatorView">AVLoadingIndicatorView</a>
  */
 

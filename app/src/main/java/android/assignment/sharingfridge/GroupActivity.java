@@ -22,6 +22,9 @@ import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+/**
+ * The class for group activity that shows a list of members in the user's group.
+ */
 public class GroupActivity extends AppCompatActivity {
 
     private Button submit=null;

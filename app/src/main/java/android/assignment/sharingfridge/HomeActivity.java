@@ -61,9 +61,9 @@ import me.majiajie.pagerbottomtabstrip.TabItemBuilder;
 import me.majiajie.pagerbottomtabstrip.listener.OnTabItemSelectListener;
 
 /**
- * Main activity<br/><br/>
+ * The core activity of this application.<br/><br/>
  * Used external libraries: Glide, AVLoadingIndicatorView, CircularImageView
- *
+ * Author: Glide-Sam Judd. @samajudd on Twitter; jack wang-AVLoadingIndicatorView; Pkmmte Xeleon-CircularImageView
  * @see <a href="https://github.com/bumptech/glide">Glide</a>, <a href="https://github.com/81813780/AVLoadingIndicatorView">AVLoadingIndicatorView</a>, <a href="https://github.com/Pkmmte/CircularImageView">CircularImageView</a>
  */
 

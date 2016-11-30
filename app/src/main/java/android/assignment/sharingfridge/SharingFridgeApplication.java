@@ -9,7 +9,7 @@ import io.rong.imkit.RongIM;
 
 
 /**
- * Store some global variables and initiate some in-app service
+ * Store some global variables and initiate some in-app service when the application starts.
  */
 
 public class SharingFridgeApplication extends Application {
@@ -25,7 +25,4 @@ public class SharingFridgeApplication extends Application {
         return serverAddr;
     }
 
-    public void setServerAddr(String addr) {
-        serverAddr = addr;
-    }
 }
