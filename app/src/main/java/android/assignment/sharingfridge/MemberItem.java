@@ -21,6 +21,11 @@ public class MemberItem {
         return name;
     }
 
+    // set the username to n
+    public void setName(String n) {
+        name = n;
+    }
+
     // return the recent action of the member item
     public String getAct() {
         return act;
@@ -29,11 +34,6 @@ public class MemberItem {
     // return the avatar url of the member item
     public String getAvatarUrl() {
         return avatarUrl;
-    }
-
-    // set the username to n
-    public void setName(String n) {
-        name = n;
     }
 
 }

@@ -1,64 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:padding="@dimen/list_vertical_padding"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="@dimen/list_vertical_padding">
 
     <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:hint="@string/join_group_hint"
-        android:ems="10"
         android:id="@+id/groupname_edittext"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true" />
-
-    <RadioGroup
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/groupname_edittext"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/radioGroup">
+        android:ems="10"
+        android:hint="@string/join_group_hint"
+        android:inputType="textPersonName" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/groupname_edittext">
+
         <RadioButton
-            android:text="@string/join_group"
+            android:id="@+id/join_group_radio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/join_group_radio"
             android:layout_below="@+id/groupname_edittext"
             android:layout_toEndOf="@+id/radioGroup"
             android:layout_weight="1"
-            tools:ignore="ObsoleteLayoutParam"
-            android:checked="true" />
+            android:checked="true"
+            android:text="@string/join_group"
+            tools:ignore="ObsoleteLayoutParam" />
 
         <RadioButton
-            android:text="@string/new_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/create_group_radio"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:text="@string/new_group" />
     </RadioGroup>
 
     <TextView
+        android:id="@+id/in_group_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/in_group_hint"
-        android:textAlignment="center"
-        android:layout_below="@+id/radioGroup"
-        android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/radioGroup"
+        android:textAlignment="center"
         android:textColor="@android:color/holo_red_dark"
         android:textStyle="normal|bold" />
 
     <Button
-        android:text="@string/submit"
+        android:id="@+id/join_group_submit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/join_group_submit"
         android:layout_below="@+id/in_group_hint"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:text="@string/submit" />
 
 
 </RelativeLayout>

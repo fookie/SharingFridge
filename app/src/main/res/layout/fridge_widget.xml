@@ -19,33 +19,33 @@
         android:textStyle="bold" />
 
     <TextView
-        android:text="expire"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/appwidget_text"
-        android:textColor="@android:color/background_light"
-        android:textSize="13sp"
-        android:layout_margin="2dp"
-        android:layout_weight="0.22" />
-
-    <TextView
-        android:text="quantity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="2dp"
+        android:layout_weight="0.22"
+        android:text="expire"
+        android:textColor="@android:color/background_light"
+        android:textSize="13sp" />
+
+    <TextView
         android:id="@+id/appwidget_quantity"
-        android:textColor="@android:color/background_light"
-        android:textSize="13sp"
-        android:layout_margin="2dp"
-        android:layout_weight="0.22" />
-
-    <TextView
-        android:text="total"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/appwidget_text_detail"
-        android:textColor="@android:color/background_light"
-        android:textSize="13sp"
         android:layout_margin="2dp"
-        android:layout_weight="0.22" />
+        android:layout_weight="0.22"
+        android:text="quantity"
+        android:textColor="@android:color/background_light"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/appwidget_text_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp"
+        android:layout_weight="0.22"
+        android:text="total"
+        android:textColor="@android:color/background_light"
+        android:textSize="13sp" />
 
 </LinearLayout>

@@ -19,24 +19,25 @@ import java.util.Locale;
  */
 public class FridgeWidget extends AppWidgetProvider {
     private static SQLiteDatabase taskDB;
+
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
         String widgetTitle = "Sharing Fridge";
         //select attributes from database
-        String sql="select count(*) from items";
+        String sql = "select count(*) from items";
         Cursor c = taskDB.rawQuery(sql, null);
         String todisplay = null;
         //display the total number of items user owned
         while (c.moveToNext()) {
             int count = c.getInt(0);
-            todisplay="Total: "+count+" items";
+            todisplay = "Total: " + count + " items";
         }
 
         //get the item nearest to the expire date and display to the user
         Cursor cursor = taskDB.rawQuery("SELECT * from items", null);
         String expday = "Unknown";
-        long i=100;
+        long i = 100;
         String itemName = null;
         String itemQuantity = null;
         String widgetQuantity = null;
@@ -48,7 +49,7 @@ public class FridgeWidget extends AppWidgetProvider {
                 Date nd = cal.getTime();
                 Date ed = df.parse(cursor.getString(cursor.getColumnIndex("expiretime")));
                 long days = (ed.getTime() - nd.getTime()) / (1000 * 60 * 60 * 24);
-                if (days<i){
+                if (days < i) {
                     i = days;
                     itemName = cursor.getString(cursor.getColumnIndex("item"));
                     itemQuantity = cursor.getString(cursor.getColumnIndex("amount"));
@@ -56,9 +57,10 @@ public class FridgeWidget extends AppWidgetProvider {
                 expday = i + 1 + ((i + 1 <= 1) ? "day left" : "days left");//+1 ensure expire today shows 0 days
             } catch (ParseException e) {
                 e.printStackTrace();
-            }}
-        widgetQuantity = "Still "+itemQuantity+" left!";
-        CharSequence widgetText = "Remind "+itemName+": "+expday;
+            }
+        }
+        widgetQuantity = "Still " + itemQuantity + " left!";
+        CharSequence widgetText = "Remind " + itemName + ": " + expday;
 
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.fridge_widget);
@@ -88,7 +90,7 @@ public class FridgeWidget extends AppWidgetProvider {
     @Override
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
-        if(taskDB!=null) {
+        if (taskDB != null) {
             taskDB.close();
         }
     }

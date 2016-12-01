@@ -64,6 +64,7 @@ import me.majiajie.pagerbottomtabstrip.listener.OnTabItemSelectListener;
  * The core activity of this application.<br/><br/>
  * Used external libraries: Glide, AVLoadingIndicatorView, CircularImageView
  * Author: Glide-Sam Judd. @samajudd on Twitter; jack wang-AVLoadingIndicatorView; Pkmmte Xeleon-CircularImageView
+ *
  * @see <a href="https://github.com/bumptech/glide">Glide</a>, <a href="https://github.com/81813780/AVLoadingIndicatorView">AVLoadingIndicatorView</a>, <a href="https://github.com/Pkmmte/CircularImageView">CircularImageView</a>
  */
 
@@ -72,6 +73,12 @@ public class HomeActivity extends AppCompatActivity
         FridgeFragment.OnFragmentInteractionListener,
         StatisticsFragment.OnFragmentInteractionListener {
 
+    /**
+     * initiate the location lisetener, permission is required
+     * there are two paramiters that decided the upload interval and the minimum upload distance
+     */
+    private final int LOCATION_INTERVAL = 5000;
+    private final int LOCATION_MIN_DISTANCE = 10;
     int[] tabColors = {0xFFB71C1C, 0xFFF57F17, 0xFF0D47A1, 0xFF9C27B0, 0xFFF57C00};
     Controller tabController;
     List<Fragment> myFragments;
@@ -85,6 +92,20 @@ public class HomeActivity extends AppCompatActivity
     StatisticsFragment setFrag;
     AVLoadingIndicatorView avatarProgress;
     LocationManager locationManager;
+    OnTabItemSelectListener tabListener = new OnTabItemSelectListener() {
+        @Override
+        public void onSelected(int index, Object tag) {
+            Log.i("tab", "onSelected:" + index + "   TAG: " + tag.toString());
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container_home, myFragments.get(index));
+            transaction.commit();
+        }
+
+        @Override
+        public void onRepeatClick(int index, Object tag) {
+            Log.i("tab", "onRepeatClick:" + index + "   TAG: " + tag.toString());
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -275,21 +296,6 @@ public class HomeActivity extends AppCompatActivity
         transaction.commit();
     }
 
-    OnTabItemSelectListener tabListener = new OnTabItemSelectListener() {
-        @Override
-        public void onSelected(int index, Object tag) {
-            Log.i("tab", "onSelected:" + index + "   TAG: " + tag.toString());
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container_home, myFragments.get(index));
-            transaction.commit();
-        }
-
-        @Override
-        public void onRepeatClick(int index, Object tag) {
-            Log.i("tab", "onRepeatClick:" + index + "   TAG: " + tag.toString());
-        }
-    };
-
     // initiate the Bottom navigation bar
     // Used library: PagerBottomTabStrip
     // Copyright 2016 JiaJie Ma
@@ -315,7 +321,6 @@ public class HomeActivity extends AppCompatActivity
 
         tabController.addTabItemClickListener(tabListener);
     }
-
 
     @Override
     public void onFragmentInteraction(Uri uri) {
@@ -373,14 +378,6 @@ public class HomeActivity extends AppCompatActivity
     }
 
     /**
-     * initiate the location lisetener, permission is required
-     * there are two paramiters that decided the upload interval and the minimum upload distance
-     */
-    private final int LOCATION_INTERVAL = 5000;
-    private final int LOCATION_MIN_DISTANCE = 10;
-
-    /**
-     *
      * request permission and initiate location upload
      */
     public void initLocation() {
@@ -401,6 +398,27 @@ public class HomeActivity extends AppCompatActivity
     // build a new userinfo object with userID, nickname, and url for avatars
     public UserInfo findUserById(String uid) {
         return new UserInfo(uid, uid, Uri.parse("http://178.62.93.103/SharingFridge/avatars/" + uid + ".png"));
+    }
+
+    /**
+     * add location listener when get permission
+     *
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        LocationListener locationListener = new MyLocationListener();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+        } else {
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_MIN_DISTANCE, locationListener);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     /**
@@ -442,23 +460,6 @@ public class HomeActivity extends AppCompatActivity
     }
 
     /**
-     * add location listener when get permission
-     *
-     * @param requestCode
-     * @param permissions
-     * @param grantResults
-     */
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        LocationListener locationListener = new MyLocationListener();
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-        } else {
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_MIN_DISTANCE, locationListener);
-        }
-    }
-
-    /**
-     *
      * the AsynTask to upload location, trigger by location listener
      */
     private class SendRequestTask extends AsyncTask<String, Void, String> {
@@ -524,10 +525,5 @@ public class HomeActivity extends AppCompatActivity
         protected void onPostExecute(String result) {
             mAuthTask = null;
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 }

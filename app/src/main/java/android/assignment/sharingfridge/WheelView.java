@@ -24,24 +24,33 @@ import java.util.List;
 
 /**
  * This activity is a wheel view component for selection based on scroll view
- *<br/>
- *<br/>
+ * <br/>
+ * <br/>
  * Used external library: WheelView
  * Copyright 2014 Wang Jie
+ *
  * @see <a href="https://github.com/wangjiegulu/WheelView">WheelView</a>
  */
 public class WheelView extends ScrollView {
     public static final String TAG = WheelView.class.getSimpleName();
-
-    public static class OnWheelViewListener {
-        public void onSelected(int selectedIndex, String item) {
-        }
-    }
-
-
+    //default offset, which means the initial position of the wheel
+    public static final int OFF_SET_DEFAULT = 1;
+    private static final int SCROLL_DIRECTION_UP = 0;
+    private static final int SCROLL_DIRECTION_DOWN = 1;
+    List<String> items;
+    int offset = OFF_SET_DEFAULT;
+    int displayItemCount;
+    int selectedIndex = 1;
+    int initialY;
+    Runnable scrollerTask;
+    int newCheck = 50;
+    int itemHeight = 0;
+    int[] selectedAreaBorder;
+    Paint paint;
+    int viewWidth;
     private Context context;
-
     private LinearLayout views;
+    private OnWheelViewListener onWheelViewListener;
 
     public WheelView(Context context) {
         super(context);
@@ -57,8 +66,6 @@ public class WheelView extends ScrollView {
         super(context, attrs, defStyle);
         init(context);
     }
-
-    List<String> items;
 
     //set items' name from a list
     public void setItems(List<String> list) {
@@ -77,18 +84,10 @@ public class WheelView extends ScrollView {
 
     }
 
-    //default offset, which means the initial position of the wheel
-    public static final int OFF_SET_DEFAULT = 1;
-    int offset = OFF_SET_DEFAULT;
-
     //set the offset of display for wheelview
     public void setOffset(int offset) {
         this.offset = offset;
     }
-
-    int displayItemCount;
-
-    int selectedIndex = 1;
 
     //initialize the wheel
     private void init(Context context) {
@@ -149,11 +148,6 @@ public class WheelView extends ScrollView {
 
     }
 
-    int initialY;
-
-    Runnable scrollerTask;
-    int newCheck = 50;
-
     // start the scroller tasks
     public void startScrollerTask() {
         initialY = getScrollY();
@@ -170,8 +164,6 @@ public class WheelView extends ScrollView {
 
         refreshItemView(0);
     }
-
-    int itemHeight = 0;
 
     //the layout of each item
     private TextView createView(String item) {
@@ -191,7 +183,6 @@ public class WheelView extends ScrollView {
         }
         return tv;
     }
-
 
     //listener of scroll view
     @Override
@@ -239,8 +230,6 @@ public class WheelView extends ScrollView {
         }
     }
 
-    int[] selectedAreaBorder;
-
     //define the border of each item by height
     private int[] obtainSelectedAreaBorder() {
         if (null == selectedAreaBorder) {
@@ -250,13 +239,6 @@ public class WheelView extends ScrollView {
         }
         return selectedAreaBorder;
     }
-
-
-    private static final int SCROLL_DIRECTION_UP = 0;
-    private static final int SCROLL_DIRECTION_DOWN = 1;
-
-    Paint paint;
-    int viewWidth;
 
     //view of the dialog. add separate line and set colors
     @Override
@@ -315,6 +297,7 @@ public class WheelView extends ScrollView {
         }
 
     }
+
     public void setSeletion(int position) {
         final int p = position;
         selectedIndex = p + offset;
@@ -342,8 +325,6 @@ public class WheelView extends ScrollView {
         return super.onTouchEvent(ev);
     }
 
-    private OnWheelViewListener onWheelViewListener;
-
     public void setOnWheelViewListener(OnWheelViewListener onWheelViewListener) {
         this.onWheelViewListener = onWheelViewListener;
     }
@@ -360,6 +341,11 @@ public class WheelView extends ScrollView {
         int expandSpec = View.MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE >> 2, View.MeasureSpec.AT_MOST);
         view.measure(width, expandSpec);
         return view.getMeasuredHeight();
+    }
+
+    public static class OnWheelViewListener {
+        public void onSelected(int selectedIndex, String item) {
+        }
     }
 
 }

@@ -46,9 +46,9 @@ import java.util.concurrent.ExecutionException;
 public class MapViewFragment extends Fragment {
 
     MapView mMapView;
-    private GoogleMap googleMap;
     SendRequestTask mAuthTask;
     Hashtable<String, LatLng> markers = new Hashtable<>();//the Hashtable to store the keypair of name and location
+    private GoogleMap googleMap;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

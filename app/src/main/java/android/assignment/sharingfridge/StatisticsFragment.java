@@ -38,23 +38,20 @@ import lecho.lib.hellocharts.view.PieChartView;
  * in the next 7 days. What portion of items belong to a group member.
  * Used external library: HelloCharts.
  * Copyright 2014 Leszek Wach.
- * @see <a href="https://github.com/lecho/hellocharts-android">HelloCharts</a>
  *
+ * @see <a href="https://github.com/lecho/hellocharts-android">HelloCharts</a>
  */
 public class StatisticsFragment extends Fragment {
 
     public SQLiteDatabase mainDB;
+    float maximumDayTotalSpending = 100f; // default
     private String formattedDate, dayOfWeek;
-
     private LineChartView lineChart;
     private LineChartData lineData;
     private int numberOfLines = 1;
     private int maxNumberOfLines = 4;
     private int numberOfPoints = 7;
-
     int[][] frigeDataSet = new int[maxNumberOfLines][numberOfPoints];
-    float maximumDayTotalSpending = 100f; // default
-
     private boolean hasAxes = true;
     private boolean hasAxesNames = true;
     private boolean hasLines = true;
@@ -79,6 +76,21 @@ public class StatisticsFragment extends Fragment {
 
     public StatisticsFragment() {
         // Required empty public constructor
+    }
+
+    // parse the date and calculate the designated date after adding a day number
+    public static String getDateString(String today, int dayAddNum) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        Date nowDate = null;
+        try {
+            nowDate = formatter.parse(today);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Date newDate2 = new Date(nowDate.getTime() + dayAddNum * 24 * 60 * 60 * 1000);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        String dateOk = simpleDateFormat.format(newDate2);
+        return dateOk;
     }
 
     @Override
@@ -114,7 +126,6 @@ public class StatisticsFragment extends Fragment {
         return view;
     }
 
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -133,19 +144,19 @@ public class StatisticsFragment extends Fragment {
     }
 
     // load data from databases and put the data into a formatted list, then give it to the chart
-    public void getDataForLineChart(){
+    public void getDataForLineChart() {
         mainDB = SQLiteDatabase.openOrCreateDatabase(getContext().getFilesDir().getAbsolutePath().replace("files", "databases") + "fridge.db", null);
         int dayIndex = 0;
         int weekLength = dayNumOfWeek(dayOfWeek);
-        while(dayIndex<=6){
+        while (dayIndex <= 6) {
             String dayToCheck = getDateString(formattedDate, dayIndex);
             Cursor cursor = mainDB.rawQuery("SELECT * FROM items WHERE groupname = '" + UserStatus.groupName + "' AND expiretime = '" + dayToCheck + "'", null);
             int count = cursor.getCount();
-            while(cursor.moveToNext()){
+            while (cursor.moveToNext()) {
                 int dayTotal = cursor.getInt(0);// index 0 stands for sum(amount)
                 frigeDataSet[0][dayIndex] = count;
             }
-            Log.i("=linedata=","dayToCheck: " + dayToCheck + " GroupName: " + UserStatus.groupName +  " num: " + frigeDataSet[0][dayIndex]);
+            Log.i("=linedata=", "dayToCheck: " + dayToCheck + " GroupName: " + UserStatus.groupName + " num: " + frigeDataSet[0][dayIndex]);
             cursor.close();
             dayIndex++;
         }
@@ -169,7 +180,7 @@ public class StatisticsFragment extends Fragment {
             line.setHasLabelsOnlyForSelected(hasLabelForSelected);
             line.setHasLines(hasLines);
             line.setHasPoints(hasPoints);
-            if (pointsHaveDifferentColor){
+            if (pointsHaveDifferentColor) {
                 line.setPointColor(ChartUtils.COLORS[(i + 1) % ChartUtils.COLORS.length]);
             }
             lines.add(line);
@@ -189,15 +200,15 @@ public class StatisticsFragment extends Fragment {
                 AxisValue tomorrow = new AxisValue(1);
                 unit.add(tomorrow.setLabel(getString(R.string.tomorrow)));
                 AxisValue dayAfterTomw = new AxisValue(2);
-                unit.add(dayAfterTomw.setLabel("2"+getString(R.string.day)));
+                unit.add(dayAfterTomw.setLabel("2" + getString(R.string.day)));
                 AxisValue threeDay = new AxisValue(3);
-                unit.add(threeDay.setLabel("3 "+getString(R.string.day)));
+                unit.add(threeDay.setLabel("3 " + getString(R.string.day)));
                 AxisValue fourDay = new AxisValue(4);
-                unit.add(fourDay.setLabel("4 "+getString(R.string.day)));
+                unit.add(fourDay.setLabel("4 " + getString(R.string.day)));
                 AxisValue fiveDay = new AxisValue(5);
-                unit.add(fiveDay.setLabel("5"+getString(R.string.day)));
+                unit.add(fiveDay.setLabel("5" + getString(R.string.day)));
                 AxisValue sixDay = new AxisValue(6);
-                unit.add(sixDay.setLabel("6 "+getString(R.string.day)));
+                unit.add(sixDay.setLabel("6 " + getString(R.string.day)));
 
                 axisX.setValues(unit);
 
@@ -216,11 +227,11 @@ public class StatisticsFragment extends Fragment {
     }
 
     // load the data from database and store the data in a formatted list, then pass it to the chart
-    public void getDataForPieChart(){
+    public void getDataForPieChart() {
         List<SliceValue> values = new ArrayList<SliceValue>();
         mainDB = SQLiteDatabase.openOrCreateDatabase(this.getContext().getFilesDir().getAbsolutePath().replace("files", "databases") + "fridge.db", null);
         Cursor defaultCursor = mainDB.rawQuery("SELECT SUM(amount), owner FROM items where groupname = '" + UserStatus.groupName + "' GROUP BY owner", null);
-        while(defaultCursor.moveToNext()){
+        while (defaultCursor.moveToNext()) {
             float eachCategoryTotal = defaultCursor.getFloat(0);
             String categoryName = defaultCursor.getString(1);
             SliceValue partValue = new SliceValue(eachCategoryTotal, ChartUtils.pickColor());
@@ -255,39 +266,28 @@ public class StatisticsFragment extends Fragment {
     }
 
     // to get the weekday representation in Integer from string
-    private int dayNumOfWeek(String dayOfweek){
-        if(dayOfweek.equalsIgnoreCase("SUN")||dayOfweek.equalsIgnoreCase("星期日")){
+    private int dayNumOfWeek(String dayOfweek) {
+        if (dayOfweek.equalsIgnoreCase("SUN") || dayOfweek.equalsIgnoreCase("星期日")) {
             return 0;
-        } else if(dayOfweek.equalsIgnoreCase("MON")||dayOfweek.equalsIgnoreCase("星期一")) {
+        } else if (dayOfweek.equalsIgnoreCase("MON") || dayOfweek.equalsIgnoreCase("星期一")) {
             return 1;
-        } else if(dayOfweek.equalsIgnoreCase("TUE")||dayOfweek.equalsIgnoreCase("星期二")) {
+        } else if (dayOfweek.equalsIgnoreCase("TUE") || dayOfweek.equalsIgnoreCase("星期二")) {
             return 2;
-        } else if(dayOfweek.equalsIgnoreCase("WED")||dayOfweek.equalsIgnoreCase("星期三")) {
+        } else if (dayOfweek.equalsIgnoreCase("WED") || dayOfweek.equalsIgnoreCase("星期三")) {
             return 3;
-        } else if(dayOfweek.equalsIgnoreCase("THU")||dayOfweek.equalsIgnoreCase("星期四")) {
+        } else if (dayOfweek.equalsIgnoreCase("THU") || dayOfweek.equalsIgnoreCase("星期四")) {
             return 4;
-        } else if(dayOfweek.equalsIgnoreCase("FRI")||dayOfweek.equalsIgnoreCase("星期五")) {
+        } else if (dayOfweek.equalsIgnoreCase("FRI") || dayOfweek.equalsIgnoreCase("星期五")) {
             return 5;
-        } else if(dayOfweek.equalsIgnoreCase("SAT")||dayOfweek.equalsIgnoreCase("星期六")) {
+        } else if (dayOfweek.equalsIgnoreCase("SAT") || dayOfweek.equalsIgnoreCase("星期六")) {
             return 6;
         }
 
         return 0;
     }
 
-    // parse the date and calculate the designated date after adding a day number
-    public static String getDateString(String today,int dayAddNum) {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-        Date nowDate = null;
-        try {
-            nowDate = formatter.parse(today);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        Date newDate2 = new Date(nowDate.getTime() + dayAddNum * 24 * 60 * 60 * 1000);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        String dateOk = simpleDateFormat.format(newDate2);
-        return dateOk;
+    public interface OnFragmentInteractionListener {
+        void onFragmentInteraction(Uri uri);
     }
 
     // the listener that listening to chart touching events by default
@@ -319,9 +319,5 @@ public class StatisticsFragment extends Fragment {
 
         }
 
-    }
-
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
     }
 }

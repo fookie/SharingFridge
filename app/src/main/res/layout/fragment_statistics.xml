@@ -6,17 +6,16 @@
     tools:context="android.assignment.sharingfridge.StatisticsFragment">
 
     <TextView
-        android:text="@string/linechart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textView4"
+        android:text="@string/linechart"
         android:textColor="@android:color/black"
         android:textSize="18sp" />
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="200dp">
+        android:layout_height="200dp"
+        android:orientation="vertical">
 
         <lecho.lib.hellocharts.view.LineChartView
             android:id="@+id/lineChart"
@@ -27,10 +26,9 @@
     </LinearLayout>
 
     <TextView
-        android:text="@string/piechart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textView5"
+        android:text="@string/piechart"
         android:textColor="@android:color/black"
         android:textSize="18sp" />
 

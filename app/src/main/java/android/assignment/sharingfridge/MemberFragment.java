@@ -20,10 +20,9 @@ import java.util.List;
  */
 public class MemberFragment extends Fragment {
 
+    RecyclerView memberView;
     private List<MemberItem> memberItemList;
     private MemberViewAdapter memberViewAdapter;
-    RecyclerView memberView;
-
     private SQLiteDatabase mainDB;
 
     private OnLoginStatusListener loginRefreshListener;
@@ -65,8 +64,8 @@ public class MemberFragment extends Fragment {
     }
 
     // refresh the display by using a new adapter
-    public void updateUI(){
-        if(isAdded()){  // isAdded is a android built-in function to prevent null invocation from fragment when its context is not loaded yet
+    public void updateUI() {
+        if (isAdded()) {  // isAdded is a android built-in function to prevent null invocation from fragment when its context is not loaded yet
             memberItemList = initMemberList();
             memberViewAdapter = new MemberViewAdapter(getContext(), memberItemList, "http://178.62.93.103/SharingFridge/");
             memberView.setAdapter(memberViewAdapter);
@@ -76,7 +75,7 @@ public class MemberFragment extends Fragment {
         }
     }
 
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         memberItemList = initMemberList();
         memberViewAdapter = new MemberViewAdapter(getContext(), memberItemList, "http://178.62.93.103/SharingFridge/");
@@ -99,29 +98,30 @@ public class MemberFragment extends Fragment {
         }
     }
 
-    public interface OnLoginStatusListener {
-        void refreshDueToUserChange();
-    }
-
     /**
      * Initialize the member list
+     *
      * @return
      */
     public List<MemberItem> initMemberList() {
         List<MemberItem> memberItems = new LinkedList<>();
         if (!UserStatus.hasLogin) {
-            memberItems.add(new MemberItem(getString(R.string.login_hint), getString(R.string.no_group_hint),"noimg.png"));
+            memberItems.add(new MemberItem(getString(R.string.login_hint), getString(R.string.no_group_hint), "noimg.png"));
             return memberItems;
         }
         //the dummy table stores dummy items of each group member in group , so find group member from it
-        String sql="select owner from dummy where owner!='"+UserStatus.username+"'";
+        String sql = "select owner from dummy where owner!='" + UserStatus.username + "'";
         Cursor c = mainDB.rawQuery(sql, null);
         while (c.moveToNext()) {
             String owner = c.getString(0);
-            memberItems.add(new MemberItem(owner,"",owner+".png"));
+            memberItems.add(new MemberItem(owner, "", owner + ".png"));
         }
 
         return memberItems;
+    }
+
+    public interface OnLoginStatusListener {
+        void refreshDueToUserChange();
     }
 
 

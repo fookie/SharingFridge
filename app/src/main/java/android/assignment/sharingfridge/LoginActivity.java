@@ -84,7 +84,7 @@ public class LoginActivity extends AppCompatActivity {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
-        auto_login=(CheckBox) findViewById(R.id.autologin);
+        auto_login = (CheckBox) findViewById(R.id.autologin);
     }
 
     /**
@@ -180,6 +180,10 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    public UserInfo findUserById(String uid) {
+        UserInfo uInfo = new UserInfo(uid, uid, Uri.parse("http://178.62.93.103/SharingFridge/avatars/" + uid + ".png"));
+        return uInfo;
+    }
 
     /**
      * Represents an asynchronous login/registration task used to authenticate
@@ -266,16 +270,15 @@ public class LoginActivity extends AppCompatActivity {
                     //use SharedPreferences to implement auto login
                     SharedPreferences preferences = getSharedPreferences("user-status", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();
-                    if(auto_login.isChecked()) {
-                        editor.putString("username",username);
-                        editor.putString("groupName",groupName);
-                        editor.putString("token",token);
+                    if (auto_login.isChecked()) {
+                        editor.putString("username", username);
+                        editor.putString("groupName", groupName);
+                        editor.putString("token", token);
                         editor.commit();
-                    }
-                    else{
-                        editor.putString("username","_null");//clear the SharedPreferences if login faild
-                        editor.putString("groupName","_null");
-                        editor.putString("token","");
+                    } else {
+                        editor.putString("username", "_null");//clear the SharedPreferences if login faild
+                        editor.putString("groupName", "_null");
+                        editor.putString("token", "");
                         editor.commit();
                     }
                     UserStatus.hasChanged = true;
@@ -311,11 +314,6 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d("LOGIN", "FAILED");
             }
         }
-    }
-
-    public UserInfo findUserById(String uid){
-        UserInfo uInfo = new UserInfo(uid, uid, Uri.parse("http://178.62.93.103/SharingFridge/avatars/"+uid+".png"));
-        return  uInfo;
     }
 
 

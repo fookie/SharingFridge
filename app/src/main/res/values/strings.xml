@@ -10,15 +10,12 @@
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This username is invalid</string>
     <string name="error_invalid_password">The password is too short</string>
     <string name="error_incorrect_password">The password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
     <string name="action_add">Add</string>
     <string name="member_name">Member name</string>
     <string name="member_avatar">Member Avatar</string>
     <string name="member_activity">Member Activity</string>
-    <string name="member">Member</string>
     <string name="refreshing">Refreshing…</string>
     <string name="join_group">Join a group</string>
     <string name="auto_login">Auto login</string>
@@ -36,8 +33,6 @@
     <string name="add_fridge">ADD INTO FRIDGE!</string>
     <string name="login_hint">Login required</string>
     <string name="no_group_hint">Login to use group feature!</string>
-    <string name="group_sta_hint"> items, total amount: </string>
-    <string name="Unknown">Unknown</string>
     <string name="left_day">Day left</string>
     <string name="left_days">Days left</string>
     <string name="bad_day">Expired %1$s day ago</string>
@@ -52,7 +47,6 @@
     <string name="map_frg">Map</string>
     <string name="set_frg">Statics</string>
     <string name="hom_frg">Home</string>
-    <string name="refresh">Refresh</string>
     <string name="success">Success</string>
     <string name="failed">Failed</string>
     <string name="in_group_hint">You are already in group "%1$s", join a new group need to exit current group"</string>
@@ -60,19 +54,8 @@
     <string name="image_syncing">Picture synchronizing</string>
     <string name="image_sync_error">Error in synchronizing</string>
     <string name="image_sync_completed">Synchronization completed in [[ELAPSED_TIME]]</string>
-    <string name="no_permission">Permission Denied, please check your phone settings</string>
-    <string-array name="categories">
-        <item>Fruit</item>
-        <item>Vegetable</item>
-        <item>Pork</item>
-        <item>Chicken</item>
-        <item>Beef</item>
-        <item>Fish</item>
-        <item>Other</item>
-    </string-array>
     <string name="logout">Log out</string>
     <string name="settings">Settings</string>
-    <string name="add_widget">Add widget</string>
     <string name="set_language">Language:</string>
     <string name="default_language">Auto</string>
     <string name="today">today</string>
@@ -86,5 +69,4 @@
     <string name="chat_err">Cannot connect to chat server, using UCD Wireless may cause this problem</string>
     <string name="linechart">Expiring items in 7 days</string>
     <string name="piechart">Items portion of each group member</string>
-    <string name="appwidget_text">SharingFridge</string>
 </resources>

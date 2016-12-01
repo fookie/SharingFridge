@@ -36,6 +36,10 @@ public class FridgeItem implements Comparable<FridgeItem> {
         return name;
     }
 
+    public void setName(String n) {
+        this.name = n;
+    }
+
     public int getDate() {
         return (int) date;
     }
@@ -46,6 +50,10 @@ public class FridgeItem implements Comparable<FridgeItem> {
 
     public int getAmount() {
         return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 
     /**
@@ -97,20 +105,12 @@ public class FridgeItem implements Comparable<FridgeItem> {
         return category;
     }
 
-    public String getOwner() {
-        return owner;
-    }
-
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
-
     public void setCategory(String category) {
         this.category = category;
     }
 
-    public void setName(String n) {
-        this.name = n;
+    public String getOwner() {
+        return owner;
     }
 
     /**

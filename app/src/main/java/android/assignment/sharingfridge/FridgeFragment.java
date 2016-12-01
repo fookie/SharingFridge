@@ -44,6 +44,8 @@ import static android.widget.Toast.LENGTH_SHORT;
  * The fragment class for the main fridge items displaying
  */
 public class FridgeFragment extends Fragment {
+    private static final String[] CATEGORYS = new String[]{"Fruit", "Vegetable", "Pork", "Chicken", "Beef", "Fish", "Others"};
+    private static final String[] CATEGORYS_CHINESE = new String[]{"水果", "蔬菜", "猪肉", "鸡肉", "牛肉", "鱼肉", "其他"};
     private SendRequestTask mAuthTask = null;
     private RecyclerView fridgeView;
     private List<FridgeItem> fridgeItemList;
@@ -52,9 +54,6 @@ public class FridgeFragment extends Fragment {
     private SQLiteDatabase mainDB;
     private OnFragmentInteractionListener mListener;
     private boolean isDataLoaded = false;
-
-    private static final String[] CATEGORYS = new String[]{"Fruit", "Vegetable", "Pork", "Chicken", "Beef", "Fish", "Others"};
-    private static final String[] CATEGORYS_CHINESE = new String[]{"水果", "蔬菜", "猪肉", "鸡肉", "牛肉", "鱼肉", "其他"};
 
     public FridgeFragment() {
         // Required empty public constructor
@@ -153,12 +152,9 @@ public class FridgeFragment extends Fragment {
         return a;
     }
 
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
-    }
-
     /**
      * Refresh the list
+     *
      * @return refreshed list
      */
     private List<FridgeItem> refreshFridgeList() {
@@ -227,6 +223,40 @@ public class FridgeFragment extends Fragment {
         isDataLoaded = false;
     }
 
+    /**
+     * load the fridge list from local database
+     */
+    public void updateFridgeList() {
+        List<FridgeItem> itemsList = new ArrayList<>();
+        Cursor cursor = mainDB.rawQuery("SELECT * from items where groupname = '" + UserStatus.groupName + "'", null);
+        while (cursor.moveToNext()) {
+            long expday = 0;
+            Calendar cal = Calendar.getInstance();
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+            try {
+                Date nd = cal.getTime();
+                Date ed = df.parse(cursor.getString(cursor.getColumnIndex("expiretime")));
+                expday = (ed.getTime() - nd.getTime()) / (1000 * 60 * 60 * 24);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            String cat = language(cursor.getString(cursor.getColumnIndex("category")));
+            FridgeItem tempfi = new FridgeItem(cursor.getString(cursor.getColumnIndex("item")), expday, cursor.getString(cursor.getColumnIndex("imageurl")), cursor.getString(cursor.getColumnIndex("owner")), cat, cursor.getInt(cursor.getColumnIndex("amount")));
+            itemsList.add(tempfi);
+        }
+        cursor.close();
+        fridgeItemList = itemsList;
+        Collections.sort(itemsList, new expdayComparator());
+        fridgeViewAdapter = new FridgeViewAdapter(getContext(), fridgeItemList, ((SharingFridgeApplication) getContext().getApplicationContext()).getServerAddr());
+        fridgeView.setAdapter(fridgeViewAdapter);
+        fridgeViewAdapter.notifyDataSetChanged();
+    }
+
+
+    public interface OnFragmentInteractionListener {
+        void onFragmentInteraction(Uri uri);
+    }
 
     /**
      * The asynctask with HTTP requests to upload items data from our server.
@@ -328,36 +358,6 @@ public class FridgeFragment extends Fragment {
             }
             taskDB.close();
         }
-    }
-
-    /**
-     * load the fridge list from local database
-     */
-    public void updateFridgeList() {
-        List<FridgeItem> itemsList = new ArrayList<>();
-        Cursor cursor = mainDB.rawQuery("SELECT * from items where groupname = '" + UserStatus.groupName + "'", null);
-        while (cursor.moveToNext()) {
-            long expday = 0;
-            Calendar cal = Calendar.getInstance();
-            DateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-            try {
-                Date nd = cal.getTime();
-                Date ed = df.parse(cursor.getString(cursor.getColumnIndex("expiretime")));
-                expday = (ed.getTime() - nd.getTime()) / (1000 * 60 * 60 * 24);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            String cat = language(cursor.getString(cursor.getColumnIndex("category")));
-            FridgeItem tempfi = new FridgeItem(cursor.getString(cursor.getColumnIndex("item")), expday, cursor.getString(cursor.getColumnIndex("imageurl")), cursor.getString(cursor.getColumnIndex("owner")), cat, cursor.getInt(cursor.getColumnIndex("amount")));
-            itemsList.add(tempfi);
-        }
-        cursor.close();
-        fridgeItemList = itemsList;
-        Collections.sort(itemsList, new expdayComparator());
-        fridgeViewAdapter = new FridgeViewAdapter(getContext(), fridgeItemList, ((SharingFridgeApplication) getContext().getApplicationContext()).getServerAddr());
-        fridgeView.setAdapter(fridgeViewAdapter);
-        fridgeViewAdapter.notifyDataSetChanged();
     }
 
     /**

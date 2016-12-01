@@ -35,7 +35,7 @@
             android:configChanges="locale"
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
@@ -95,8 +95,8 @@
         </receiver>
 
         <receiver
-            android:exported="true"
-            android:name=".MessageNotificationReceiver">
+            android:name=".MessageNotificationReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="io.rong.push.intent.MESSAGE_ARRIVED" />
                 <action android:name="io.rong.push.intent.MI_MESSAGE_ARRIVED" />

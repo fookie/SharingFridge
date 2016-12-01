@@ -249,10 +249,11 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
 
     /**
      * Reduce the amount
+     *
      * @param position position of the item in the list
-     * @param sub Amount to decreased
-     * @param name Name of the Item
-     * @param owner Owner of the item
+     * @param sub      Amount to decreased
+     * @param name     Name of the Item
+     * @param owner    Owner of the item
      */
     private void amountReduction(int position, int sub, String name, String owner) {
         fridgeItemsList.get(position).minus(sub);
@@ -263,9 +264,10 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
 
     /**
      * Delete an item from both the local database and the database in remote server
+     *
      * @param position position of the item in the list
-     * @param name name of the item
-     * @param owner owner of the item
+     * @param name     name of the item
+     * @param owner    owner of the item
      */
     private void deleteItem(int position, String name, String owner) {
         fridgeItemsList.remove(position);

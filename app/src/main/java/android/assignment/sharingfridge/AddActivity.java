@@ -67,34 +67,21 @@ import java.util.TimeZone;
  */
 public class AddActivity extends AppCompatActivity implements UploadStatusDelegate {
 
-    private final int CAMERA_CODE = 330; // just to identify camera intent, not meaningful
-
-    private EditText nameEditText;
-    private EditText amountEditText;
-    public EditText dateEditText;
-    public EditText categoryEditText;
-    private ImageView itemDisplay;
-    private Button cameraButton;
-    private CheckBox checkBox;
-    private Button addButton;
-
-    private static final String[] CATEGORYS = new String[]{"Fruit", "Vegetable", "Pork", "Chicken", "Beef", "Fish", "Others"};
-    private static final String[] CATEGORYS_CHINESE = new String[]{"水果", "蔬菜", "猪肉", "鸡肉", "牛肉", "鱼肉", "其他"};
-
-
-    private String imageAbsolutePath, filename;//variable that save the photo information
-    private SendRequestTask mAuthTask = null;
-
-    int currentYear, currentMonth, currentDay;
-    private Calendar calender = Calendar.getInstance();
-
-    private static String calendarURL = "content://com.android.calendar/events";
-    private static String calanderEventURL = "content://com.android.calendar/events";
-    private static String calanderRemiderURL = "content://com.android.calendar/reminders";
     public static final String permission_read = Manifest.permission.READ_CALENDAR;
     public static final String permission_write = Manifest.permission.WRITE_CALENDAR;
     public static final String TAG = "CalendarActivity";
-
+    static final String[] PERMISSION = new String[]{
+            permission_read,
+            permission_write,
+    };
+    private static final String[] CATEGORIES = new String[]{"Fruit", "Vegetable", "Pork", "Chicken", "Beef", "Fish", "Others"};
+    private static final String[] CATEGORIES_CHINESE = new String[]{"水果", "蔬菜", "猪肉", "鸡肉", "牛肉", "鱼肉", "其他"};
+    private static String calendarURL = "content://com.android.calendar/events";
+    private static String calanderEventURL = "content://com.android.calendar/events";
+    private static String calanderRemiderURL = "content://com.android.calendar/reminders";
+    private final int CAMERA_CODE = 330; // just to identify camera intent, not meaningful
+    public EditText dateEditText;
+    public EditText categoryEditText;
     public int canYear;
     public int canMonth;
     public int canDay;
@@ -105,13 +92,17 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
     public String currentDate;
     public String selectedCategory = null;
     public boolean checkCondition;
-
+    int currentYear, currentMonth, currentDay;
+    private EditText nameEditText;
+    private EditText amountEditText;
+    private ImageView itemDisplay;
+    private Button cameraButton;
+    private CheckBox checkBox;
+    private Button addButton;
+    private String imageAbsolutePath, filename;//variable that save the photo information
+    private SendRequestTask mAuthTask = null;
+    private Calendar calender = Calendar.getInstance();
     private SQLiteDatabase mainDB;
-
-    static final String[] PERMISSION = new String[]{
-            permission_read,
-            permission_write,
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,7 +135,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
             public void onClick(View v) {
                 calender = Calendar.getInstance();
                 currentYear = calender.get(Calendar.YEAR);
-                currentMonth = calender.get(Calendar.MONTH)+1;
+                currentMonth = calender.get(Calendar.MONTH) + 1;
                 currentDay = calender.get(Calendar.DAY_OF_MONTH);
                 DatePickerDialog datePickerDialog = new DatePickerDialog(AddActivity.this,
                         new DatePickerDialog.OnDateSetListener() {
@@ -152,12 +143,12 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                             public void onDateSet(DatePicker view, int year, int month, int day) {
                                 calender.set(year, month, day);
                                 canYear = year;
-                                canMonth = month+1;
+                                canMonth = month + 1;
                                 canDay = day;
                                 selectedDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(calender.getTime());
                                 dateEditText.setText(selectedDate);
                             }
-                        }, currentYear, currentMonth-1, currentDay);
+                        }, currentYear, currentMonth - 1, currentDay);
                 datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
                 datePickerDialog.show();
             }
@@ -180,26 +171,26 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                         String language = locale.getLanguage();
                         if (language.endsWith("zh")) {
                             categoryEditText.setText("鸡肉");
-                            wv.setItems(Arrays.asList(CATEGORYS_CHINESE));
+                            wv.setItems(Arrays.asList(CATEGORIES_CHINESE));
                         } else {
                             categoryEditText.setText("Chicken");
-                            wv.setItems(Arrays.asList(CATEGORYS));
+                            wv.setItems(Arrays.asList(CATEGORIES));
                         }
-                        selectedCategory = CATEGORYS[3];
+                        selectedCategory = CATEGORIES[3];
                         wv.setSeletion(3);
                         wv.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
                             @Override
                             public void onSelected(int selectedIndex, String cate) {
                                 categoryEditText.setText(cate);
-                                int i = selectedIndex-2;
+                                int i = selectedIndex - 2;
                                 //catch out of bound exception for the selected index
                                 try {
-                                    selectedCategory = CATEGORYS[i];
+                                    selectedCategory = CATEGORIES[i];
                                 } catch (ArrayIndexOutOfBoundsException e) {
                                     if (i > 6) {
-                                        selectedCategory = CATEGORYS[6];
+                                        selectedCategory = CATEGORIES[6];
                                     } else {
-                                        selectedCategory = CATEGORYS[0];
+                                        selectedCategory = CATEGORIES[0];
                                     }
                                 }
                             }
@@ -250,8 +241,8 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                 amount = amountEditText.getText().toString();
                 name = nameEditText.getText().toString();
                 cat = categoryEditText.getText().toString();
-                int currentTime=currentYear*10000+currentMonth*100+currentDay;
-                int canTime=canYear*10000+canMonth*100+canDay;
+                int currentTime = currentYear * 10000 + currentMonth * 100 + currentDay;
+                int canTime = canYear * 10000 + canMonth * 100 + canDay;
                 //check if there is any empty or invalid field in the form first
                 if (name.isEmpty()) {
                     nameEditText.setError(getString(R.string.need_name));
@@ -357,6 +348,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
 
     /**
      * create an empty image file on the pictures directory in the phone
+     *
      * @return
      * @throws IOException
      */
@@ -394,12 +386,12 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(this, "com.example.android.fileprovider", photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ) {
-                        String permissions[] = {Manifest.permission.CAMERA};
-                        ActivityCompat.requestPermissions(AddActivity.this, permissions, 5238);
-                    }else {
-                        startActivityForResult(takePictureIntent, CAMERA_CODE);
-                    }
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    String permissions[] = {Manifest.permission.CAMERA};
+                    ActivityCompat.requestPermissions(AddActivity.this, permissions, 5238);
+                } else {
+                    startActivityForResult(takePictureIntent, CAMERA_CODE);
+                }
             }
         }
     }
@@ -458,7 +450,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
      * @param addday
      * @param addmonth
      * @param addyear
-     * @param name    items that going to expire
+     * @param name     items that going to expire
      * @param amount
      */
     public void addCan(int addday, int addmonth, int addyear, String name, String amount) {
@@ -544,6 +536,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
 
     /***
      * upload progress
+     *
      * @param uploadInfo
      */
     @Override
@@ -588,7 +581,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
     }
 
     /**
-     *  Aysnctask subclass that send an adding item quest to server
+     * Aysnctask subclass that send an adding item quest to server
      */
     private class SendRequestTask extends AsyncTask<String, Void, String> {
         private String urlString = "http://178.62.93.103/SharingFridge/share.php";

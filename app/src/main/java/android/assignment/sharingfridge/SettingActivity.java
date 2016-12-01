@@ -35,19 +35,19 @@ public class SettingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
 
-        english = (RadioButton)findViewById(R.id.language_english);
-        chinese = (RadioButton)findViewById(R.id.language_chinese);
-        systemDefault = (RadioButton)findViewById(R.id.language_default);
-        cleancache=(Button)findViewById(R.id.clean_cache_button);
-        cleandb=(Button)findViewById(R.id.clean_db_button);
-        RadioGroup language = (RadioGroup)findViewById(R.id.radioGroup);
+        english = (RadioButton) findViewById(R.id.language_english);
+        chinese = (RadioButton) findViewById(R.id.language_chinese);
+        systemDefault = (RadioButton) findViewById(R.id.language_default);
+        cleancache = (Button) findViewById(R.id.clean_cache_button);
+        cleandb = (Button) findViewById(R.id.clean_db_button);
+        RadioGroup language = (RadioGroup) findViewById(R.id.radioGroup);
 
         //check language user selected and stored
-        SharedPreferences userSettings= getSharedPreferences("setting", 0);
-        int ID = userSettings.getInt("language",0);
-        if(ID==1)
+        SharedPreferences userSettings = getSharedPreferences("setting", 0);
+        int ID = userSettings.getInt("language", 0);
+        if (ID == 1)
             english.setChecked(true);
-        else if(ID==2)
+        else if (ID == 2)
             chinese.setChecked(true);
         else
             systemDefault.setChecked(true);
@@ -70,7 +70,7 @@ public class SettingActivity extends AppCompatActivity {
         cleancache.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AsyncTask<Void,Void,Void>(){
+                new AsyncTask<Void, Void, Void>() {
                     @Override
                     protected Void doInBackground(Void... params) {
                         Glide.get(getApplicationContext()).clearDiskCache();
@@ -89,7 +89,7 @@ public class SettingActivity extends AppCompatActivity {
                 SQLiteDatabase taskDB;
                 taskDB = SQLiteDatabase.openOrCreateDatabase(getApplicationContext().getFilesDir().getAbsolutePath().replace("files", "databases") + "fridge.db", null);
                 taskDB.execSQL("CREATE TABLE IF NOT EXISTS items(item char(255),category char(64),amount int,addtime char(255),expiretime char(255),imageurl char(255),owner char(255),groupname char(255))");
-                String sql="delete from items";
+                String sql = "delete from items";
                 taskDB.execSQL(sql);
                 Toast.makeText(getApplicationContext(), getString(R.string.success), Toast.LENGTH_SHORT).show();
                 taskDB.close();
@@ -99,6 +99,7 @@ public class SettingActivity extends AppCompatActivity {
 
     /***
      * change application language
+     *
      * @param i language ID
      */
     protected void ChangeLanguage(int i) {
@@ -106,20 +107,20 @@ public class SettingActivity extends AppCompatActivity {
         Configuration config = resources.getConfiguration();
         DisplayMetrics dm = resources.getDisplayMetrics();
         //change language to english
-        if(i==english.getId()){
+        if (i == english.getId()) {
             config.locale = Locale.ENGLISH;
             english.setChecked(true);
             setSharedPreference(1);
         }
         //change language to chinese
-        else if(i==chinese.getId()) {
+        else if (i == chinese.getId()) {
             config.locale = Locale.SIMPLIFIED_CHINESE;
             chinese.setChecked(true);
             setSharedPreference(2);
         }
         //use system default language
         else
-                config.locale = Locale.getDefault();
+            config.locale = Locale.getDefault();
 
         resources.updateConfiguration(config, dm);
     }
@@ -131,7 +132,6 @@ public class SettingActivity extends AppCompatActivity {
         editor.putInt("language", i);
         editor.commit();
     }
-
 
 
 }

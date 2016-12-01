@@ -9,15 +9,17 @@ import com.viksaa.sssplash.lib.model.ConfigSplash;
 
 /**
  * This activity is used to show a launch screen with animated elements
- *<br/>
- *<br/>
+ * <br/>
+ * <br/>
  * Used external library: AwesomeSplash
  * Copyright (c) 2015 Viktor Arsovski
+ *
  * @see <a href="https://github.com/ViksaaSkool/AwesomeSplash">AwesomeSplash</a>
  */
 public class LaunchScreen extends AwesomeSplash {
     /**
      * initiate the launcher screen
+     *
      * @param configSplash default var, no need to change it
      */
     @Override
