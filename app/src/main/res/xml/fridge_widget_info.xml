@@ -2,7 +2,7 @@
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:initialKeyguardLayout="@layout/fridge_widget"
     android:initialLayout="@layout/fridge_widget"
-    android:minHeight="40dp"
+    android:minHeight="120dp"
     android:minWidth="110dp"
     android:previewImage="@drawable/example_appwidget_preview"
     android:resizeMode="horizontal|vertical"
