@@ -56,6 +56,7 @@ public class MapViewFragment extends Fragment {
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
         mMapView.onResume(); // needed to get the map to display immediately
+        markers = new Hashtable<>();//clean the data before update
         mAuthTask = new SendRequestTask();//start to update the group member
         mAuthTask.execute();
 
@@ -248,14 +249,13 @@ public class MapViewFragment extends Fragment {
 
         @Override
         protected Void doInBackground(Void... params) {
-//            Looper.prepare();
             try {
                 theBitmap = Glide.
                         with(MapViewFragment.this)
                         .load("http://178.62.93.103/SharingFridge/avatars/" + title + ".png")
                         .asBitmap()
                         .placeholder(R.drawable.image_loading)//don't know why, placeholder is necessary or the app will crash. Probably just a minor bug of Glide.
-                        .into(64, 64)
+                        .into(64, 64)//the size on map is 64x64
                         .get();
             } catch (final ExecutionException | InterruptedException e) {
                 Log.e("MAP bitmap", e.getMessage());
