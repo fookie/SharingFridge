@@ -64,8 +64,9 @@ public class MemberFragment extends Fragment {
         return view;
     }
 
+    // refresh the display by using a new adapter
     public void updateUI(){
-        if(isAdded()){
+        if(isAdded()){  // isAdded is a android built-in function to prevent null invocation from fragment when its context is not loaded yet
             memberItemList = initMemberList();
             memberViewAdapter = new MemberViewAdapter(getContext(), memberItemList, "http://178.62.93.103/SharingFridge/");
             memberView.setAdapter(memberViewAdapter);

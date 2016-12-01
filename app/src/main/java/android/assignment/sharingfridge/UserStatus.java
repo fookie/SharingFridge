@@ -18,6 +18,7 @@ public final class UserStatus {
     public static boolean needToUploadLoaction=false;
     public static boolean chatConnected = false;
 
+    // reset the user's status to offline
     public static void resetStatus(){
         username = "Click here to login";
         inGroup = false;

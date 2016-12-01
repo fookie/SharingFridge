@@ -132,7 +132,7 @@ public class StatisticsFragment extends Fragment {
         mListener = null;
     }
 
-
+    // load data from databases and put the data into a formatted list, then give it to the chart
     public void getDataForLineChart(){
         mainDB = SQLiteDatabase.openOrCreateDatabase(getContext().getFilesDir().getAbsolutePath().replace("files", "databases") + "fridge.db", null);
         int dayIndex = 0;
@@ -215,6 +215,7 @@ public class StatisticsFragment extends Fragment {
 
     }
 
+    // load the data from database and store the data in a formatted list, then pass it to the chart
     public void getDataForPieChart(){
         List<SliceValue> values = new ArrayList<SliceValue>();
         mainDB = SQLiteDatabase.openOrCreateDatabase(this.getContext().getFilesDir().getAbsolutePath().replace("files", "databases") + "fridge.db", null);
@@ -253,11 +254,7 @@ public class StatisticsFragment extends Fragment {
         pieChart.setPieChartData(pieData);
     }
 
-    public void updateUI(){
-        getDataForLineChart();
-        getDataForPieChart();
-    }
-
+    // to get the weekday representation in Integer from string
     private int dayNumOfWeek(String dayOfweek){
         if(dayOfweek.equalsIgnoreCase("SUN")||dayOfweek.equalsIgnoreCase("星期日")){
             return 0;
@@ -278,6 +275,7 @@ public class StatisticsFragment extends Fragment {
         return 0;
     }
 
+    // parse the date and calculate the designated date after adding a day number
     public static String getDateString(String today,int dayAddNum) {
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
         Date nowDate = null;
@@ -292,6 +290,8 @@ public class StatisticsFragment extends Fragment {
         return dateOk;
     }
 
+    // the listener that listening to chart touching events by default
+    // source: https://github.com/lecho/hellocharts-android
     private class ValueTouchListener implements LineChartOnValueSelectListener {
 
         @Override
@@ -305,6 +305,8 @@ public class StatisticsFragment extends Fragment {
         }
     }
 
+    // the listener that listening to chart touching events by default
+    // source: https://github.com/lecho/hellocharts-android
     private class PieValueTouchListener implements PieChartOnValueSelectListener {
 
         @Override

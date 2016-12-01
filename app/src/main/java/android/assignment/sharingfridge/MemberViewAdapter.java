@@ -51,10 +51,10 @@ public class MemberViewAdapter extends RecyclerView.Adapter<MemberViewHolder> {
         if (!Objects.equals(name, "") && !Objects.equals(name, defaultHint)) {
             holder.cell.setOnClickListener(new cellOnClickListener(name));
         }
-        Glide.with(homeContext).load(picPath + memberItemList.get(position).getAvatarUrl())
+        Glide.with(homeContext).load(picPath + memberItemList.get(position).getAvatarUrl()) // source: https://github.com/bumptech/glide
                 .placeholder(R.drawable.image_loading)
                 .centerCrop()
-                .listener(new RequestListener<String, GlideDrawable>() {//hide the progress indicator if image loading completed or failed
+                .listener(new RequestListener<String, GlideDrawable>() { //hide the progress indicator if image loading completed or failed
                     @Override
                     public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
                         holder.avatarProgress.setVisibility(View.GONE);

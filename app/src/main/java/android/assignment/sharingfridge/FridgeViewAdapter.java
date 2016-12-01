@@ -149,8 +149,8 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
         });
         if (d < 0) {
             Glide.with(homeContext).load(((fridgeItemsList.get(position).getOwner().equals("local user")) ? "" : serverPicsPath) + fridgeItemsList.get(position).getPhotoURL())
-                    .centerCrop()
-                    .placeholder(R.drawable.image_loading)//don't know why, placeholder is necessary or the app will crash. Probably just a minor bug of Glide.
+                    .centerCrop()  // source: https://github.com/bumptech/glide
+                    .placeholder(R.drawable.image_loading)// don't know why, placeholder is a must or the app will crash. Probably just a minor bug of Glide.
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
@@ -171,7 +171,7 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
                     .into(holder.photoView);
         } else {
             Glide.with(homeContext).load(((fridgeItemsList.get(position).getOwner().equals("local user")) ? "" : serverPicsPath) + fridgeItemsList.get(position).getPhotoURL())
-                    .centerCrop()
+                    .centerCrop() //source: https://github.com/bumptech/glide
                     .placeholder(R.drawable.image_loading)//don't know why, placeholder is necessary or the app will crash. Probably just a minor bug of Glide.
                     .listener(new RequestListener<String, GlideDrawable>() {//hide the progress indicator if the loading is completed or failed
                         @Override
@@ -337,6 +337,7 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
             return response;
         }
 
+        // read the result in string from the inputstream
         String convertInputStreamToString(InputStream stream, int length) throws IOException {
             Reader reader;
             reader = new InputStreamReader(stream, "UTF-8");

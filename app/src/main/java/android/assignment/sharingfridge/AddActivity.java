@@ -61,7 +61,9 @@ import java.util.TimeZone;
 
 /**
  * The activity for adding an new item that can be accessed by the '+' button on top right.
- *
+ * It's implementing uploadstatusdelegate to provide uploading support.
+ * UploadStatusDelegate Author: geotv
+ * Source from: https://github.com/gotev/android-upload-service
  */
 public class AddActivity extends AppCompatActivity implements UploadStatusDelegate {
 
@@ -116,7 +118,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
 
-        //Some dangerous permission need to be special granted if target API > 6.0
+        //Some dangerous permission need to be carefully dealt with if target API > 6.0
         int MyVersion = Build.VERSION.SDK_INT;
         if (MyVersion > Build.VERSION_CODES.LOLLIPOP_MR1) {
             if (!checkIfAlreadyhavePermission()) {

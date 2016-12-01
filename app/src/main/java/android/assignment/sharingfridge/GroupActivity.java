@@ -55,6 +55,7 @@ public class GroupActivity extends AppCompatActivity {
         super.onResume();
     }
 
+    // a general subclass for onClick listener
     private class submitClick implements View.OnClickListener {
 
         @Override
@@ -89,6 +90,7 @@ public class GroupActivity extends AppCompatActivity {
             return performPostCall();
         }
 
+        // send the http requests
         public String performPostCall() {
             Log.d("send post", "performPostCall");
             String response = "";
@@ -127,6 +129,7 @@ public class GroupActivity extends AppCompatActivity {
             return response;
         }
 
+        // read the results in string from inputstream
         public String convertInputStreamToString(InputStream stream, int length) throws IOException {
             Reader reader = null;
             reader = new InputStreamReader(stream, "UTF-8");

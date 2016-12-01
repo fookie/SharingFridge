@@ -40,7 +40,6 @@ import java.util.Locale;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
-
 /**
  * The fragment class for the main fridge items displaying
  */
@@ -53,7 +52,6 @@ public class FridgeFragment extends Fragment {
     private SQLiteDatabase mainDB;
     private OnFragmentInteractionListener mListener;
     private boolean isDataLoaded = false;
-
 
     private static final String[] CATEGORYS = new String[]{"Fruit", "Vegetable", "Pork", "Chicken", "Beef", "Fish", "Others"};
     private static final String[] CATEGORYS_CHINESE = new String[]{"水果", "蔬菜", "猪肉", "鸡肉", "牛肉", "鱼肉", "其他"};
@@ -199,7 +197,7 @@ public class FridgeFragment extends Fragment {
      * update the UI display by refreshing RecyclerView
      */
     public void updateUI() {
-        if (isAdded()) {
+        if (isAdded()) { //isAdded is a android built-in function to prevent null invocation from fragment when its context is not loaded yet
             fridgeItemList = refreshFridgeList();
             fridgeViewAdapter = new FridgeViewAdapter(getContext(), fridgeItemList, "http://178.62.93.103/SharingFridge/");
             fridgeView.setAdapter(fridgeViewAdapter);
@@ -249,6 +247,7 @@ public class FridgeFragment extends Fragment {
             return performPostCall();
         }
 
+        // send the http request
         String performPostCall() {
             Log.d("database", "start posting...");
             String response = "Failed to connect the server.";

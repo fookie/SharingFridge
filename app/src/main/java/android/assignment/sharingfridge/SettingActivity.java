@@ -58,7 +58,7 @@ public class SettingActivity extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 int radioButtonId = group.getCheckedRadioButtonId();
                 ChangeLanguage(radioButtonId);
-                //finish current activity and restart home activity
+                //finish current activity and restart the home activity
                 finish();
                 Intent intent = new Intent(SettingActivity.this, HomeActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -124,6 +124,7 @@ public class SettingActivity extends AppCompatActivity {
         resources.updateConfiguration(config, dm);
     }
 
+    // store the user's setting in shared preference
     public void setSharedPreference(int i) {
         SharedPreferences languageSettings = getSharedPreferences("setting", 0);
         SharedPreferences.Editor editor = languageSettings.edit();

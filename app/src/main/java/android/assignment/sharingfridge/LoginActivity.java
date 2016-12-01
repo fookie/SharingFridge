@@ -198,6 +198,7 @@ public class LoginActivity extends AppCompatActivity {
             return performPostCall();
         }
 
+        // send http requests
         public String performPostCall() {
             Log.d("send post", "performPostCall");
             String response = "";

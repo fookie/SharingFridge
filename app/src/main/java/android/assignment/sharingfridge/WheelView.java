@@ -81,7 +81,7 @@ public class WheelView extends ScrollView {
     public static final int OFF_SET_DEFAULT = 1;
     int offset = OFF_SET_DEFAULT;
 
-
+    //set the offset of display for wheelview
     public void setOffset(int offset) {
         this.offset = offset;
     }
@@ -154,8 +154,8 @@ public class WheelView extends ScrollView {
     Runnable scrollerTask;
     int newCheck = 50;
 
+    // start the scroller tasks
     public void startScrollerTask() {
-
         initialY = getScrollY();
         this.postDelayed(scrollerTask, newCheck);
     }
@@ -354,6 +354,7 @@ public class WheelView extends ScrollView {
         return (int) (dpValue * scale + 0.5f);
     }
 
+    // get the height for the view
     private int getViewMeasuredHeight(View view) {
         int width = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         int expandSpec = View.MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE >> 2, View.MeasureSpec.AT_MOST);

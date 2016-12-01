@@ -144,6 +144,7 @@ public class MapViewFragment extends Fragment {
             return performPostCall();
         }
 
+        // send the http requests
         String performPostCall() {
             Log.d("send post-loc-", "performPostCall");
             String response = "";
@@ -181,6 +182,7 @@ public class MapViewFragment extends Fragment {
             return response;
         }
 
+        // read the results in string from inputstream
         public String convertInputStreamToString(InputStream stream, int length) throws IOException {
             Reader reader = null;
             reader = new InputStreamReader(stream, "UTF-8");

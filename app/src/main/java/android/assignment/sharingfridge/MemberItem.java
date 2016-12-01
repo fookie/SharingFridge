@@ -16,18 +16,22 @@ public class MemberItem {
         avatarUrl = avaUrl;
     }
 
+    // return the username of the member item
     public String getName() {
         return name;
     }
 
+    // return the recent action of the member item
     public String getAct() {
         return act;
     }
 
+    // return the avatar url of the member item
     public String getAvatarUrl() {
         return avatarUrl;
     }
 
+    // set the username to n
     public void setName(String n) {
         name = n;
     }
