@@ -262,7 +262,7 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
     }
 
     /**
-     * Delete an item
+     * Delete an item from both the local database and the database in remote server
      * @param position position of the item in the list
      * @param name name of the item
      * @param owner owner of the item
