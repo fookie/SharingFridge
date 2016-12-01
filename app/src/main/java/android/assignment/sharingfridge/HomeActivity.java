@@ -290,6 +290,10 @@ public class HomeActivity extends AppCompatActivity
         }
     };
 
+    // initiate the Bottom navigation bar
+    // Used library: PagerBottomTabStrip
+    // Copyright 2016 JiaJie Ma
+    // Source: https://github.com/tyzlmjj/PagerBottomTabStrip
     private void initNavBar() {
         PagerBottomTabLayout pagerBottomTabLayout = (PagerBottomTabLayout) findViewById(R.id.tab);
 
@@ -394,6 +398,7 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
+    // build a new userinfo object with userID, nickname, and url for avatars
     public UserInfo findUserById(String uid) {
         return new UserInfo(uid, uid, Uri.parse("http://178.62.93.103/SharingFridge/avatars/" + uid + ".png"));
     }

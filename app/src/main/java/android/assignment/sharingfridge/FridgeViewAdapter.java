@@ -171,7 +171,7 @@ class FridgeViewAdapter extends RecyclerView.Adapter<FridgeViewHolder> {
                     .into(holder.photoView);
         } else {
             Glide.with(homeContext).load(((fridgeItemsList.get(position).getOwner().equals("local user")) ? "" : serverPicsPath) + fridgeItemsList.get(position).getPhotoURL())
-                    .centerCrop() //source: https://github.com/bumptech/glide
+                    .centerCrop() //Glide Source: https://github.com/bumptech/glide
                     .placeholder(R.drawable.image_loading)//don't know why, placeholder is necessary or the app will crash. Probably just a minor bug of Glide.
                     .listener(new RequestListener<String, GlideDrawable>() {//hide the progress indicator if the loading is completed or failed
                         @Override
