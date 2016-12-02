@@ -174,7 +174,10 @@ public class FridgeFragment extends Fragment {
             try {
                 Date nd = cal.getTime();
                 Date ed = df.parse(cursor.getString(cursor.getColumnIndex("expiretime")));
-                expday = (ed.getTime() - nd.getTime()) / (1000 * 60 * 60 * 24);
+                expday = (ed.getTime() - nd.getTime()) / (1000 * 60 * 60 * 24) + 1;
+                if (-1 < (ed.getTime() - nd.getTime()) && (ed.getTime() - nd.getTime()) < 0) {
+                    expday -= 1;
+                }
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -236,7 +239,10 @@ public class FridgeFragment extends Fragment {
             try {
                 Date nd = cal.getTime();
                 Date ed = df.parse(cursor.getString(cursor.getColumnIndex("expiretime")));
-                expday = (ed.getTime() - nd.getTime()) / (1000 * 60 * 60 * 24);
+                expday = (ed.getTime() - nd.getTime()) / (1000 * 60 * 60 * 24) + 1;
+                if (-1 < (ed.getTime() - nd.getTime()) && (ed.getTime() - nd.getTime()) < 0) {
+                    expday -= 1;
+                }
             } catch (ParseException e) {
                 e.printStackTrace();
             }
