@@ -77,6 +77,7 @@ public class FridgeWidget extends AppWidgetProvider {
         // There may be multiple widgets active, so update all of them
         if(taskDB==null){
             taskDB = SQLiteDatabase.openOrCreateDatabase(context.getFilesDir().getAbsolutePath().replace("files", "databases") + "fridge.db", null);
+            taskDB.execSQL("CREATE TABLE IF NOT EXISTS items(item char(255),category char(64),amount int,addtime char(255),expiretime char(255),imageurl char(255),owner char(255),groupname char(255))");
         }
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
