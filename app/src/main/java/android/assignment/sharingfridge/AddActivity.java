@@ -474,7 +474,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
         //set selected date to a new calendar event
         Calendar mCalendar = Calendar.getInstance();
         mCalendar.set(Calendar.DAY_OF_MONTH, addday);
-        mCalendar.set(Calendar.MONTH, addmonth);
+        mCalendar.set(Calendar.MONTH, addmonth-1);
         mCalendar.set(Calendar.YEAR, addyear);
         //set alert time as 10 AM
         mCalendar.set(Calendar.HOUR_OF_DAY, 10);
