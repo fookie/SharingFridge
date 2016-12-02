@@ -409,7 +409,7 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
      */
     public void uploadInBackgroundService() {
         try {
-            Log.v("picPath", imageAbsolutePath);
+//            Log.v("picPath", imageAbsolutePath);
             MultipartUploadRequest req = new MultipartUploadRequest(this, "http://178.62.93.103/SharingFridge/upload2.php")
                     .addFileToUpload(imageAbsolutePath, "file")
                     .setNotificationConfig(new UploadNotificationConfig().setIcon(R.drawable.ic_upload)

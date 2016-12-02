@@ -42,7 +42,7 @@
     <string name="need_amount">Amount required</string>
     <string name="need_category">Please pick a category</string>
     <string name="wrong_date">Invalid date</string>
-    <string name="logged_in_as">You have logged in as</string>
+    <string name="logged_in_as">You have logged in: </string>
     <string name="mem_frg">Member</string>
     <string name="map_frg">Map</string>
     <string name="set_frg">Statics</string>
