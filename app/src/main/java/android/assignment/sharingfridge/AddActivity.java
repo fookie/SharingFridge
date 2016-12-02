@@ -33,6 +33,7 @@ import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.ServerResponse;
@@ -259,7 +260,11 @@ public class AddActivity extends AppCompatActivity implements UploadStatusDelega
                 }
                 //send information to calender
                 if (checkCondition) {
-                    addCan(canDay, canMonth, canYear, name, amount);
+                    try {
+                        addCan(canDay, canMonth, canYear, name, amount);
+                    } catch (Exception e){
+                        Log.e("error","Virtual Machine can't add calendar event without an account!");
+                    }
                 }
                 currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new java.util.Date());
                 String imgUrl = "image/" + filename;
